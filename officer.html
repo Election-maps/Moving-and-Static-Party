@@ -866,7 +866,7 @@
         if (payload.action === 'clear_all' || (payload.action === 'clear_unit' && currentSelectedUnit && (payload.unitId === currentSelectedUnit.id || payload.unitId === currentSelectedUnit.unitId))) {
           console.log('Remote stop command received from Control Room:', payload);
           stopTracking();
-          alert("Live location tracking was stopped by Control Room.\n\nPress "START LIVE LOCATION" to share again when needed.");
+          alert("Live location tracking was stopped by Control Room.\n\nPress START LIVE LOCATION to share again when needed.");
           return;
         }
 
@@ -1351,7 +1351,7 @@
     }
 
     selCategory.addEventListener('change', () => {
-      populateMandals(selCategory.value);
+      populateMandals(selCategory.value, selMandal.value);
     });
 
     selMandal.addEventListener('change', () => {
@@ -1369,8 +1369,7 @@
       const target = allUnitsData.find(u => u.id.toLowerCase() === initialParamId.toLowerCase());
       if (target) {
         selCategory.value = target.category || 'ALL';
-        populateMandals(target.category, target.ps || target.mandal);
-        populateUnits(target.category, target.ps || target.mandal, target.id);
+        populateMandals(target.category, target.ps || target.mandal, target.id);
         return;
       }
     }
@@ -1381,13 +1380,10 @@
     const lastUnitId = localStorage.getItem('skl_last_unit_id') || '';
 
     selCategory.value = lastCat;
-    populateMandals(lastCat, lastMandal);
-    if (lastMandal) {
-      populateUnits(lastCat, lastMandal, lastUnitId);
-    }
+    populateMandals(lastCat, lastMandal, lastUnitId);
   }
 
-  function populateMandals(category, preselectMandal = '') {
+  function populateMandals(category, preselectMandal = '', preselectUnitId = '') {
     if (!allUnitsData || allUnitsData.length === 0) {
       allUnitsData = EMBEDDED_DUTIES_DATA;
     }
@@ -1424,10 +1420,10 @@
 
     if (matchedMandal) {
       selMandal.value = matchedMandal;
-      populateUnits(category, matchedMandal);
+      populateUnits(category, matchedMandal, preselectUnitId);
     } else if (sortedMandals.length > 0) {
       selMandal.selectedIndex = 1;
-      populateUnits(category, selMandal.value);
+      populateUnits(category, selMandal.value, preselectUnitId);
     }
   }
 
@@ -1496,8 +1492,7 @@
     }
   }
 
-  function renderUnitPreview
-(unit) {
+  function renderUnitPreview(unit) {
     currentSelectedUnit = unit;
     if (!unit) {
       document.getElementById('disp-officer-name').innerText = '--';
@@ -1507,11 +1502,12 @@
       return;
     }
 
-    document.getElementById('disp-officer-name').innerText = unit.officer || '--';
-    document.getElementById('disp-officer-phone').innerText = unit.phone || 'N/A';
-    const locText = unit.village ? `Village: ${unit.village} (${unit.ps || unit.mandal})` : (unit.hq || unit.mandal || '--');
+    document.getElementById('disp-officer-name').innerText = unit.officer || 'Officer Incharge';
+    document.getElementById('disp-officer-phone').innerText = unit.phone || 'Available with Control Room';
+    const hasRealVillage = unit.village && unit.village !== '0' && unit.village.toLowerCase() !== 'nil' && unit.village.toLowerCase() !== 'none';
+    const locText = hasRealVillage ? `Village: ${unit.village} (${unit.ps || unit.mandal})` : (unit.hq || (unit.ps ? `${unit.ps} PS` : unit.mandal) || '--');
     document.getElementById('disp-officer-hq').innerText = locText;
-    const supportText = unit.vehicle ? `Vehicle: ${unit.vehicle}` : (unit.supporting || 'N/A');
+    const supportText = unit.vehicle ? `Vehicle: ${unit.vehicle}` : (unit.supporting || 'Patrol Unit');
     document.getElementById('disp-officer-supporting').innerText = supportText;
   }
 
