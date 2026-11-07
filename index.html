@@ -1097,166 +1097,11 @@ https://...
   updateMapZoomClass();
 
   // -------------------------------------------------------------
-  // Data Load: Moving Parties & Static Points (136 Duty Points)
   // -------------------------------------------------------------
-  const dutiesLayerGroup = L.layerGroup().addTo(map);
+  // Mandal Boundaries GeoJSON Layer (Clean District View - Only Live Officers Plotted)
+  // -------------------------------------------------------------
   const mandalBordersLayerGroup = L.layerGroup().addTo(map);
   let isBordersLayerActive = true;
-  const staticDutyMarkers = {};
-
-  function buildDutyPopupHtml(duty, isLive = false, liveData = null) {
-    const isMoving = duty.categoryKey === 'MP' || duty.category === 'Moving Parties';
-    const themeColor = isMoving ? '#0284c7' : '#d97706';
-    const catLabel = isMoving ? '🚔 Moving Party' : '📍 Static Point';
-    const cleanPh = cleanPhoneNumber(duty.phone);
-    const officerBaseUrl = (window.location.origin + window.location.pathname).replace(/\/[^\/]*$/, '/officer.html');
-    const trackingUrl = `${officerBaseUrl}?room=${encodeURIComponent(roomCode)}&id=${encodeURIComponent(duty.id)}`;
-    const nudgeMsg = `నమస్కారం సార్ (${duty.officer || 'Officer'}), శ్రీకాకుళం జిల్లా పోలీస్ కంట్రోల్ రూమ్ మ్యాప్‌లో మీ డ్యూటీ లొకేషన్ షేర్ చేయడానికి వెంటనే ఈ లింక్ ఓపెన్ చేసి 'లైవ్ లొకేషన్ ప్రారంభించండి' నొక్కండి:\n${trackingUrl}`;
-
-    const callBtn = cleanPh 
-      ? `<a href="tel:${cleanPh}" style="flex:1; text-align:center; padding:6px 8px; background:#2563eb; color:white; border-radius:6px; text-decoration:none; font-size:11.5px; font-weight:700;"><i class="fa-solid fa-phone"></i> కాల్</a>` 
-      : '';
-    const waBtn = cleanPh 
-      ? `<a href="https://wa.me/91${cleanPh}?text=${encodeURIComponent(nudgeMsg)}" target="_blank" style="flex:1; text-align:center; padding:6px 8px; background:#16a34a; color:white; border-radius:6px; text-decoration:none; font-size:11.5px; font-weight:700;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>` 
-      : '';
-
-    const speedKmh = liveData && liveData.speed ? Math.round(liveData.speed * 3.6) : 0;
-    const statusBadge = isLive 
-      ? `<span style="background:#10b981; color:#fff; font-size:10px; padding:3px 7px; border-radius:4px; font-weight:bold;">● లైవ్ (${speedKmh} km/h)</span>`
-      : `<span style="background:#64748b; color:#fff; font-size:10px; padding:3px 7px; border-radius:4px; font-weight:bold;">⚪ ఆఫ్‌లైన్ (Offline)</span>`;
-
-    return `
-      <div style="font-family: sans-serif; min-width: 250px; max-width: 320px; color: #1e293b;">
-        <div style="background: ${themeColor}; color: #ffffff; padding: 7px 10px; border-radius: 6px; font-weight: bold; font-size: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>${catLabel}</span>
-          ${statusBadge}
-        </div>
-
-        <div style="font-size: 13.5px; font-weight: 800; color: #0f172a; margin-bottom: 3px;">
-          ${duty.unitName}
-        </div>
-        <div style="font-size: 11.5px; color: #475569; margin-bottom: 6px;">
-          🏛️ పోలీస్ స్టేషన్: <strong>${duty.ps} PS</strong> (${duty.mandal} మండలం)
-        </div>
-
-        <div style="font-size: 11.5px; color: #1e293b; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 7px 9px; margin-bottom: 8px; line-height: 1.5;">
-          <div>👮 <strong>ఇన్‌ఛార్జ్:</strong> ${duty.officer || 'Duty Incharge'}</div>
-          ${duty.village ? `<div>🏘️ <strong>గ్రామం (Village):</strong> ${duty.village}</div>` : ''}
-          ${duty.vehicle ? `<div>🚓 <strong>వాహనం / రకం:</strong> ${duty.vehicle}</div>` : ''}
-          ${duty.phone ? `<div>📞 <strong>ఫోన్:</strong> ${duty.phone}</div>` : ''}
-          ${isLive && liveData && liveData.lastUpdated ? `<div style="color:#059669; font-weight:600;">⏱️ <strong>చివరి అప్‌డేట్:</strong> ${timeAgo(liveData.lastUpdated)}</div>` : ''}
-        </div>
-
-        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-          ${callBtn}
-          ${waBtn}
-          <button onclick="map.flyTo([${duty.lat}, ${duty.lng}], 17)" style="padding:6px 10px; background:#475569; color:white; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;" title="జూమ్ చేయండి"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-        </div>
-
-        <a href="${trackingUrl}" target="_blank" style="display:block; text-align:center; padding:6px; background:#0f172a; color:#38bdf8; border-radius:6px; text-decoration:none; font-size:10.5px; font-weight:700; border:1px solid #334155;">
-          ⚡ ఆఫీసర్ ట్రాకింగ్ లింక్ ఓపెన్ చేయండి
-        </a>
-      </div>
-    `;
-  }
-
-  function createDutyMarkerIcon(duty, isLive = false, speedKmh = 0) {
-    const isMoving = duty.categoryKey === 'MP' || duty.category === 'Moving Parties';
-    const color = isMoving ? '#0284c7' : '#d97706';
-    const iconClass = isMoving ? 'fa-car-side' : 'fa-map-pin';
-    const catShort = duty.categoryKey || (isMoving ? 'MP' : 'SP');
-    const badgeText = `${catShort}: ${duty.route || duty.unitName}`;
-    const psText = duty.ps || duty.mandal || '';
-    const officerName = duty.officer ? duty.officer.split(',')[0].trim() : 'Duty Incharge';
-
-    return L.divIcon({
-      className: 'custom-police-marker',
-      html: `
-        <div class="police-marker-container">
-          <div class="police-marker-label" style="border-color: ${color};">
-            <div class="marker-title-row">
-              <span style="color:${isLive ? '#10b981' : '#94a3b8'};">● </span>
-              <span>${badgeText}</span>
-              ${isLive && speedKmh > 0 ? `<span class="speed-pill">${speedKmh} km/h</span>` : ''}
-            </div>
-            <div class="officer-incharge-badge">
-              <i class="fa-solid fa-user-shield" style="font-size:9px;"></i>
-              <span>${officerName} (${psText})</span>
-            </div>
-          </div>
-          ${isLive ? '<div class="police-marker-pulse"></div>' : ''}
-          <div class="police-marker-pin" style="background: ${color};">
-            <i class="fa-solid ${iconClass}"></i>
-          </div>
-        </div>
-      `,
-      iconSize: [36, 36],
-      iconAnchor: [18, 18],
-      popupAnchor: [0, -20]
-    });
-  }
-
-  function initializeAllDutyMarkers() {
-    dutiesLayerGroup.clearLayers();
-    const allBounds = [];
-
-    allUnitsData.forEach(duty => {
-      if (!duty.lat || !duty.lng) return;
-      const isLive = !!activeMobiles[duty.id];
-      const marker = L.marker([duty.lat, duty.lng], {
-        icon: createDutyMarkerIcon(duty, isLive)
-      });
-
-      marker.bindPopup(() => buildDutyPopupHtml(duty, !!activeMobiles[duty.id], activeMobiles[duty.id]));
-      marker.bindTooltip(`<b>${duty.unitName}</b><br/>🏛️ ${duty.ps} PS<br/>👮 ${duty.officer || 'Incharge'}`, {
-        direction: 'top',
-        offset: [0, -22],
-        className: 'psl-tooltip'
-      });
-
-      marker.on('click', () => {
-        currentlyFollowedOfficerKey = duty.id;
-        map.flyTo([duty.lat, duty.lng], 16, { animate: true, duration: 1.0 });
-      });
-
-      staticDutyMarkers[duty.id] = marker;
-      allBounds.push([duty.lat, duty.lng]);
-    });
-
-    applyDutyFilters();
-
-    if (allBounds.length > 0) {
-      map.fitBounds(allBounds, { padding: [40, 40], maxZoom: 13 });
-    }
-  }
-
-  function applyDutyFilters() {
-    dutiesLayerGroup.clearLayers();
-    const filteredBounds = [];
-
-    allUnitsData.forEach(duty => {
-      if (activeMobiles[duty.id]) {
-        return;
-      }
-
-      const dutyCat = duty.categoryKey || (duty.category === 'Moving Parties' ? 'MP' : 'SP');
-      const catMatch = (currentMapCategoryFilter === 'ALL' || dutyCat === currentMapCategoryFilter);
-      const stationName = (duty.ps || duty.mandal || '').trim().toLowerCase();
-      const psMatch = (currentMapMandalFilter === 'ALL' || stationName === currentMapMandalFilter.toLowerCase());
-
-      if (catMatch && psMatch) {
-        const m = staticDutyMarkers[duty.id];
-        if (m) {
-          dutiesLayerGroup.addLayer(m);
-          filteredBounds.push([duty.lat, duty.lng]);
-        }
-      }
-    });
-
-    if (currentMapMandalFilter !== 'ALL' && filteredBounds.length > 0) {
-      map.fitBounds(filteredBounds, { padding: [50, 50], maxZoom: 14 });
-    }
-  }
 
 
 
@@ -1702,10 +1547,6 @@ https://...
       const mandalMatch = (currentMapMandalFilter === 'ALL' || (mandal && mandal.trim().toLowerCase() === currentMapMandalFilter.toLowerCase()));
       const matchesFilter = catMatch && mandalMatch;
 
-      if (staticDutyMarkers[key] && dutiesLayerGroup.hasLayer(staticDutyMarkers[key])) {
-        dutiesLayerGroup.removeLayer(staticDutyMarkers[key]);
-      }
-
       if (matchesFilter) {
         marker.addTo(map);
       }
@@ -1849,7 +1690,6 @@ https://...
       }
     }
 
-    applyDutyFilters();
     updateKPIs();
     populateMapTeamDropdown();
     saveOfficersToStorage();
@@ -1908,7 +1748,6 @@ https://...
   let currentlyFollowedOfficerKey = null;
 
   function applyMapFilters() {
-    applyDutyFilters();
     let bounds = [];
     for (const k in activeMobiles) {
       const m = activeMobiles[k];
@@ -2086,12 +1925,8 @@ https://...
     const u = allUnitsData.find(item => (item.id === unitId || item.unitId === unitId));
     if (u) {
       currentlyFollowedOfficerKey = null;
-      const staticM = staticDutyMarkers[u.id];
-      if (staticM) {
-        map.flyTo([u.lat, u.lng], 16, { animate: true, duration: 1.0 });
-        staticM.openPopup();
-        showToast(`[${u.categoryKey}] ${u.unitName} (${u.ps} PS) కి జూమ్ చేయబడింది`);
-      }
+      const catText = u.categoryKey || (u.category === 'Moving Parties' ? 'MP' : 'SP');
+      showToast(`⚠️ [${catText}] ${u.unitName} (${u.ps} PS) ఇంకా ఆఫ్‌లైన్‌లో ఉన్నారు. సిబ్బంది లైవ్ లొకేషన్ ప్రారంభించినప్పుడు మ్యాప్‌లో కనిపిస్తారు.`);
     }
   };
 
@@ -2136,7 +1971,6 @@ https://...
       }
     }
 
-    applyDutyFilters();
     updateKPIs();
     populateMapTeamDropdown();
     renderDirectory();
@@ -2192,7 +2026,6 @@ https://...
       }
     }
 
-    applyDutyFilters();
     updateKPIs();
     populateMapTeamDropdown();
     renderDirectory();
@@ -2367,8 +2200,8 @@ https://...
     populateMapMandalDropdown();
     populateMapTeamDropdown();
     updateKPIs();
-    initializeAllDutyMarkers();
     drawMandalBorders();
+    map.setView(SRIKAKULAM_CENTER, 10);
     setTimeout(() => { map.invalidateSize(); }, 200);
     setTimeout(() => { map.invalidateSize(); }, 800);
   }
@@ -2463,14 +2296,14 @@ https://...
   window.zoomToForce = function(key) {
     modalDirectory.classList.remove('show');
     if (activeMobiles[key]) {
+      currentlyFollowedOfficerKey = key;
       map.flyTo([activeMobiles[key].lat, activeMobiles[key].lng], 16, { duration: 1.0 });
       activeMobiles[key].marker.openPopup();
+      showToast(`🟢 ${activeMobiles[key].unitName} లైవ్ లొకేషన్‌కి జూమ్ చేయబడింది`);
     } else {
       const u = allUnitsData.find(item => item.id === key);
-      if (u && staticDutyMarkers[key]) {
-        map.flyTo([u.lat, u.lng], 16, { duration: 1.0 });
-        staticDutyMarkers[key].openPopup();
-      }
+      const name = u ? `${u.unitName} (${u.ps} PS)` : key;
+      showToast(`⚠️ ${name} ఇంకా ఆఫ్‌లైన్‌లో ఉన్నారు. సిబ్బంది లైవ్ లొకేషన్ ప్రారంభించినప్పుడు మ్యాప్‌పై కనిపిస్తారు.`);
     }
   };
 
