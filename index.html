@@ -1855,24 +1855,25 @@ https://...
     const currentVal = sel.value;
     sel.innerHTML = '<option value="">🔍 పార్టీ / పాయింట్ ఎంచుకోండి (Select Party / Point)</option>';
 
-    // Filter allUnitsData matching current category and police station
+    // Filter allUnitsData matching current police station (Always include both MP and SP)
     const filteredUnits = allUnitsData.filter(u => {
-      const uCat = u.categoryKey || (u.category === 'Moving Parties' ? 'MP' : 'SP');
-      const catMatch = (currentMapCategoryFilter === 'ALL' || uCat === currentMapCategoryFilter);
       const psName = (u.ps || u.mandal || '').trim().toLowerCase();
       const psMatch = (currentMapMandalFilter === 'ALL' || psName === currentMapMandalFilter.toLowerCase());
-      return catMatch && psMatch;
+      return psMatch;
     });
 
     const liveUnits = [];
-    const offlineUnits = [];
+    const mpUnits = [];
+    const spUnits = [];
 
     filteredUnits.forEach(u => {
       const key = u.id || u.unitId;
       if (activeMobiles[key]) {
         liveUnits.push(u);
+      } else if (u.categoryKey === 'MP' || u.category === 'Moving Parties') {
+        mpUnits.push(u);
       } else {
-        offlineUnits.push(u);
+        spUnits.push(u);
       }
     });
 
@@ -1892,19 +1893,37 @@ https://...
       sel.appendChild(grpLive);
     }
 
-    // 2. Offline / General Units Optgroup
-    const grpOther = document.createElement('optgroup');
-    grpOther.label = `⚪ డ్యూటీ పార్టీలు / పాయింట్లు (${offlineUnits.length} Teams)`;
-    offlineUnits.forEach(u => {
-      const key = u.id || u.unitId;
-      const opt = document.createElement('option');
-      opt.value = key;
-      const icon = (u.categoryKey === 'MP' || u.category === 'Moving Parties') ? '🚔' : '📍';
-      const detailText = u.village ? ` [గ్రామం: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
-      opt.innerText = `${icon} ${u.unitName}${detailText} (${u.ps || u.mandal}) - ${u.officer || 'Incharge'}`;
-      grpOther.appendChild(opt);
-    });
-    sel.appendChild(grpOther);
+    // 2. Moving Parties Optgroup
+    if (mpUnits.length > 0) {
+      const grpMp = document.createElement('optgroup');
+      grpMp.label = `🚔 మూవింగ్ పార్టీలు (${mpUnits.length} Moving Parties)`;
+      mpUnits.forEach(u => {
+        const key = u.id || u.unitId;
+        const opt = document.createElement('option');
+        opt.value = key;
+        const vText = u.vehicle ? ` [${u.vehicle}]` : '';
+        const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
+        opt.innerText = `🚔 ${u.unitName}${vText} (${u.ps || u.mandal})${officerShort}`;
+        grpMp.appendChild(opt);
+      });
+      sel.appendChild(grpMp);
+    }
+
+    // 3. Static Points Optgroup
+    if (spUnits.length > 0) {
+      const grpSp = document.createElement('optgroup');
+      grpSp.label = `📍 స్టాటిక్ పాయింట్లు (${spUnits.length} Static Points)`;
+      spUnits.forEach(u => {
+        const key = u.id || u.unitId;
+        const opt = document.createElement('option');
+        opt.value = key;
+        const vText = u.village ? ` [గ్రామం: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
+        const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
+        opt.innerText = `📍 ${u.unitName}${vText} (${u.ps || u.mandal})${officerShort}`;
+        grpSp.appendChild(opt);
+      });
+      sel.appendChild(grpSp);
+    }
 
     if (currentVal) sel.value = currentVal;
   }

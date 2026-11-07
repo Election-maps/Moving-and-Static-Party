@@ -1,4 +1,4 @@
-window.MOVING_STATIC_DATA = [
+﻿window.MOVING_STATIC_DATA = [
     {
         "id":  "DUTY_Srikakulam_Rural_MP_1",
         "category":  "Moving Parties",
@@ -1557,7 +1557,7 @@ window.MOVING_STATIC_DATA = [
         "categoryKey":  "MP",
         "ps":  "Kasibugga",
         "mandal":  "PALASA",
-        "unitName":  "1 (Kasibugga)",
+        "unitName":  "Moving Party-1 (Kasibugga)",
         "route":  "1",
         "vehicle":  "4W",
         "village":  "",
@@ -1589,7 +1589,7 @@ window.MOVING_STATIC_DATA = [
         "categoryKey":  "MP",
         "ps":  "Kasibugga",
         "mandal":  "PALASA",
-        "unitName":  "1 (Kasibugga)",
+        "unitName":  "Moving Party-2 (Kasibugga)",
         "route":  "1",
         "vehicle":  "2W",
         "village":  "",
@@ -1605,7 +1605,7 @@ window.MOVING_STATIC_DATA = [
         "categoryKey":  "SP",
         "ps":  "Kasibugga",
         "mandal":  "PALASA",
-        "unitName":  "Static Point-1: Pedanchala (Kasibugga)",
+        "unitName":  "Static Point-2: Pedanchala (Kasibugga)",
         "route":  "Static Point-1: Pedanchala",
         "vehicle":  "Fixed Point",
         "village":  "Pedanchala",
@@ -1621,7 +1621,7 @@ window.MOVING_STATIC_DATA = [
         "categoryKey":  "MP",
         "ps":  "Kasibugga",
         "mandal":  "PALASA",
-        "unitName":  "1 (Kasibugga)",
+        "unitName":  "Moving Party-3 (Kasibugga)",
         "route":  "1",
         "vehicle":  "2W",
         "village":  "",
@@ -1637,7 +1637,7 @@ window.MOVING_STATIC_DATA = [
         "categoryKey":  "SP",
         "ps":  "Kasibugga",
         "mandal":  "PALASA",
-        "unitName":  "Static Point-1: Tekkalipatnam (Kasibugga)",
+        "unitName":  "Static Point-3: Tekkalipatnam (Kasibugga)",
         "route":  "Static Point-1: Tekkalipatnam",
         "vehicle":  "Fixed Point",
         "village":  "Tekkalipatnam",
@@ -2000,4 +2000,3 @@ window.MOVING_STATIC_DATA = [
         "lng":  83.715501
     }
 ];
-window.ROUTE_MOBILES_DATA = window.MOVING_STATIC_DATA;

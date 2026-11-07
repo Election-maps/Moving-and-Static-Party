@@ -503,6 +503,7 @@
     <div class="form-group">
       <label class="form-label">1. విభాగం ఎంచుకోండి (Select Category):</label>
       <select class="form-select" id="select-category">
+        <option value="ALL">🛡️ అన్ని విభాగాలు (Moving & Static Parties)</option>
         <option value="Moving Parties">🚔 మూవింగ్ పార్టీలు (Moving Parties)</option>
         <option value="Static Points">📍 స్టాటిక్ పాయింట్లు (Static Points)</option>
       </select>
@@ -1359,7 +1360,7 @@
     }
 
     // Restore last used selection or default
-    const lastCat = initialParamCategory || localStorage.getItem('skl_last_category') || 'Moving Parties';
+    const lastCat = initialParamCategory || localStorage.getItem('skl_last_category') || 'ALL';
     const lastMandal = initialParamMandal || localStorage.getItem('skl_last_mandal') || '';
     const lastUnitId = localStorage.getItem('skl_last_unit_id') || '';
 
@@ -1376,16 +1377,18 @@
     renderUnitPreview(null);
 
     const mandalsSet = new Set();
-    allUnitsData.filter(u => u.category === category).forEach(u => {
-      const stationName = u.ps || u.mandal;
-      if (stationName) mandalsSet.add(stationName.trim());
+    allUnitsData.forEach(u => {
+      if (!category || category === 'ALL' || u.category === category) {
+        const stationName = u.ps || u.mandal;
+        if (stationName) mandalsSet.add(stationName.trim());
+      }
     });
 
     const sortedMandals = Array.from(mandalsSet).sort();
     sortedMandals.forEach(m => {
       const opt = document.createElement('option');
       opt.value = m;
-      opt.innerText = m;
+      opt.innerText = m.endsWith('PS') ? m : `${m} PS`;
       selMandal.appendChild(opt);
     });
 
@@ -1401,18 +1404,44 @@
     selUnit.innerHTML = '<option value="">-- పార్టీ / పాయింట్ ఎంచుకోండి --</option>';
     renderUnitPreview(null);
 
-    if (!category || !mandal) return;
+    if (!mandal) return;
 
-    const units = allUnitsData.filter(u => u.category === category && ((u.ps && u.ps.trim() === mandal) || (u.mandal && u.mandal.trim() === mandal)));
-
-    units.forEach(u => {
-      const opt = document.createElement('option');
-      opt.value = u.id;
-      const extra = u.village ? ` [గ్రామం: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
-      const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
-      opt.innerText = `${u.unitName}${extra}${officerShort}`;
-      selUnit.appendChild(opt);
+    const units = allUnitsData.filter(u => {
+      const psMatch = ((u.ps && u.ps.trim() === mandal) || (u.mandal && u.mandal.trim() === mandal));
+      const catMatch = (!category || category === 'ALL' || u.category === category);
+      return psMatch && catMatch;
     });
+
+    const mpUnits = units.filter(u => u.categoryKey === 'MP' || u.category === 'Moving Parties');
+    const spUnits = units.filter(u => u.categoryKey === 'SP' || u.category === 'Static Points');
+
+    if (mpUnits.length > 0) {
+      const grpMp = document.createElement('optgroup');
+      grpMp.label = `🚔 మూవింగ్ పార్టీలు (Moving Parties - ${mpUnits.length})`;
+      mpUnits.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        const vText = u.vehicle ? ` [${u.vehicle}]` : '';
+        const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
+        opt.innerText = `🚔 ${u.unitName}${vText}${officerShort}`;
+        grpMp.appendChild(opt);
+      });
+      selUnit.appendChild(grpMp);
+    }
+
+    if (spUnits.length > 0) {
+      const grpSp = document.createElement('optgroup');
+      grpSp.label = `📍 స్టాటిక్ పాయింట్లు (Static Points - ${spUnits.length})`;
+      spUnits.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        const vText = u.village ? ` [గ్రామం: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
+        const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
+        opt.innerText = `📍 ${u.unitName}${vText}${officerShort}`;
+        grpSp.appendChild(opt);
+      });
+      selUnit.appendChild(grpSp);
+    }
 
     if (preselectUnitId && units.some(u => u.id === preselectUnitId)) {
       selUnit.value = preselectUnitId;
