@@ -956,18 +956,6 @@
   </div>
   <!-- Quick Floating Action Buttons on Map -->
   <div class="map-fab-stack">
-    <!-- Fullscreen FAB -->
-    <button class="fab" id="fab-fullscreen" onclick="toggleFullScreen()" title="Full Screen Map">
-      <i class="fa-solid fa-expand"></i>
-    </button>
-    <!-- Excel Report FAB -->
-    <button class="fab" id="fab-excel" onclick="exportDutiesToExcel()" title="Download Excel Status Report">
-      <i class="fa-solid fa-file-excel" style="color: #22c55e;"></i>
-    </button>
-    <!-- WhatsApp Share FAB -->
-    <button class="fab fab-whatsapp" id="fab-wa-quick" title="Share link in WhatsApp Group">
-      <i class="fa-brands fa-whatsapp"></i>
-    </button>
     <!-- Fit All Active Officers bounds -->
     <button class="fab" id="fab-fit-all" title="Fit all on map">
       <i class="fa-solid fa-users-viewfinder"></i>
@@ -2715,9 +2703,12 @@ https://...
     modalShare.classList.add('show');
   });
 
-  document.getElementById('fab-wa-quick').addEventListener('click', () => {
-    openWhatsAppBroadcast();
-  });
+  const elFabWa = document.getElementById('fab-wa-quick');
+  if (elFabWa) {
+    elFabWa.addEventListener('click', () => {
+      openWhatsAppBroadcast();
+    });
+  }
 
   document.getElementById('btn-send-wa-broadcast').addEventListener('click', () => {
     openWhatsAppBroadcast();
