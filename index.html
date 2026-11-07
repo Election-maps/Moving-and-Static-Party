@@ -579,6 +579,17 @@
       flex-direction: column;
       align-items: center;
       gap: 1px;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Clean cluster control: hide floating label at zoom < 13 unless hovered or live */
+    .map-zoom-low .police-marker-label {
+      display: none;
+    }
+    .map-zoom-low .custom-police-marker:hover .police-marker-label,
+    .map-zoom-low .custom-police-marker.is-live .police-marker-label {
+      display: flex;
+      z-index: 9999;
     }
 
     .marker-title-row {
@@ -1205,345 +1216,184 @@ https://...
     currentlyFollowedOfficerKey = null;
   });
 
-  // -------------------------------------------------------------
-  // Data Load: 30 Mandal Boundaries
-  // -------------------------------------------------------------
-  let allPslData = [];
-  const mandalBordersLayerGroup = L.layerGroup().addTo(map);
-  const routesLayerGroup = L.layerGroup();
-  const pslLayerGroup = L.layerGroup();
-  let isPslLayerActive = false;
-  let isRoutesLayerActive = false;
-  let isBordersLayerActive = true;
-  let currentPslSensitivityFilter = 'ALL';
-
-  setTimeout(() => {
-    drawMandalBorders();
-  }, 100);
-
-  function buildPslPopupHtml(item) {
-    let themeBg = '#1e3a8a';
-    let badgeBg = '#10b981';
-    if (item.sensitivity === 'HYPER SENSITIVE') {
-      themeBg = '#7f1d1d';
-      badgeBg = '#ef4444';
-    } else if (item.sensitivity === 'SENSITIVE') {
-      themeBg = '#78350f';
-      badgeBg = '#f59e0b';
+  function updateMapZoomClass() {
+    const mapEl = document.getElementById('map');
+    if (!mapEl) return;
+    if (map.getZoom() < 13) {
+      mapEl.classList.add('map-zoom-low');
+    } else {
+      mapEl.classList.remove('map-zoom-low');
     }
+  }
+  map.on('zoomend', updateMapZoomClass);
+  updateMapZoomClass();
 
-    let inchargeClean = item.incharge || '';
-    let inchargePhoneMatch = inchargeClean.match(/(\d{10})/);
-    let inchargePhone = inchargePhoneMatch ? inchargePhoneMatch[1] : '';
+  // -------------------------------------------------------------
+  // Data Load: Moving Parties & Static Points (136 Duty Points)
+  // -------------------------------------------------------------
+  const dutiesLayerGroup = L.layerGroup().addTo(map);
+  const mandalBordersLayerGroup = L.layerGroup().addTo(map);
+  let isBordersLayerActive = true;
+  const staticDutyMarkers = {};
+
+  function buildDutyPopupHtml(duty, isLive = false, liveData = null) {
+    const isMoving = duty.categoryKey === 'MP' || duty.category === 'Moving Parties';
+    const themeColor = isMoving ? '#0284c7' : '#d97706';
+    const catLabel = isMoving ? '🚔 Moving Party' : '📍 Static Point';
+    const cleanPh = cleanPhoneNumber(duty.phone);
+    const officerBaseUrl = (window.location.origin + window.location.pathname).replace(/\/[^\/]*$/, '/officer.html');
+    const trackingUrl = `${officerBaseUrl}?room=${encodeURIComponent(roomCode)}&id=${encodeURIComponent(duty.id)}`;
+    const nudgeMsg = `నమస్కారం సార్ (${duty.officer || 'Officer'}), శ్రీకాకుళం జిల్లా పోలీస్ కంట్రోల్ రూమ్ మ్యాప్‌లో మీ డ్యూటీ లొకేషన్ షేర్ చేయడానికి వెంటనే ఈ లింక్ ఓపెన్ చేసి 'లైవ్ లొకేషన్ ప్రారంభించండి' నొక్కండి:\n${trackingUrl}`;
+
+    const callBtn = cleanPh 
+      ? `<a href="tel:${cleanPh}" style="flex:1; text-align:center; padding:6px 8px; background:#2563eb; color:white; border-radius:6px; text-decoration:none; font-size:11.5px; font-weight:700;"><i class="fa-solid fa-phone"></i> కాల్</a>` 
+      : '';
+    const waBtn = cleanPh 
+      ? `<a href="https://wa.me/91${cleanPh}?text=${encodeURIComponent(nudgeMsg)}" target="_blank" style="flex:1; text-align:center; padding:6px 8px; background:#16a34a; color:white; border-radius:6px; text-decoration:none; font-size:11.5px; font-weight:700;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>` 
+      : '';
+
+    const speedKmh = liveData && liveData.speed ? Math.round(liveData.speed * 3.6) : 0;
+    const statusBadge = isLive 
+      ? `<span style="background:#10b981; color:#fff; font-size:10px; padding:3px 7px; border-radius:4px; font-weight:bold;">● లైవ్ (${speedKmh} km/h)</span>`
+      : `<span style="background:#64748b; color:#fff; font-size:10px; padding:3px 7px; border-radius:4px; font-weight:bold;">⚪ ఆఫ్‌లైన్ (Offline)</span>`;
 
     return `
-      <div style="font-family: sans-serif; min-width: 250px; max-width: 310px; color: #1e293b;">
-        <div style="background: ${themeBg}; color: #ffffff; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11.5px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>🏛️ ${item.mandal} - ${item.mptc} MPTC</span>
-          <span style="background: ${badgeBg}; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 800; text-transform: uppercase;">${item.sensitivity}</span>
+      <div style="font-family: sans-serif; min-width: 250px; max-width: 320px; color: #1e293b;">
+        <div style="background: ${themeColor}; color: #ffffff; padding: 7px 10px; border-radius: 6px; font-weight: bold; font-size: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span>${catLabel}</span>
+          ${statusBadge}
         </div>
 
-        <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; line-height: 1.3;">
-          🏫 ${item.pslName}
+        <div style="font-size: 13.5px; font-weight: 800; color: #0f172a; margin-bottom: 3px;">
+          ${duty.unitName}
+        </div>
+        <div style="font-size: 11.5px; color: #475569; margin-bottom: 6px;">
+          🏛️ పోలీస్ స్టేషన్: <strong>${duty.ps} PS</strong> (${duty.mandal} మండలం)
         </div>
 
-        <div style="font-size: 11px; color: #475569; margin-bottom: 6px; display: flex; gap: 8px; flex-wrap: wrap;">
-          <span>🗳️ పోలింగ్ కేంద్రాలు: <strong>${item.psCount || 1}</strong></span>
-          ${item.voters ? `<span>👥 ఓటర్లు: <strong>${item.voters}</strong></span>` : ''}
-          ${item.code ? `<span>📍 కోడ్: <strong>${item.code}</strong></span>` : ''}
+        <div style="font-size: 11.5px; color: #1e293b; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 7px 9px; margin-bottom: 8px; line-height: 1.5;">
+          <div>👮 <strong>ఇన్‌ఛార్జ్:</strong> ${duty.officer || 'Duty Incharge'}</div>
+          ${duty.vehicle ? `<div>🚓 <strong>వాహనం / రకం:</strong> ${duty.vehicle}</div>` : ''}
+          ${duty.phone ? `<div>📞 <strong>ఫోన్:</strong> ${duty.phone}</div>` : ''}
+          ${isLive && liveData && liveData.lastUpdated ? `<div style="color:#059669; font-weight:600;">⏱️ <strong>చివరి అప్‌డేట్:</strong> ${timeAgo(liveData.lastUpdated)}</div>` : ''}
         </div>
 
-        <div style="font-size: 11px; color: #334155; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 8px; margin-bottom: 6px; line-height: 1.45;">
-          <div>🚓 <strong>రూట్ / పోలీస్ స్టేషన్:</strong> ${item.routeNo ? `రూట్-${item.routeNo}` : ''} (${item.ps || item.mandal} PS)</div>
-          ${item.distFromPs ? `<div>📏 <strong>PS నుండి దూరం:</strong> ${item.distFromPs}</div>` : ''}
-          ${item.incharge ? `<div style="margin-top:3px;">👮 <strong>రూట్ ఇన్‌ఛార్జ్:</strong> ${item.incharge.replace(/\n/g, ' ')}</div>` : ''}
-          ${item.support ? `<div>🤝 <strong>సహాయ సిబ్బంది:</strong> ${item.support.replace(/\n/g, ' ')}</div>` : ''}
+        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+          ${callBtn}
+          ${waBtn}
+          <button onclick="map.flyTo([${duty.lat}, ${duty.lng}], 17)" style="padding:6px 10px; background:#475569; color:white; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;" title="జూమ్ చేయండి"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
         </div>
 
-        ${(item.stf || item.sstf || item.qrt) ? `
-          <div style="font-size: 10.5px; color: #475569; background: #f1f5f9; border-radius: 6px; padding: 5px 8px; margin-bottom: 6px; line-height: 1.4;">
-            ${item.stf ? `<div>🛡️ <strong>స్ట్రైకింగ్ ఫోర్స్:</strong> ${item.stf.replace(/\n/g, ' ')}</div>` : ''}
-            ${item.sstf ? `<div>⚡ <strong>స్పెషల్ ఫోర్స్:</strong> ${item.sstf.replace(/\n/g, ' ')}</div>` : ''}
-            ${item.qrt ? `<div>🚨 <strong>QRT:</strong> ${item.qrt.replace(/\n/g, ' ')}</div>` : ''}
-          </div>
-        ` : ''}
-
-        ${item.blo ? `
-          <div style="font-size: 10.5px; color: #065f46; margin-bottom: 6px;">
-            👤 <strong>BLO:</strong> ${item.blo.replace(/\n/g, ' ')}
-          </div>
-        ` : ''}
-
-        <div style="display: flex; gap: 6px; margin-top: 8px;">
-          ${inchargePhone ? `<a href="tel:${inchargePhone}" style="flex:1; text-align:center; padding:5px 8px; background:#2563eb; color:white; border-radius:4px; text-decoration:none; font-size:11px; font-weight:600;"><i class="fa-solid fa-phone"></i> కాల్</a>` : ''}
-          ${inchargePhone ? `<a href="https://wa.me/91${inchargePhone}" target="_blank" style="flex:1; text-align:center; padding:5px 8px; background:#16a34a; color:white; border-radius:4px; text-decoration:none; font-size:11px; font-weight:600;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>` : ''}
-          <button onclick="map.flyTo([${item.lat}, ${item.lng}], 18)" style="padding:5px 8px; background:#475569; color:white; border:none; border-radius:4px; font-size:11px; cursor:pointer;" title="జూమ్ చేయండి"><i class="fa-solid fa-magnifying-glass-plus"></i> జూమ్</button>
-        </div>
+        <a href="${trackingUrl}" target="_blank" style="display:block; text-align:center; padding:6px; background:#0f172a; color:#38bdf8; border-radius:6px; text-decoration:none; font-size:10.5px; font-weight:700; border:1px solid #334155;">
+          ⚡ ఆఫీసర్ ట్రాకింగ్ లింక్ ఓపెన్ చేయండి
+        </a>
       </div>
     `;
   }
 
-  function createPslMarker(item) {
-    let pinColor = '#0fb881';
-    let letter = 'N';
-    let glowClass = '';
+  function createDutyMarkerIcon(duty, isLive = false, speedKmh = 0) {
+    const isMoving = duty.categoryKey === 'MP' || duty.category === 'Moving Parties';
+    const color = isMoving ? '#0284c7' : '#d97706';
+    const iconClass = isMoving ? 'fa-car-side' : 'fa-map-pin';
+    const catShort = duty.categoryKey || (isMoving ? 'MP' : 'SP');
+    const badgeText = `${catShort}: ${duty.route || duty.unitName}`;
+    const psText = duty.ps || duty.mandal || '';
+    const officerName = duty.officer ? duty.officer.split(',')[0].trim() : 'Duty Incharge';
 
-    if (item.sensitivity === 'HYPER SENSITIVE' || item.sensitivity === 'CRITICAL') {
-      pinColor = '#e71f44';
-      letter = 'H';
-      glowClass = 'psl-sens-hyper';
-    } else if (item.sensitivity === 'SENSITIVE') {
-      pinColor = '#f59e0b';
-      letter = 'S';
-    }
-
-    const icon = L.divIcon({
-      className: `custom-psl-marker ${glowClass}`,
+    return L.divIcon({
+      className: 'custom-police-marker',
       html: `
-        <svg viewBox="0 0 30 40" width="26" height="36" class="psl-teardrop-pin" style="display:block;">
-          <path d="M 15,1.5 A 13.5,13.5 0 0,1 27.5,21 L 15.6,38.8 C 15.3,39.2 14.7,39.2 14.4,38.8 L 2.5,21 A 13.5,13.5 0 0,1 15,1.5 Z" 
-                fill="${pinColor}" 
-                stroke="#ffffff" 
-                stroke-width="2.2" 
-                stroke-linejoin="round"/>
-          <circle cx="15" cy="14.5" r="7.8" fill="#ffffff"/>
-          <text x="15" y="14.8" text-anchor="middle" dominant-baseline="central" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-weight="900" font-size="11.5" fill="${pinColor}">${letter}</text>
-        </svg>
-      `,
-      iconSize: [26, 36],
-      iconAnchor: [13, 36],
-      popupAnchor: [0, -36]
-    });
-
-    const marker = L.marker([item.lat, item.lng], { icon: icon });
-    marker.bindPopup(buildPslPopupHtml(item));
-    marker.bindTooltip(`<b>${item.pslName}</b><br/><span style="color:#fde047;">${item.mptc} MPTC</span> (${item.sensitivity})`, {
-      direction: 'top',
-      offset: [0, -36],
-      className: 'psl-tooltip'
-    });
-
-    return marker;
-  }
-
-  function applyPslFilters() {
-    pslLayerGroup.clearLayers();
-    if (!isPslLayerActive) return;
-
-    const data = window.MPTC_ZPTC_DATA || allPslData || [];
-    let count = 0;
-    let bounds = [];
-
-    data.forEach(item => {
-      // Mandal filter
-      if (currentMapMandalFilter !== 'ALL') {
-        if (!item.mandal || item.mandal.trim().toLowerCase() !== currentMapMandalFilter.toLowerCase()) {
-          return;
-        }
-      }
-
-      // Sensitivity filter
-      if (currentPslSensitivityFilter !== 'ALL') {
-        if (item.sensitivity !== currentPslSensitivityFilter) {
-          return;
-        }
-      }
-
-      const m = createPslMarker(item);
-      pslLayerGroup.addLayer(m);
-      bounds.push([item.lat, item.lng]);
-      count++;
-    });
-
-    const elPslKpi = document.getElementById('kpi-psl');
-    if (elPslKpi) elPslKpi.innerText = count.toLocaleString();
-  }
-
-  window.togglePslLayer = function() {
-    isPslLayerActive = !isPslLayerActive;
-    const btn = document.getElementById('btn-toggle-psl');
-    const subbar = document.getElementById('psl-filter-subbar');
-    if (isPslLayerActive) {
-      if (btn) btn.classList.add('active');
-      if (subbar) subbar.style.display = 'flex';
-      if (!map.hasLayer(pslLayerGroup)) map.addLayer(pslLayerGroup);
-      applyPslFilters();
-      showToast('🗳️ పోలింగ్ కేంద్రాలు (1,196) మ్యాప్‌పై ఆన్ చేయబడ్డాయి');
-    } else {
-      if (btn) btn.classList.remove('active');
-      if (subbar) subbar.style.display = 'none';
-      if (map.hasLayer(pslLayerGroup)) map.removeLayer(pslLayerGroup);
-      showToast('🗳️ పోలింగ్ కేంద్రాలు ఆఫ్ చేయబడ్డాయి');
-    }
-  };
-
-  window.filterPslSensitivity = function(sens) {
-    currentPslSensitivityFilter = sens;
-    document.querySelectorAll('.psl-sens-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-sens') === sens);
-    });
-    applyPslFilters();
-  };
-
-  // -------------------------------------------------------------
-  // Precomputed Road Routes & Mandal Boundaries Rendering Logic
-  // -------------------------------------------------------------
-  const ROMAN_NUM_MAP = {
-    '1':'I','2':'II','3':'III','4':'IV','5':'V','6':'VI','7':'VII','8':'VIII','9':'IX','10':'X',
-    '11':'XI','12':'XII','13':'XIII','14':'XIV','15':'XV','16':'XVI','17':'XVII','18':'XVIII','19':'XIX','20':'XX'
-  };
-
-  function findRouteGeometry(ps, mandal, routeNo) {
-    if (!window.PRECOMPUTED_ROUTES) return null;
-    const p = (ps || '').trim();
-    const m = (mandal || '').trim();
-    const r = (routeNo || '').toString().trim();
-    const rRoman = ROMAN_NUM_MAP[r] || r;
-    const altP = p.replace(/\s+PS$/i, '').trim();
-    const altM = m.replace(/\s+Mandal$/i, '').trim();
-
-    const candidates = [
-      `${p}_${r}`,
-      `${p}_${rRoman}`,
-      `${altP}_${r}`,
-      `${altP}_${rRoman}`,
-      `${m}_${r}`,
-      `${m}_${rRoman}`,
-      `${altM}_${r}`,
-      `${altM}_${rRoman}`
-    ];
-
-    for (const cand of candidates) {
-      if (cand && window.PRECOMPUTED_ROUTES[cand] && window.PRECOMPUTED_ROUTES[cand].coordinates) {
-        return window.PRECOMPUTED_ROUTES[cand];
-      }
-    }
-    return null;
-  }
-
-  function getCurvedSplineCoords(points, numInterpolations = 12) {
-    if (!points || points.length < 2) return points || [];
-    if (points.length === 2) {
-      const p1 = points[0], p2 = points[1];
-      const midLat = (p1[0] + p2[0]) / 2, midLng = (p1[1] + p2[1]) / 2;
-      const dLat = p2[0] - p1[0], dLng = p2[1] - p1[1];
-      const ctrlLat = midLat - dLng * 0.08, ctrlLng = midLng + dLat * 0.08;
-      const curved = [];
-      for (let i = 0; i <= numInterpolations; i++) {
-        const t = i / numInterpolations;
-        const lat = (1 - t) * (1 - t) * p1[0] + 2 * (1 - t) * t * ctrlLat + t * t * p2[0];
-        const lng = (1 - t) * (1 - t) * p1[1] + 2 * (1 - t) * t * ctrlLng + t * t * p2[1];
-        curved.push([lat, lng]);
-      }
-      return curved;
-    }
-
-    const curved = [];
-    const pts = [points[0], ...points, points[points.length - 1]];
-    for (let i = 0; i < pts.length - 3; i++) {
-      const p0 = pts[i], p1 = pts[i + 1], p2 = pts[i + 2], p3 = pts[i + 3];
-      for (let j = 0; j < numInterpolations; j++) {
-        const t = j / numInterpolations, t2 = t * t, t3 = t2 * t;
-        const lat = 0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3);
-        const lng = 0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3);
-        curved.push([lat, lng]);
-      }
-    }
-    curved.push(points[points.length - 1]);
-    return curved;
-  }
-
-  function applyRoadRoutes() {
-    routesLayerGroup.clearLayers();
-    if (!isRoutesLayerActive) return;
-
-    const data = window.MPTC_ZPTC_DATA || allPslData || [];
-    if (!data || data.length === 0) return;
-
-    const routeGroups = {};
-    data.forEach(item => {
-      if (!item.routeNo) return;
-      if (currentMapMandalFilter !== 'ALL') {
-        if (!item.mandal || item.mandal.trim().toLowerCase() !== currentMapMandalFilter.toLowerCase()) {
-          return;
-        }
-      }
-      const key = `${item.ps || item.mandal}_${item.routeNo}`;
-      if (!routeGroups[key]) {
-        routeGroups[key] = {
-          ps: item.ps || item.mandal,
-          mandal: item.mandal,
-          routeNo: item.routeNo,
-          incharge: item.incharge || '',
-          support: item.support || '',
-          stations: []
-        };
-      }
-      routeGroups[key].stations.push(item);
-    });
-
-    Object.keys(routeGroups).forEach(k => {
-      const rg = routeGroups[k];
-      const pre = findRouteGeometry(rg.ps, rg.mandal, rg.routeNo);
-      let coords = null;
-      let distKm = pre ? pre.distKm : null;
-
-      if (pre && pre.coordinates && pre.coordinates.length > 1) {
-        coords = pre.coordinates;
-      } else {
-        const pts = rg.stations.map(s => [s.lat, s.lng]);
-        if (pts.length >= 2) {
-          coords = getCurvedSplineCoords(pts);
-        }
-      }
-
-      if (!coords || coords.length < 2) return;
-
-      const outline = L.polyline(coords, {
-        color: '#ffffff',
-        weight: 6,
-        opacity: 0.95,
-        interactive: false,
-        className: 'route-outline'
-      });
-
-      const polyline = L.polyline(coords, {
-        color: '#dc2626',
-        weight: 4.2,
-        opacity: 0.92,
-        className: 'route-polyline'
-      });
-
-      const popupHtml = `
-        <div style="font-family: sans-serif; min-width: 250px; max-width: 310px; color: #1e293b;">
-          <div style="background: #dc2626; color: #ffffff; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
-            <span>🚓 రూట్-${rg.routeNo} (${rg.ps} PS)</span>
-            <span style="background: rgba(255,255,255,0.25); font-size: 10px; padding: 2px 6px; border-radius: 4px;">${rg.mandal}</span>
-          </div>
-          <div style="font-size: 11.5px; padding: 8px 2px; line-height: 1.5;">
-            ${distKm ? `<div>📏 <strong>రహదారి దూరం:</strong> ~${distKm} KM</div>` : ''}
-            ${rg.incharge ? `<div>👮 <strong>ఇన్‌ఛార్జ్:</strong> ${rg.incharge.replace(/\n/g, ' ')}</div>` : ''}
-            ${rg.support ? `<div>🤝 <strong>సహాయ సిబ్బంది:</strong> ${rg.support.replace(/\n/g, ' ')}</div>` : ''}
-            <div style="margin-top: 6px; border-top: 1px solid #e2e8f0; padding-top: 5px;">
-              <strong>🏫 పోలింగ్ కేంద్రాలు (${rg.stations.length}):</strong>
-              <div style="max-height: 130px; overflow-y: auto; margin-top: 4px; font-size: 11px; color: #475569;">
-                ${rg.stations.map((s, idx) => `<div>${idx + 1}. <b>${s.pslName}</b> (${s.mptc})</div>`).join('')}
-              </div>
+        <div class="police-marker-container">
+          <div class="police-marker-label" style="border-color: ${color};">
+            <div class="marker-title-row">
+              <span style="color:${isLive ? '#10b981' : '#94a3b8'};">● </span>
+              <span>${badgeText}</span>
+              ${isLive && speedKmh > 0 ? `<span class="speed-pill">${speedKmh} km/h</span>` : ''}
+            </div>
+            <div class="officer-incharge-badge">
+              <i class="fa-solid fa-user-shield" style="font-size:9px;"></i>
+              <span>${officerName} (${psText})</span>
             </div>
           </div>
+          ${isLive ? '<div class="police-marker-pulse"></div>' : ''}
+          <div class="police-marker-pin" style="background: ${color};">
+            <i class="fa-solid ${iconClass}"></i>
+          </div>
         </div>
-      `;
+      `,
+      iconSize: [36, 36],
+      iconAnchor: [18, 18],
+      popupAnchor: [0, -20]
+    });
+  }
 
-      polyline.bindPopup(popupHtml);
-      polyline.bindTooltip(`<b>🚓 రూట్-${rg.routeNo} (${rg.ps} PS)</b><br/><span style="color:#fde047;">${rg.mandal} మండలం</span> | ${rg.stations.length} పోలింగ్ కేంద్రాలు`, {
-        sticky: true,
+  function initializeAllDutyMarkers() {
+    dutiesLayerGroup.clearLayers();
+    const allBounds = [];
+
+    allUnitsData.forEach(duty => {
+      if (!duty.lat || !duty.lng) return;
+      const isLive = !!activeMobiles[duty.id];
+      const marker = L.marker([duty.lat, duty.lng], {
+        icon: createDutyMarkerIcon(duty, isLive)
+      });
+
+      marker.bindPopup(() => buildDutyPopupHtml(duty, !!activeMobiles[duty.id], activeMobiles[duty.id]));
+      marker.bindTooltip(`<b>${duty.unitName}</b><br/>🏛️ ${duty.ps} PS<br/>👮 ${duty.officer || 'Incharge'}`, {
+        direction: 'top',
+        offset: [0, -22],
         className: 'psl-tooltip'
       });
 
-      routesLayerGroup.addLayer(outline);
-      routesLayerGroup.addLayer(polyline);
+      marker.on('click', () => {
+        currentlyFollowedOfficerKey = duty.id;
+        map.flyTo([duty.lat, duty.lng], 16, { animate: true, duration: 1.0 });
+      });
+
+      staticDutyMarkers[duty.id] = marker;
+      allBounds.push([duty.lat, duty.lng]);
     });
+
+    applyDutyFilters();
+
+    if (allBounds.length > 0) {
+      map.fitBounds(allBounds, { padding: [40, 40], maxZoom: 13 });
+    }
   }
+
+  function applyDutyFilters() {
+    dutiesLayerGroup.clearLayers();
+    const filteredBounds = [];
+
+    allUnitsData.forEach(duty => {
+      if (activeMobiles[duty.id]) {
+        return;
+      }
+
+      const dutyCat = duty.categoryKey || (duty.category === 'Moving Parties' ? 'MP' : 'SP');
+      const catMatch = (currentMapCategoryFilter === 'ALL' || dutyCat === currentMapCategoryFilter);
+      const stationName = (duty.ps || duty.mandal || '').trim().toLowerCase();
+      const psMatch = (currentMapMandalFilter === 'ALL' || stationName === currentMapMandalFilter.toLowerCase());
+
+      if (catMatch && psMatch) {
+        const m = staticDutyMarkers[duty.id];
+        if (m) {
+          dutiesLayerGroup.addLayer(m);
+          filteredBounds.push([duty.lat, duty.lng]);
+        }
+      }
+    });
+
+    if (currentMapMandalFilter !== 'ALL' && filteredBounds.length > 0) {
+      map.fitBounds(filteredBounds, { padding: [50, 50], maxZoom: 14 });
+    }
+  }
+
+
+
+
+
+
 
   function drawMandalBorders() {
     mandalBordersLayerGroup.clearLayers();
@@ -1608,20 +1458,7 @@ https://...
     }
   }
 
-  window.toggleRoadRoutesLayer = function() {
-    isRoutesLayerActive = !isRoutesLayerActive;
-    const btn = document.getElementById('btn-toggle-routes');
-    if (isRoutesLayerActive) {
-      if (btn) btn.classList.add('active');
-      if (!map.hasLayer(routesLayerGroup)) map.addLayer(routesLayerGroup);
-      applyRoadRoutes();
-      showToast('🛣️ పోలీస్ పెట్రోలింగ్ రోడ్ రూట్లు మ్యాప్‌పై ఆన్ చేయబడ్డాయి');
-    } else {
-      if (btn) btn.classList.remove('active');
-      if (map.hasLayer(routesLayerGroup)) map.removeLayer(routesLayerGroup);
-      showToast('🛣️ రోడ్ రూట్లు ఆఫ్ చేయబడ్డాయి');
-    }
-  };
+
 
   window.toggleMandalBordersLayer = function() {
     isBordersLayerActive = !isBordersLayerActive;
@@ -1996,6 +1833,10 @@ https://...
       const mandalMatch = (currentMapMandalFilter === 'ALL' || (mandal && mandal.trim().toLowerCase() === currentMapMandalFilter.toLowerCase()));
       const matchesFilter = catMatch && mandalMatch;
 
+      if (staticDutyMarkers[key] && dutiesLayerGroup.hasLayer(staticDutyMarkers[key])) {
+        dutiesLayerGroup.removeLayer(staticDutyMarkers[key]);
+      }
+
       if (matchesFilter) {
         marker.addTo(map);
       }
@@ -2139,6 +1980,7 @@ https://...
       }
     }
 
+    applyDutyFilters();
     updateKPIs();
     populateMapTeamDropdown();
     saveOfficersToStorage();
@@ -2192,6 +2034,7 @@ https://...
   let currentlyFollowedOfficerKey = null;
 
   function applyMapFilters() {
+    applyDutyFilters();
     let bounds = [];
     for (const k in activeMobiles) {
       const m = activeMobiles[k];
@@ -2349,80 +2192,28 @@ https://...
 
     if (currentVal) sel.value = currentVal;
   }
-    });
-    sel.appendChild(grpOther);
 
-    // 3. Polling Stations (PSLs) matching Mandal
-    const pslData = window.MPTC_ZPTC_DATA || allPslData || [];
-    const matchedPsls = pslData.filter(p => {
-      return currentMapMandalFilter === 'ALL' || (p.mandal && p.mandal.trim().toLowerCase() === currentMapMandalFilter.toLowerCase());
-    });
-
-    if (matchedPsls.length > 0) {
-      const grpPsl = document.createElement('optgroup');
-      grpPsl.label = `🗳️ పోలింగ్ కేంద్రాలు (${matchedPsls.length} PSLs)`;
-      const limit = Math.min(120, matchedPsls.length);
-      for (let i = 0; i < limit; i++) {
-        const p = matchedPsls[i];
-        const opt = document.createElement('option');
-        opt.value = p.id;
-        opt.innerText = `🏫 [${p.mptc}] ${p.pslName} (${p.sensitivity})`;
-        grpPsl.appendChild(opt);
-      }
-      if (matchedPsls.length > 120) {
-        const moreOpt = document.createElement('option');
-        moreOpt.disabled = true;
-        moreOpt.innerText = `... ఇంకా ${matchedPsls.length - 120} కేంద్రాలు ఉన్నాయి (మండలం ఎంచుకోండి)`;
-        grpPsl.appendChild(moreOpt);
-      }
-      sel.appendChild(grpPsl);
-    }
-
-    if (currentVal && (filteredUnits.some(u => (u.id === currentVal || u.unitId === currentVal)) || matchedPsls.some(p => p.id === currentVal))) {
-      sel.value = currentVal;
-    }
-  }
-
-  // Handle Team Selection: Zooms directly to officer or PSL on map
+  // Handle Team Selection: Zooms directly to officer or static duty on map
   window.handleMapTeamChange = function(unitId) {
     if (!unitId) return;
-
-    // Check if it's a Polling Station ID (PSL_...)
-    if (unitId.startsWith('PSL_')) {
-      const pslData = window.MPTC_ZPTC_DATA || allPslData || [];
-      const item = pslData.find(p => p.id === unitId);
-      if (item) {
-        if (!isPslLayerActive) {
-          window.togglePslLayer();
-        }
-        map.flyTo([item.lat, item.lng], 18, { animate: true, duration: 1.0 });
-        pslLayerGroup.eachLayer(layer => {
-          if (layer.getLatLng && Math.abs(layer.getLatLng().lat - item.lat) < 0.0001 && Math.abs(layer.getLatLng().lng - item.lng) < 0.0001) {
-            setTimeout(() => layer.openPopup(), 400);
-          }
-        });
-        showToast(`🏫 [${item.mptc}] ${item.pslName} పోలింగ్ కేంద్రానికి జూమ్ చేయబడింది`);
-      }
-      return;
-    }
 
     const m = activeMobiles[unitId];
     if (m && m.marker) {
       currentlyFollowedOfficerKey = unitId;
-      map.flyTo([m.lat, m.lng], 18, { animate: true, duration: 1.0 });
+      map.flyTo([m.lat, m.lng], 17, { animate: true, duration: 1.0 });
       m.marker.openPopup();
       showToast(`[${m.categoryKey}] ${m.unitName} (${m.mandal}) లైవ్ ఆటో-ఫాలో మోడ్ ఆన్ చేయబడింది`);
-    } else {
+      return;
+    }
+
+    const u = allUnitsData.find(item => (item.id === unitId || item.unitId === unitId));
+    if (u) {
       currentlyFollowedOfficerKey = null;
-      const u = allUnitsData.find(item => (item.id === unitId || item.unitId === unitId));
-      if (u) {
-        const ph = cleanPhoneNumber(u.phone);
-        const contactAction = ph ? `\nఫోన్: ${ph}\nలొకేషన్ షేర్ చేయాలని వాట్సాప్ సందేశం పంపాలా?` : '';
-        if (confirm(`⚠️ ${u.unitName} (${u.mandal} - ${u.officer || 'Officer'}) ఇంకా లైవ్ లొకేషన్ ప్రారంభించలేదు.${contactAction}`)) {
-          if (ph) {
-            shareOfficerLinkToWhatsApp(u);
-          }
-        }
+      const staticM = staticDutyMarkers[u.id];
+      if (staticM) {
+        map.flyTo([u.lat, u.lng], 16, { animate: true, duration: 1.0 });
+        staticM.openPopup();
+        showToast(`[${u.categoryKey}] ${u.unitName} (${u.ps} PS) కి జూమ్ చేయబడింది`);
       }
     }
   };
@@ -2468,6 +2259,7 @@ https://...
       }
     }
 
+    applyDutyFilters();
     updateKPIs();
     populateMapTeamDropdown();
     renderDirectory();
@@ -2523,6 +2315,7 @@ https://...
       }
     }
 
+    applyDutyFilters();
     updateKPIs();
     populateMapTeamDropdown();
     renderDirectory();
@@ -2652,15 +2445,19 @@ https://...
     }
   }
 
-  // Fit all active markers
+  // Fit all active markers and duty points
   document.getElementById('fab-fit-all').addEventListener('click', () => {
-    const keys = Object.keys(activeMobiles);
-    if (keys.length === 0) {
-      showToast('ప్రస్తుతం మ్యాప్‌లో లైవ్ సభ్యులు ఎవరూ లేరు');
-      return;
+    const allBounds = [];
+    for (const k in activeMobiles) {
+      allBounds.push([activeMobiles[k].lat, activeMobiles[k].lng]);
     }
-    const bounds = L.latLngBounds(keys.map(k => [activeMobiles[k].lat, activeMobiles[k].lng]));
-    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+    allUnitsData.forEach(d => {
+      if (d.lat && d.lng) allBounds.push([d.lat, d.lng]);
+    });
+    if (allBounds.length > 0) {
+      map.fitBounds(allBounds, { padding: [40, 40], maxZoom: 13 });
+      showToast('అన్ని డ్యూటీ పాయింట్లు మ్యాప్‌పై అమర్చబడ్డాయి');
+    }
   });
 
   // -------------------------------------------------------------
@@ -2693,6 +2490,10 @@ https://...
     populateMapMandalDropdown();
     populateMapTeamDropdown();
     updateKPIs();
+    initializeAllDutyMarkers();
+    drawMandalBorders();
+    setTimeout(() => { map.invalidateSize(); }, 200);
+    setTimeout(() => { map.invalidateSize(); }, 800);
   }
 
   function renderDirectory() {
@@ -2816,7 +2617,7 @@ https://...
   const officerAppUrl = (window.location.origin + window.location.pathname).replace(/\/[^\/]*$/, '/officer.html') + `?room=${encodeURIComponent(roomCode)}`;
 
   function getBroadcastMessage() {
-    return `శ్రీకాకుళం జిల్లా పోలీస్ కంట్రోల్ రూమ్ - ఎన్నికల బందోబస్తు లైవ్ ట్రాకర్\n\nరూట్ మొబైల్స్ (Routes), స్ట్రైకింగ్ ఫోర్స్ (SF), స్పెషల్ స్ట్రైకింగ్ ఫోర్స్ (SSF), QRTs, మరియు రిజర్వ్ పార్టీల సిబ్బంది అందరికీ ముఖ్య గమనిక:\nదయచేసి వెంటనే క్రింది లింక్ ఓపెన్ చేసి, మీ విభాగం & టీమ్ ఎంచుకుని "లైవ్ లొకేషన్ ప్రారంభించండి" బటన్ నొక్కండి:\n\n${officerAppUrl}\n\n(గమనిక: బ్రౌజర్‌లో GPS Allow చేయండి. హోమ్ బటన్ నొక్కి మినిమైజ్ చేసినా బ్యాక్‌గ్రౌండ్‌లో మీ లొకేషన్ కంట్రోల్ రూమ్‌కు నిరంతరం వెళ్తుంది.)`;
+    return `శ్రీకాకుళం జిల్లా పోలీస్ కంట్రోల్ రూమ్ - మూవింగ్ & స్టాటిక్ పార్టీల లైవ్ ట్రాకింగ్\n\nమూవింగ్ పార్టీలు (Moving Parties) & స్టాటిక్ పాయింట్లు (Static Points) డ్యూటీ ఇన్‌ఛార్జ్ సిబ్బంది అందరికీ ముఖ్య గమనిక:\nదయచేసి వెంటనే క్రింది లింక్ ఓపెన్ చేసి, మీ పోలీస్ స్టేషన్ & డ్యూటీ ఎంచుకుని "లైవ్ లొకేషన్ ప్రారంభించండి" బటన్ నొక్కండి:\n\n${officerAppUrl}\n\n(గమనిక: బ్రౌజర్‌లో GPS Allow చేయండి. హోమ్ బటన్ నొక్కి మినిమైజ్ చేసినా బ్యాక్‌గ్రౌండ్‌లో మీ లొకేషన్ కంట్రోల్ రూమ్‌కు నిరంతరం వెళ్తుంది.)`;
   }
 
   document.getElementById('broadcast-message-preview').innerText = getBroadcastMessage();
@@ -2859,6 +2660,10 @@ https://...
       toast.classList.remove('show');
     }, 2800);
   }
+
+  window.addEventListener('resize', () => {
+    if (map) map.invalidateSize();
+  });
 
   if (allUnitsData && allUnitsData.length > 0) {
     initControlRoomUI();
