@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="te">
 <head>
   <meta charset="UTF-8">
@@ -170,47 +170,95 @@
       background: #0f172a;
     }
 
-    /* Floating KPI Stats Bar (Top Left) */
-    .kpi-bar {
+        /* Unified Sleek Glassmorphic Police Control Toolbar */
+    .unified-police-toolbar {
       position: absolute;
       top: 58px;
       left: 12px;
+      right: 12px;
       z-index: 999;
       display: flex;
-      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       pointer-events: none;
-      flex-wrap: wrap;
     }
 
-    .kpi-pill {
+    .toolbar-segment {
       pointer-events: auto;
-      background: rgba(14, 23, 38, 0.94);
-      backdrop-filter: blur(8px);
-      padding: 5px 11px;
-      border-radius: 20px;
       display: flex;
       align-items: center;
-      gap: 7px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.1);
-      font-size: 11px;
-      font-weight: 600;
+      gap: 6px;
+      background: rgba(11, 20, 36, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 5px 8px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
 
-    .kpi-pill .dot {
+    .toolbar-segment::-webkit-scrollbar {
+      display: none;
+    }
+
+    .toolbar-pills {
+      flex-shrink: 0;
+    }
+
+    .pill-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #cbd5e1;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .pill-btn:hover {
+      background: rgba(30, 58, 138, 0.7);
+      color: white;
+      border-color: #38bdf8;
+    }
+
+    .pill-btn.active {
+      background: #1e3a8a;
+      color: #38bdf8;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    .pill-live {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+
+    .pill-live.active {
+      background: #10b981 !important;
+      color: #0b141a !important;
+      border-color: #10b981 !important;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6) !important;
+    }
+
+    .pill-live .dot-live {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-    }
-
-    .kpi-pill .dot-live {
-      background: var(--success);
-      box-shadow: 0 0 8px var(--success);
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
       animation: pulse-dot 1.5s infinite;
-    }
-
-    .kpi-pill .dot-offline {
-      background: var(--text-muted);
     }
 
     @keyframes pulse-dot {
@@ -219,116 +267,77 @@
       100% { transform: scale(0.9); opacity: 0.7; }
     }
 
-    /* Category Filter Pills Bar on Map */
-    .category-filter-bar {
-      position: absolute;
-      top: 96px;
-      left: 12px;
-      z-index: 999;
+    .toolbar-dropdowns {
       display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      white-space: nowrap;
-      max-width: calc(100vw - 24px);
-      padding: 2px 2px 6px 2px;
-      pointer-events: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-
-    .category-filter-bar::-webkit-scrollbar {
-      display: none;
-    }
-
-    .cat-btn {
-      background: rgba(14, 23, 38, 0.92);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.18);
-      color: #cbd5e1;
-      padding: 5px 12px;
-      border-radius: 18px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      display: inline-flex;
       align-items: center;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-
-    .cat-btn:hover {
-      background: rgba(30, 58, 138, 0.85);
-      color: white;
-      border-color: #38bdf8;
-    }
-
-    .cat-btn.active {
-      background: #1e3a8a;
-      color: #38bdf8;
-      border-color: #38bdf8;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
-    }
-
-    /* Floating Map Filter Dropdowns on Map */
-    .map-dropdown-container {
-      position: absolute;
-      top: 136px;
-      left: 12px;
-      z-index: 999;
-      display: flex;
       gap: 8px;
-      flex-wrap: wrap;
-      pointer-events: auto;
-      max-width: calc(100vw - 24px);
+      flex-shrink: 1;
     }
 
-    .map-dropdown-box {
+    .toolbar-select-box {
       display: flex;
       align-items: center;
-      background: rgba(11, 20, 26, 0.94);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 12px;
-      padding: 2px 10px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-      transition: all 0.2s;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 2px 8px;
+      transition: all 0.2s ease;
     }
 
-    .map-dropdown-box:focus-within {
+    .toolbar-select-box:focus-within {
       border-color: #38bdf8;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
     }
 
-    .map-dropdown-box .dropdown-icon {
+    .toolbar-select-box i {
       color: #38bdf8;
-      font-size: 13px;
+      font-size: 12px;
       margin-right: 6px;
     }
 
-    .map-select {
+    .toolbar-select-box select {
       background: transparent;
       border: none;
       color: #ffffff;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
-      padding: 7px 4px;
+      padding: 6px 4px;
       outline: none;
       cursor: pointer;
-      max-width: 220px;
+      max-width: 190px;
     }
 
-    .map-select.select-team {
-      max-width: 290px;
+    .toolbar-select-box select.select-team {
+      max-width: 250px;
       color: #7dd3fc;
     }
 
-    .map-select option {
+    .toolbar-select-box select option {
       background: #0f172a;
       color: #ffffff;
-      font-size: 13px;
-      padding: 8px;
+      font-size: 12.5px;
+      padding: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .unified-police-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        top: 54px;
+        left: 8px;
+        right: 8px;
+      }
+      .toolbar-segment {
+        width: 100%;
+        max-width: 100%;
+      }
+      .toolbar-select-box select {
+        max-width: 130px;
+      }
+      .toolbar-select-box select.select-team {
+        max-width: 170px;
+      }
     }
 
     @media (max-width: 600px) {
@@ -880,54 +889,47 @@
   <!-- Live Map Viewport - 100% Unobstructed Clean View -->
   <div id="map"></div>
 
-  <!-- Top Floating KPI Stats Bar -->
-  <div class="kpi-bar">
-    <div class="kpi-pill">
-      <span class="dot dot-live"></span>
-      <span>లైవ్ (Live): <strong id="kpi-live" style="color: #34d399;">0</strong></span>
-    </div>
-    <div class="kpi-pill">
-      <span class="dot dot-offline"></span>
-      <span>ఆఫ్‌లైన్ (Offline): <strong id="kpi-offline" style="color: #94a3b8;">127</strong></span>
-    </div>
-    <div class="kpi-pill">
-      <i class="fa-solid fa-shield-halved" style="color: var(--police-gold); font-size: 11px;"></i>
-      <span>మొత్తం డ్యూటీలు: <strong id="kpi-total">127</strong></span>
-    </div>
-    <div class="kpi-pill" style="cursor: pointer;" onclick="filterMapCategory('MP')" title="మూవింగ్ పార్టీలు మాత్రమే ఫిల్టర్ చేయండి">
-      <i class="fa-solid fa-car-side" style="color: #38bdf8; font-size: 11px;"></i>
-      <span>మూవింగ్ పార్టీలు: <strong id="kpi-mp" style="color: #38bdf8;">87</strong></span>
-    </div>
-    <div class="kpi-pill" style="cursor: pointer;" onclick="filterMapCategory('SP')" title="స్టాటిక్ పాయింట్లు మాత్రమే ఫిల్టర్ చేయండి">
-      <i class="fa-solid fa-map-pin" style="color: #f59e0b; font-size: 11px;"></i>
-      <span>స్టాటిక్ పాయింట్లు: <strong id="kpi-sp" style="color: #f59e0b;">40</strong></span>
-    </div>
-  </div>
+  <!-- Unified Clean Police Control Toolbar (Single Sleek Bar) -->
+  <div class="unified-police-toolbar">
+    <!-- Live & Category Filter Pills Segment -->
+    <div class="toolbar-segment toolbar-pills">
+      <button class="pill-btn pill-live" id="pill-live-filter" onclick="filterMapLiveOnly()" title="à°²à±ˆà°µà± à°²à±‹ à°‰à°¨à±à°¨ à°µà°¾à°°à°¿à°¨à°¿ à°®à°¾à°¤à±à°°à°®à±‡ à°šà±‚à°¡à°‚à°¡à°¿">
+        <span class="dot-live"></span>
+        <span>à°²à±ˆà°µà±: <strong id="kpi-live">0</strong></span>
+      </button>
 
-  <!-- Category Filter Pills Bar on Map -->
-  <div class="category-filter-bar">
-    <button class="cat-btn active" data-cat="ALL" onclick="filterMapCategory('ALL')">🛡️ అన్నీ (<span id="cat-cnt-all">127</span>)</button>
-    <button class="cat-btn" data-cat="MP" onclick="filterMapCategory('MP')">🚔 Moving Parties (<span id="cat-cnt-mp">87</span>)</button>
-    <button class="cat-btn" data-cat="SP" onclick="filterMapCategory('SP')">📍 Static Points (<span id="cat-cnt-sp">40</span>)</button>
-    <button class="cat-btn active" id="btn-toggle-borders" onclick="toggleMandalBordersLayer()" style="border-color: #3b82f6; background: rgba(37, 99, 235, 0.45);" title="మండల సరిహద్దులను ఆన్/ఆఫ్ చేయండి">
-      <i class="fa-solid fa-draw-polygon" style="color: #93c5fd;"></i> 🗺️ సరిహద్దులు (Borders)
-    </button>
-  </div>
+      <button class="pill-btn cat-btn active" data-cat="ALL" onclick="filterMapCategory('ALL')" title="à°…à°¨à±à°¨à°¿ à°®à±‚à°µà°¿à°‚à°—à± & à°¸à±à°Ÿà°¾à°Ÿà°¿à°•à± à°¡à±à°¯à±‚à°Ÿà±€à°²à±">
+        ðŸ›¡ï¸ à°…à°¨à±à°¨à±€ (<span id="cat-cnt-all">127</span>)
+      </button>
 
-  <!-- Floating Map Filter Dropdowns: Police Station & Party/Point Selector -->
-  <div class="map-dropdown-container">
-    <div class="map-dropdown-box">
-      <i class="fa-solid fa-building-shield dropdown-icon"></i>
-      <select id="select-map-mandal" class="map-select" onchange="handleMapMandalChange(this.value)" title="పోలీస్ స్టేషన్ ఎంచుకోండి (Select Police Station)">
-        <option value="ALL">🏛️ అన్ని పోలీస్ స్టేషన్లు (All 32 Police Stations)</option>
-      </select>
+      <button class="pill-btn cat-btn" data-cat="MP" onclick="filterMapCategory('MP')" title="à°®à±‚à°µà°¿à°‚à°—à± à°ªà°¾à°°à±à°Ÿà±€à°²à± à°®à°¾à°¤à±à°°à°®à±‡">
+        ðŸš” à°®à±‚à°µà°¿à°‚à°—à± (<span id="cat-cnt-mp">87</span>)
+      </button>
+
+      <button class="pill-btn cat-btn" data-cat="SP" onclick="filterMapCategory('SP')" title="à°¸à±à°Ÿà°¾à°Ÿà°¿à°•à± à°ªà°¾à°¯à°¿à°‚à°Ÿà±à°²à± à°®à°¾à°¤à±à°°à°®à±‡">
+        ðŸ“ à°¸à±à°Ÿà°¾à°Ÿà°¿à°•à± (<span id="cat-cnt-sp">40</span>)
+      </button>
+
+      <button class="pill-btn active" id="btn-toggle-borders" onclick="toggleMandalBordersLayer()" title="à°®à°‚à°¡à°² à°¸à°°à°¿à°¹à°¦à±à°¦à±à°²à± à°†à°¨à±/à°†à°«à±">
+        <i class="fa-solid fa-draw-polygon" style="color: #93c5fd;"></i> <span>à°¸à°°à°¿à°¹à°¦à±à°¦à±à°²à±</span>
+      </button>
     </div>
 
-    <div class="map-dropdown-box">
-      <i class="fa-solid fa-magnifying-glass dropdown-icon"></i>
-      <select id="select-map-team" class="map-select select-team" onchange="handleMapTeamChange(this.value)" title="పార్టీ / పాయింట్ ఎంచుకోండి (Select Party / Point)">
-        <option value="">🔍 పార్టీ / పాయింట్ ఎంచుకోండి (Select Party / Point)</option>
-      </select>
+    <!-- Police Station & Party Selectors Segment -->
+    <div class="toolbar-segment toolbar-dropdowns">
+      <div class="toolbar-select-box">
+        <i class="fa-solid fa-building-shield"></i>
+        <select id="select-map-mandal" onchange="handleMapMandalChange(this.value)" title="à°ªà±‹à°²à±€à°¸à± à°¸à±à°Ÿà±‡à°·à°¨à± à°Žà°‚à°šà±à°•à±‹à°‚à°¡à°¿ (Select Police Station)">
+          <option value="ALL">ðŸ›ï¸ à°…à°¨à±à°¨à°¿ à°ªà±‹à°²à±€à°¸à± à°¸à±à°Ÿà±‡à°·à°¨à±à°²à± (32 PS)</option>
+        </select>
+      </div>
+
+      <div class="toolbar-select-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <select id="select-map-team" class="select-team" onchange="handleMapTeamChange(this.value)" title="à°ªà°¾à°°à±à°Ÿà±€ / à°ªà°¾à°¯à°¿à°‚à°Ÿà± à°Žà°‚à°šà±à°•à±‹à°‚à°¡à°¿ (Select Party / Point)">
+          <option value="">ðŸ” à°ªà°¾à°°à±à°Ÿà±€ / à°ªà°¾à°¯à°¿à°‚à°Ÿà± à°Žà°‚à°šà±à°•à±‹à°‚à°¡à°¿</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -1768,6 +1770,22 @@ https://...
     if (elModalTitle) elModalTitle.innerText = `శ్రీకాకుళం జిల్లా మూవింగ్ & స్టాటిక్ పార్టీ డ్యూటీల జాబితా (${totalCount})`;
   }
 
+  let liveOnlyFilter = false;
+  window.filterMapLiveOnly = function() {
+    liveOnlyFilter = !liveOnlyFilter;
+    const btn = document.getElementById('pill-live-filter');
+    if (btn) {
+      if (liveOnlyFilter) {
+        btn.classList.add('active');
+        showToast('à°²à±ˆà°µà± à°²à±‹ à°‰à°¨à±à°¨ à°¡à±à°¯à±‚à°Ÿà±€à°²à°¨à± à°®à°¾à°¤à±à°°à°®à±‡ à°šà±‚à°ªà°¿à°¸à±à°¤à±à°¨à±à°¨à°¾à°®à±');
+      } else {
+        btn.classList.remove('active');
+        showToast('à°…à°¨à±à°¨à°¿ à°¡à±à°¯à±‚à°Ÿà±€à°²à°¨à± à°šà±‚à°ªà°¿à°¸à±à°¤à±à°¨à±à°¨à°¾à°®à±');
+      }
+    }
+    applyMapFilters();
+  };
+
   let currentMapMandalFilter = 'ALL';
   let currentlyFollowedOfficerKey = null;
 
@@ -1780,7 +1798,9 @@ https://...
       const mandalName = (m.mandal || '').trim().toLowerCase();
       const filterVal = currentMapMandalFilter.toLowerCase();
       const psMatch = (currentMapMandalFilter === 'ALL' || (stationName && stationName === filterVal) || (mandalName && mandalName === filterVal));
-      const match = catMatch && psMatch;
+      const isLive = !!(m.status === 'live' || (m.lastUpdated && Date.now() - m.lastUpdated < 30 * 60 * 1000));
+      const liveMatch = !liveOnlyFilter || isLive;
+      const match = catMatch && psMatch && liveMatch;
 
       if (match) {
         if (!map.hasLayer(m.marker)) map.addLayer(m.marker);
