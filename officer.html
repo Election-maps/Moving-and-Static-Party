@@ -17,8 +17,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <!-- MQTT.js library -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-  <!-- Pre-loaded Forces Data (Routes, SF, SSF, QRTs, Reserve Parties) -->
-  <script src="route_mobiles_data.js?v=20261104"></script>
+  <!-- Pre-loaded Moving & Static Party Duties Data -->
+  <script src="moving_static_data.js?v=20261107"></script>
 
   <style>
     :root {
@@ -410,7 +410,7 @@
     </div>
     <div>
       <div class="brand-title">శ్రీకాకుళం జిల్లా పోలీస్</div>
-      <div class="brand-subtitle">Routes • SF • SSF • QRTs • Reserve Parties లైవ్ ట్రాకర్</div>
+      <div class="brand-subtitle">మూవింగ్ పార్టీ & స్టాటిక్ పాయింట్స్ లైవ్ ట్రాకర్</div>
     </div>
   </header>
 
@@ -503,27 +503,24 @@
     <div class="form-group">
       <label class="form-label">1. విభాగం ఎంచుకోండి (Select Category):</label>
       <select class="form-select" id="select-category">
-        <option value="Route Mobiles">🚗 రూట్ మొబైల్స్ (Route Mobiles)</option>
-        <option value="Striking Forces">🚔 స్ట్రైకింగ్ ఫోర్స్ (Striking Forces - SF)</option>
-        <option value="Special Striking Forces">🛡️ స్పెషల్ స్ట్రైకింగ్ ఫోర్స్ (SSF)</option>
-        <option value="QRTs">⚡ క్విక్ రియాక్షన్ టీమ్స్ (QRTs)</option>
-        <option value="Reserve Parties">🏛️ రిజర్వ్ పార్టీలు (SP / Addl. SP / HQ Reserve)</option>
+        <option value="Moving Parties">🚔 మూవింగ్ పార్టీలు (Moving Parties)</option>
+        <option value="Static Points">📍 స్టాటిక్ పాయింట్లు (Static Points)</option>
       </select>
     </div>
 
-    <!-- Mandal / Unit Select -->
+    <!-- Police Station Select -->
     <div class="form-group">
-      <label class="form-label" id="lbl-mandal">2. మండలం / యూనిట్ ఎంచుకోండి (Select Mandal):</label>
+      <label class="form-label" id="lbl-mandal">2. పోలీస్ స్టేషన్ ఎంచుకోండి (Select Police Station):</label>
       <select class="form-select" id="select-mandal">
-        <option value="">-- మండలం ఎంచుకోండి --</option>
+        <option value="">-- పోలీస్ స్టేషన్ ఎంచుకోండి --</option>
       </select>
     </div>
 
-    <!-- Team / Route Select -->
+    <!-- Team / Point Select -->
     <div class="form-group">
-      <label class="form-label" id="lbl-unit">3. టీమ్ / రూట్ నెంబర్ ఎంచుకోండి (Select Team / Route):</label>
+      <label class="form-label" id="lbl-unit">3. పార్టీ / పాయింట్ ఎంచుకోండి (Select Party / Point):</label>
       <select class="form-select" id="select-unit">
-        <option value="">-- టీమ్ ఎంచుకోండి --</option>
+        <option value="">-- పార్టీ / పాయింట్ ఎంచుకోండి --</option>
       </select>
     </div>
 
@@ -617,18 +614,18 @@
   });
 
   // -------------------------------------------------------------
-  // Data Load: 364 Units (Routes, SF, SSF, QRTs, Reserve Parties)
+  // Data Load: Moving & Static Party Duties
   // -------------------------------------------------------------
-  let allUnitsData = window.ROUTE_MOBILES_DATA || [];
+  let allUnitsData = window.MOVING_STATIC_DATA || window.ROUTE_MOBILES_DATA || [];
 
   if (!allUnitsData || allUnitsData.length === 0) {
-    fetch('route_mobiles.json')
+    fetch('moving_static.json')
       .then(res => res.json())
       .then(data => {
         allUnitsData = data;
         initSelectionHierarchy();
       })
-      .catch(err => console.error("Error loading route_mobiles.json:", err));
+      .catch(err => console.error("Error loading moving_static.json:", err));
   }
 
   // -------------------------------------------------------------
@@ -1362,7 +1359,7 @@
     }
 
     // Restore last used selection or default
-    const lastCat = initialParamCategory || localStorage.getItem('skl_last_category') || 'Route Mobiles';
+    const lastCat = initialParamCategory || localStorage.getItem('skl_last_category') || 'Moving Parties';
     const lastMandal = initialParamMandal || localStorage.getItem('skl_last_mandal') || '';
     const lastUnitId = localStorage.getItem('skl_last_unit_id') || '';
 
@@ -1374,13 +1371,14 @@
   }
 
   function populateMandals(category, preselectMandal = '') {
-    selMandal.innerHTML = '<option value="">-- మండలం / యూనిట్ ఎంచుకోండి --</option>';
-    selUnit.innerHTML = '<option value="">-- టీమ్ ఎంచుకోండి --</option>';
+    selMandal.innerHTML = '<option value="">-- పోలీస్ స్టేషన్ ఎంచుకోండి --</option>';
+    selUnit.innerHTML = '<option value="">-- పార్టీ / పాయింట్ ఎంచుకోండి --</option>';
     renderUnitPreview(null);
 
     const mandalsSet = new Set();
     allUnitsData.filter(u => u.category === category).forEach(u => {
-      if (u.mandal) mandalsSet.add(u.mandal.trim());
+      const stationName = u.ps || u.mandal;
+      if (stationName) mandalsSet.add(stationName.trim());
     });
 
     const sortedMandals = Array.from(mandalsSet).sort();
@@ -1400,17 +1398,18 @@
   }
 
   function populateUnits(category, mandal, preselectUnitId = '') {
-    selUnit.innerHTML = '<option value="">-- టీమ్ / రూట్ నెంబర్ ఎంచుకోండి --</option>';
+    selUnit.innerHTML = '<option value="">-- పార్టీ / పాయింట్ ఎంచుకోండి --</option>';
     renderUnitPreview(null);
 
     if (!category || !mandal) return;
 
-    const units = allUnitsData.filter(u => u.category === category && u.mandal.trim() === mandal);
+    const units = allUnitsData.filter(u => u.category === category && ((u.ps && u.ps.trim() === mandal) || (u.mandal && u.mandal.trim() === mandal)));
 
     units.forEach(u => {
       const opt = document.createElement('option');
       opt.value = u.id;
-      opt.innerText = `${u.unitName} (${u.officer.substring(0, 28)})`;
+      const vText = u.vehicle ? ` [${u.vehicle}]` : '';
+      opt.innerText = `${u.unitName}${vText} - ${u.officer.substring(0, 28)}`;
       selUnit.appendChild(opt);
     });
 

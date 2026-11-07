@@ -11,12 +11,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <!-- MQTT.js library for real-time synchronization -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-  <!-- Pre-loaded Forces Data (Routes, SF, SSF, QRTs, Reserve Parties) -->
-  <script src="route_mobiles_data.js?v=20261104"></script>
-  <!-- Pre-loaded 1,196 MPTC & ZPTC Polling Stations Data -->
-  <script src="mptc_zptc_data.js?v=20261105"></script>
-  <!-- Pre-loaded Road Routes Geometry -->
-  <script src="routes_geometry.js?v=20261105_v2"></script>
+  <!-- Pre-loaded Moving & Static Party Duties Data -->
+  <script src="moving_static_data.js?v=20261107"></script>
   <!-- Pre-loaded 30 Mandal Boundaries GeoJSON -->
   <script src="mandal_borders.js?v=20261105_v2"></script>
 
@@ -945,10 +941,10 @@
         <i class="fa-solid fa-shield-halved"></i>
       </div>
       <div>
-        <div class="brand-title" id="txt-title">శ్రీకాకుళం జిల్లా పోలీస్ - ఎన్నికల బందోబస్తు లైవ్ మ్యాప్</div>
+        <div class="brand-title" id="txt-title">శ్రీకాకుళం జిల్లా పోలీస్ - మూవింగ్ & స్టాటిక్ పార్టీల లైవ్ ట్రాకింగ్</div>
         <div class="brand-subtitle">
           <span class="dist-tag">SRIKAKULAM POLICE</span>
-          <span id="txt-subtitle">Routes • SF • SSF • QRTs • Reserve Parties (364 Teams)</span>
+          <span id="txt-subtitle">Moving Parties • Static Points Duties Incharges (34 Police Stations)</span>
         </div>
       </div>
     </div>
@@ -972,9 +968,9 @@
       </button>
 
       <!-- Open Directory & Control Room Drawer -->
-      <button class="btn-header" id="btn-open-directory" title="అన్ని 364 బందోబస్తు పార్టీల వివరాలు & స్టేటస్">
+      <button class="btn-header" id="btn-open-directory" title="అన్ని మూవింగ్ & స్టాటిక్ పార్టీల వివరాలు & స్టేటస్">
         <i class="fa-solid fa-list-check"></i>
-        <span id="txt-btn-routes">ఫోర్సెస్ (364)</span>
+        <span id="txt-btn-routes">డ్యూటీలు (136)</span>
       </button>
 
       <!-- Share Broadcast Link in WhatsApp Group -->
@@ -1006,61 +1002,47 @@
     </div>
     <div class="kpi-pill">
       <span class="dot dot-offline"></span>
-      <span>ఆఫ్‌లైన్ (Offline): <strong id="kpi-offline" style="color: #94a3b8;">364</strong></span>
+      <span>ఆఫ్‌లైన్ (Offline): <strong id="kpi-offline" style="color: #94a3b8;">136</strong></span>
     </div>
     <div class="kpi-pill">
       <i class="fa-solid fa-shield-halved" style="color: var(--police-gold); font-size: 11px;"></i>
-      <span>మొత్తం టీమ్స్: <strong id="kpi-total">364</strong></span>
+      <span>మొత్తం డ్యూటీలు: <strong id="kpi-total">136</strong></span>
     </div>
-    <div class="kpi-pill" style="cursor: pointer;" onclick="togglePslLayer()" title="క్లిక్ చేసి పోలింగ్ కేంద్రాలను ఆన్/ఆఫ్ చేయండి">
-      <i class="fa-solid fa-person-booth" style="color: #60a5fa; font-size: 11px;"></i>
-      <span>పోలింగ్ కేంద్రాలు: <strong id="kpi-psl" style="color: #60a5fa;">1,196</strong></span>
+    <div class="kpi-pill" style="cursor: pointer;" onclick="filterMapCategory('MP')" title="మూవింగ్ పార్టీలు మాత్రమే ఫిల్టర్ చేయండి">
+      <i class="fa-solid fa-car-side" style="color: #38bdf8; font-size: 11px;"></i>
+      <span>మూవింగ్ పార్టీలు: <strong id="kpi-mp" style="color: #38bdf8;">68</strong></span>
+    </div>
+    <div class="kpi-pill" style="cursor: pointer;" onclick="filterMapCategory('SP')" title="స్టాటిక్ పాయింట్లు మాత్రమే ఫిల్టర్ చేయండి">
+      <i class="fa-solid fa-map-pin" style="color: #f59e0b; font-size: 11px;"></i>
+      <span>స్టాటిక్ పాయింట్లు: <strong id="kpi-sp" style="color: #f59e0b;">68</strong></span>
     </div>
   </div>
 
-  <!-- Category Filter Pills Bar on Map (Routes, SF, SSF, QRTs, Reserve Parties) -->
+  <!-- Category Filter Pills Bar on Map -->
   <div class="category-filter-bar">
-    <button class="cat-btn active" data-cat="ALL" onclick="filterMapCategory('ALL')">🛡️ అన్నీ (364)</button>
-    <button class="cat-btn" data-cat="RM" onclick="filterMapCategory('RM')">🚗 Routes (264)</button>
-    <button class="cat-btn" data-cat="SF" onclick="filterMapCategory('SF')">🚔 SF (59)</button>
-    <button class="cat-btn" data-cat="SSF" onclick="filterMapCategory('SSF')">🛡️ SSF (30)</button>
-    <button class="cat-btn" data-cat="QRT" onclick="filterMapCategory('QRT')">⚡ QRTs (6)</button>
-    <button class="cat-btn" data-cat="RESERVE" onclick="filterMapCategory('RESERVE')">🏛️ Reserve (5)</button>
-    <button class="cat-btn active" id="btn-toggle-routes" onclick="toggleRoadRoutesLayer()" style="border-color: #ef4444; background: rgba(220, 38, 38, 0.45);" title="పోలీస్ రోడ్ రూట్లను ఆన్/ఆఫ్ చేయండి">
-      <i class="fa-solid fa-route" style="color: #fca5a5;"></i> 🛣️ రూట్లు (Routes)
-    </button>
+    <button class="cat-btn active" data-cat="ALL" onclick="filterMapCategory('ALL')">🛡️ అన్నీ (<span id="cat-cnt-all">136</span>)</button>
+    <button class="cat-btn" data-cat="MP" onclick="filterMapCategory('MP')">🚔 Moving Parties (<span id="cat-cnt-mp">68</span>)</button>
+    <button class="cat-btn" data-cat="SP" onclick="filterMapCategory('SP')">📍 Static Points (<span id="cat-cnt-sp">68</span>)</button>
     <button class="cat-btn active" id="btn-toggle-borders" onclick="toggleMandalBordersLayer()" style="border-color: #3b82f6; background: rgba(37, 99, 235, 0.45);" title="మండల సరిహద్దులను ఆన్/ఆఫ్ చేయండి">
       <i class="fa-solid fa-draw-polygon" style="color: #93c5fd;"></i> 🗺️ సరిహద్దులు (Borders)
     </button>
-    <button class="cat-btn active" id="btn-toggle-psl" onclick="togglePslLayer()" style="border-color: #3b82f6; background: rgba(30, 58, 138, 0.55);" title="పోలింగ్ కేంద్రాలను ఆన్/ఆఫ్ చేయండి">
-      <i class="fa-solid fa-person-booth" style="color: #60a5fa;"></i> 🗳️ పోలింగ్ కేంద్రాలు (1,196)
-    </button>
   </div>
 
-  <!-- Floating Map Filter Dropdowns: Mandal & Route/Party Selector -->
+  <!-- Floating Map Filter Dropdowns: Police Station & Party/Point Selector -->
   <div class="map-dropdown-container">
     <div class="map-dropdown-box">
-      <i class="fa-solid fa-map-location-dot dropdown-icon"></i>
-      <select id="select-map-mandal" class="map-select" onchange="handleMapMandalChange(this.value)" title="మండలం ఎంచుకోండి (Select Mandal)">
-        <option value="ALL">📍 అన్ని మండలాలు (All Mandals)</option>
+      <i class="fa-solid fa-building-shield dropdown-icon"></i>
+      <select id="select-map-mandal" class="map-select" onchange="handleMapMandalChange(this.value)" title="పోలీస్ స్టేషన్ ఎంచుకోండి (Select Police Station)">
+        <option value="ALL">🏛️ అన్ని పోలీస్ స్టేషన్లు (All 34 Police Stations)</option>
       </select>
     </div>
 
     <div class="map-dropdown-box">
       <i class="fa-solid fa-magnifying-glass dropdown-icon"></i>
-      <select id="select-map-team" class="map-select select-team" onchange="handleMapTeamChange(this.value)" title="రూట్ / పార్టీ డ్రాప్‌డౌన్ లిస్ట్ (Select Team / Route)">
-        <option value="">🔍 రూట్ / పార్టీని ఎంచుకోండి (Select Team / Route)</option>
+      <select id="select-map-team" class="map-select select-team" onchange="handleMapTeamChange(this.value)" title="పార్టీ / పాయింట్ ఎంచుకోండి (Select Party / Point)">
+        <option value="">🔍 పార్టీ / పాయింట్ ఎంచుకోండి (Select Party / Point)</option>
       </select>
     </div>
-  </div>
-
-  <!-- Sensitivity Filter Sub-bar for Polling Stations -->
-  <div class="psl-filter-subbar" id="psl-filter-subbar">
-    <span class="psl-subbar-title"><i class="fa-solid fa-person-booth"></i> PSLs:</span>
-    <button class="psl-sens-btn active" data-sens="ALL" onclick="filterPslSensitivity('ALL')">⚪ అన్నీ (1,196)</button>
-    <button class="psl-sens-btn" data-sens="NORMAL" onclick="filterPslSensitivity('NORMAL')"><span class="psl-btn-badge badge-n">N</span> Normal (832)</button>
-    <button class="psl-sens-btn" data-sens="SENSITIVE" onclick="filterPslSensitivity('SENSITIVE')"><span class="psl-btn-badge badge-s">S</span> Sensitive (223)</button>
-    <button class="psl-sens-btn" data-sens="HYPER SENSITIVE" onclick="filterPslSensitivity('HYPER SENSITIVE')"><span class="psl-btn-badge badge-h">H</span> Hyper Sensitive (141)</button>
   </div>
 
   <!-- Quick Floating Action Buttons on Map -->
@@ -1080,33 +1062,30 @@
   </div>
 </div>
 
-<!-- All 364 Forces Directory & WhatsApp Nudge Modal -->
+<!-- All Forces Directory & WhatsApp Nudge Modal -->
 <div class="modal-backdrop" id="modal-directory">
   <div class="modal-card">
     <div class="modal-header">
       <h3>
         <i class="fa-solid fa-users-rays"></i>
-        <span id="txt-modal-dir-title">శ్రీకాకుళం జిల్లా ఎన్నికల బందోబస్తు దళాలు (364)</span>
+        <span id="txt-modal-dir-title">శ్రీకాకుళం జిల్లా మూవింగ్ & స్టాటిక్ పార్టీ డ్యూటీల జాబితా (136)</span>
       </h3>
       <button class="btn-close" id="btn-close-dir">✕</button>
     </div>
     <div class="modal-body">
       <!-- Search & Filters -->
       <div class="search-filter-box">
-        <input type="text" class="custom-input" style="flex: 2; min-width: 180px;" id="dir-search" placeholder="మండలం, ఆఫీసర్ పేరు, రూట్ లేదా ఫోన్ నెంబర్ శోధించండి..."/>
+        <input type="text" class="custom-input" style="flex: 2; min-width: 180px;" id="dir-search" placeholder="పోలీస్ స్టేషన్, ఇన్-ఛార్జ్ పేరు, పార్టీ లేదా ఫోన్ నెంబర్ శోధించండి..."/>
         <select class="custom-select" style="flex: 1.2; min-width: 140px;" id="dir-filter-cat">
-          <option value="ALL">అన్ని విభాగాలు (All)</option>
-          <option value="Route Mobiles">🚗 Route Mobiles (264)</option>
-          <option value="Striking Forces">🚔 Striking Forces (59)</option>
-          <option value="Special Striking Forces">🛡️ Special Striking Forces (30)</option>
-          <option value="QRTs">⚡ QRTs (6)</option>
-          <option value="Reserve Parties">🏛️ Reserve Parties (5)</option>
+          <option value="ALL">అన్ని విభాగాలు (All Duties)</option>
+          <option value="Moving Parties">🚔 Moving Parties (68)</option>
+          <option value="Static Points">📍 Static Points (68)</option>
         </select>
         <select class="custom-select" style="flex: 1.2; min-width: 140px;" id="dir-filter-mandal">
-          <option value="ALL">అన్ని మండలాలు (All)</option>
+          <option value="ALL">అన్ని పోలీస్ స్టేషన్లు (All 34 PS)</option>
         </select>
         <select class="custom-select" style="flex: 1; min-width: 110px;" id="dir-filter-status">
-          <option value="ALL">అన్నీ (364)</option>
+          <option value="ALL">అన్నీ (136)</option>
           <option value="LIVE">🟢 లైవ్ లో ఉన్నవి</option>
           <option value="OFFLINE">⚪ ఆఫ్‌లైన్</option>
         </select>
@@ -1171,12 +1150,12 @@ https://...
 
 <script>
   // -------------------------------------------------------------
-  // Data Load: 364 Units (Routes, SF, SSF, QRTs, Reserve Parties)
+  // Data Load: Moving & Static Party Duties (34 Police Stations)
   // -------------------------------------------------------------
-  let allUnitsData = window.ROUTE_MOBILES_DATA || [];
+  let allUnitsData = window.MOVING_STATIC_DATA || window.ROUTE_MOBILES_DATA || [];
 
   if (!allUnitsData || allUnitsData.length === 0) {
-    fetch('route_mobiles.json')
+    fetch('moving_static.json')
       .then(res => res.json())
       .then(data => {
         allUnitsData = data;
@@ -1195,7 +1174,7 @@ https://...
           }
         }
       })
-      .catch(err => console.error("Error loading route_mobiles.json:", err));
+      .catch(err => console.error("Error loading moving_static.json:", err));
   }
 
   // -------------------------------------------------------------
@@ -1227,36 +1206,20 @@ https://...
   });
 
   // -------------------------------------------------------------
-  // Data Load: 1,196 MPTC & ZPTC Polling Stations Data, Routes & Borders
+  // Data Load: 30 Mandal Boundaries
   // -------------------------------------------------------------
-  let allPslData = window.MPTC_ZPTC_DATA || [];
+  let allPslData = [];
   const mandalBordersLayerGroup = L.layerGroup().addTo(map);
-  const routesLayerGroup = L.layerGroup().addTo(map);
-  const pslLayerGroup = L.layerGroup().addTo(map);
-  let isPslLayerActive = true;
-  let isRoutesLayerActive = true;
+  const routesLayerGroup = L.layerGroup();
+  const pslLayerGroup = L.layerGroup();
+  let isPslLayerActive = false;
+  let isRoutesLayerActive = false;
   let isBordersLayerActive = true;
   let currentPslSensitivityFilter = 'ALL';
 
-  if (!allPslData || allPslData.length === 0) {
-    fetch('mptc_zptc_locations.json')
-      .then(res => res.json())
-      .then(data => {
-        allPslData = data;
-        applyPslFilters();
-        applyRoadRoutes();
-        drawMandalBorders();
-        populateMapMandalDropdown();
-        populateMapTeamDropdown();
-      })
-      .catch(err => console.error("Error loading mptc_zptc_locations.json:", err));
-  } else {
-    setTimeout(() => {
-      applyPslFilters();
-      applyRoadRoutes();
-      drawMandalBorders();
-    }, 100);
-  }
+  setTimeout(() => {
+    drawMandalBorders();
+  }, 100);
 
   function buildPslPopupHtml(item) {
     let themeBg = '#1e3a8a';
@@ -1625,9 +1588,14 @@ https://...
 
   function fitToMandal(mandalName) {
     if (!mandalName || mandalName === 'ALL') return;
+
+    // Find matching unit by PS or mandal
+    const matchedUnit = allUnitsData.find(u => (u.ps && u.ps.toLowerCase() === mandalName.toLowerCase()) || (u.mandal && u.mandal.toLowerCase() === mandalName.toLowerCase()));
+    const targetMandal = matchedUnit ? (matchedUnit.mandal || mandalName) : mandalName;
+
     if (window.MANDAL_BORDERS && window.MANDAL_BORDERS.features) {
       const feat = window.MANDAL_BORDERS.features.find(f => 
-        f.properties && f.properties.name && f.properties.name.toLowerCase() === mandalName.toLowerCase()
+        f.properties && f.properties.name && f.properties.name.toLowerCase() === targetMandal.toLowerCase()
       );
       if (feat) {
         const tempLayer = L.geoJSON(feat);
@@ -1635,10 +1603,8 @@ https://...
         return;
       }
     }
-    const data = window.MPTC_ZPTC_DATA || allPslData || [];
-    const pts = data.filter(p => p.mandal && p.mandal.toLowerCase() === mandalName.toLowerCase()).map(p => [p.lat, p.lng]);
-    if (pts.length > 0) {
-      map.fitBounds(pts, { padding: [30, 30], maxZoom: 14 });
+    if (matchedUnit && matchedUnit.lat && matchedUnit.lng) {
+      map.setView([matchedUnit.lat, matchedUnit.lng], 13);
     }
   }
 
@@ -1727,16 +1693,14 @@ https://...
   // Category Theme Colors & Icons
   function getCategoryTheme(catKey) {
     switch (catKey) {
-      case 'SF':
-        return { color: '#ef4444', icon: 'fa-shield-halved', badgeBg: '#ef4444' };
-      case 'SSF':
-        return { color: '#a855f7', icon: 'fa-user-shield', badgeBg: '#9333ea' };
-      case 'QRT':
-        return { color: '#f59e0b', icon: 'fa-bolt', badgeBg: '#d97706' };
-      case 'RESERVE':
-        return { color: '#10b981', icon: 'fa-building-columns', badgeBg: '#059669' };
+      case 'MP':
+      case 'Moving Parties':
+        return { color: '#38bdf8', icon: 'fa-car-side', badgeBg: '#0284c7' };
+      case 'SP':
+      case 'Static Points':
+        return { color: '#f59e0b', icon: 'fa-map-pin', badgeBg: '#d97706' };
       default:
-        return { color: '#3b82f6', icon: 'fa-car-side', badgeBg: '#1e3a8a' };
+        return { color: '#3b82f6', icon: 'fa-shield-halved', badgeBg: '#1e3a8a' };
     }
   }
 
@@ -2194,12 +2158,34 @@ https://...
 
   function updateKPIs() {
     const liveCount = Object.keys(activeMobiles).length;
-    const totalCount = allUnitsData.length || 364;
+    const totalCount = allUnitsData.length || 136;
     const offlineCount = Math.max(0, totalCount - liveCount);
 
-    document.getElementById('kpi-live').innerText = liveCount;
-    document.getElementById('kpi-offline').innerText = offlineCount;
-    document.getElementById('kpi-total').innerText = totalCount;
+    const elLive = document.getElementById('kpi-live');
+    const elOffline = document.getElementById('kpi-offline');
+    const elTotal = document.getElementById('kpi-total');
+    const elMp = document.getElementById('kpi-mp');
+    const elSp = document.getElementById('kpi-sp');
+
+    if (elLive) elLive.innerText = liveCount;
+    if (elOffline) elOffline.innerText = offlineCount;
+    if (elTotal) elTotal.innerText = totalCount;
+
+    let mpCount = 0;
+    let spCount = 0;
+    allUnitsData.forEach(u => {
+      if (u.categoryKey === 'MP' || u.category === 'Moving Parties') mpCount++;
+      else if (u.categoryKey === 'SP' || u.category === 'Static Points') spCount++;
+    });
+    if (elMp) elMp.innerText = mpCount;
+    if (elSp) elSp.innerText = spCount;
+
+    const catAll = document.getElementById('cat-cnt-all');
+    const catMp = document.getElementById('cat-cnt-mp');
+    const catSp = document.getElementById('cat-cnt-sp');
+    if (catAll) catAll.innerText = totalCount;
+    if (catMp) catMp.innerText = mpCount;
+    if (catSp) catSp.innerText = spCount;
   }
 
   let currentMapMandalFilter = 'ALL';
@@ -2210,8 +2196,9 @@ https://...
     for (const k in activeMobiles) {
       const m = activeMobiles[k];
       const catMatch = (currentMapCategoryFilter === 'ALL' || m.categoryKey === currentMapCategoryFilter);
-      const mandalMatch = (currentMapMandalFilter === 'ALL' || (m.mandal && m.mandal.trim().toLowerCase() === currentMapMandalFilter.toLowerCase()));
-      const match = catMatch && mandalMatch;
+      const stationName = (m.ps || m.mandal || '').trim().toLowerCase();
+      const psMatch = (currentMapMandalFilter === 'ALL' || stationName === currentMapMandalFilter.toLowerCase());
+      const match = catMatch && psMatch;
 
       if (match) {
         if (!map.hasLayer(m.marker)) map.addLayer(m.marker);
@@ -2248,12 +2235,9 @@ https://...
     applyMapFilters();
 
     const catLabels = {
-      'ALL': 'అన్ని విభాగాలు (All 364 Teams)',
-      'RM': '🚗 Routes - రూట్ మొబైల్స్ (264)',
-      'SF': '🚔 SF - స్ట్రైకింగ్ ఫోర్స్ (59)',
-      'SSF': '🛡️ SSF - స్పెషల్ స్ట్రైకింగ్ (30)',
-      'QRT': '⚡ QRTs - క్విక్ రియాక్షన్ (6)',
-      'RESERVE': '🏛️ Reserve - రిజర్వ్ పార్టీలు (5)'
+      'ALL': 'అన్ని డ్యూటీలు (All 136 Duties)',
+      'MP': '🚔 Moving Parties - మూవింగ్ పార్టీలు (68)',
+      'SP': '📍 Static Points - స్టాటిక్ పాయింట్లు (68)'
     };
     showToast(catLabels[catKey] || `${catKey} విభాగం ఎంచుకోబడింది`);
   };
@@ -2266,44 +2250,38 @@ https://...
     currentMapMandalFilter = mandalName;
     populateMapTeamDropdown();
     applyMapFilters();
-    applyPslFilters();
-    applyRoadRoutes();
     drawMandalBorders();
     if (mandalName !== 'ALL') {
-      showToast(`${mandalName} మండలం ఫిల్టర్ చేయబడింది`);
+      showToast(`${mandalName} పోలీస్ స్టేషన్ ఫిల్టర్ చేయబడింది`);
       fitToMandal(mandalName);
     }
   };
 
-  // Populate Mandal Dropdown
+  // Populate Police Station Dropdown
   function populateMapMandalDropdown() {
     const sel = document.getElementById('select-map-mandal');
     if (!sel) return;
     const currentVal = sel.value;
-    sel.innerHTML = '<option value="ALL">📍 అన్ని మండలాలు (All Mandals)</option>';
+    sel.innerHTML = '<option value="ALL">🏛️ అన్ని పోలీస్ స్టేషన్లు (All 34 Police Stations)</option>';
 
-    const mandalsSet = new Set();
+    const stationsSet = new Set();
     allUnitsData.forEach(u => {
-      const uCat = u.categoryKey || (u.category === 'Striking Forces' ? 'SF' : u.category === 'Special Striking Forces' ? 'SSF' : u.category === 'QRTs' ? 'QRT' : u.category === 'Reserve Parties' ? 'RESERVE' : 'RM');
+      const uCat = u.categoryKey || (u.category === 'Moving Parties' ? 'MP' : 'SP');
       if (currentMapCategoryFilter === 'ALL' || uCat === currentMapCategoryFilter) {
-        if (u.mandal) mandalsSet.add(u.mandal.trim());
+        const ps = u.ps || u.mandal;
+        if (ps) stationsSet.add(ps.trim());
       }
     });
 
-    const pslData = window.MPTC_ZPTC_DATA || allPslData || [];
-    pslData.forEach(p => {
-      if (p.mandal) mandalsSet.add(p.mandal.trim());
-    });
-
-    const sorted = Array.from(mandalsSet).sort();
-    sorted.forEach(m => {
+    const sorted = Array.from(stationsSet).sort();
+    sorted.forEach(ps => {
       const opt = document.createElement('option');
-      opt.value = m;
-      opt.innerText = m;
+      opt.value = ps;
+      opt.innerText = ps.endsWith('PS') ? ps : `${ps} PS`;
       sel.appendChild(opt);
     });
 
-    if (mandalsSet.has(currentVal)) {
+    if (stationsSet.has(currentVal)) {
       sel.value = currentVal;
     } else {
       sel.value = 'ALL';
@@ -2316,14 +2294,15 @@ https://...
     const sel = document.getElementById('select-map-team');
     if (!sel) return;
     const currentVal = sel.value;
-    sel.innerHTML = '<option value="">🔍 రూట్ / పార్టీని ఎంచుకోండి (Select Route / Party)</option>';
+    sel.innerHTML = '<option value="">🔍 పార్టీ / పాయింట్ ఎంచుకోండి (Select Party / Point)</option>';
 
-    // Filter allUnitsData matching current category and mandal
+    // Filter allUnitsData matching current category and police station
     const filteredUnits = allUnitsData.filter(u => {
-      const uCat = u.categoryKey || (u.category === 'Striking Forces' ? 'SF' : u.category === 'Special Striking Forces' ? 'SSF' : u.category === 'QRTs' ? 'QRT' : u.category === 'Reserve Parties' ? 'RESERVE' : 'RM');
+      const uCat = u.categoryKey || (u.category === 'Moving Parties' ? 'MP' : 'SP');
       const catMatch = (currentMapCategoryFilter === 'ALL' || uCat === currentMapCategoryFilter);
-      const mandalMatch = (currentMapMandalFilter === 'ALL' || (u.mandal && u.mandal.trim().toLowerCase() === currentMapMandalFilter.toLowerCase()));
-      return catMatch && mandalMatch;
+      const psName = (u.ps || u.mandal || '').trim().toLowerCase();
+      const psMatch = (currentMapMandalFilter === 'ALL' || psName === currentMapMandalFilter.toLowerCase());
+      return catMatch && psMatch;
     });
 
     const liveUnits = [];
@@ -2347,7 +2326,8 @@ https://...
         const opt = document.createElement('option');
         opt.value = key;
         const kmh = activeMobiles[key].speed ? Math.round(activeMobiles[key].speed * 3.6) : 0;
-        opt.innerText = `🟢 ${u.unitName} (${u.mandal}) - ${u.officer || 'Officer'} [${kmh} km/h]`;
+        const icon = (u.categoryKey === 'MP' || u.category === 'Moving Parties') ? '🚔' : '📍';
+        opt.innerText = `🟢 ${icon} ${u.unitName} (${u.ps || u.mandal}) - ${u.officer || 'Duty'} [${kmh} km/h]`;
         grpLive.appendChild(opt);
       });
       sel.appendChild(grpLive);
@@ -2355,13 +2335,20 @@ https://...
 
     // 2. Offline / General Units Optgroup
     const grpOther = document.createElement('optgroup');
-    grpOther.label = `⚪ ఇతర టీమ్స్ (${offlineUnits.length} Teams)`;
+    grpOther.label = `⚪ డ్యూటీ పార్టీలు / పాయింట్లు (${offlineUnits.length} Teams)`;
     offlineUnits.forEach(u => {
       const key = u.id || u.unitId;
       const opt = document.createElement('option');
       opt.value = key;
-      opt.innerText = `⚪ ${u.unitName} (${u.mandal}) - ${u.officer || 'Officer'}`;
+      const icon = (u.categoryKey === 'MP' || u.category === 'Moving Parties') ? '🚔' : '📍';
+      const vText = u.vehicle ? ` [${u.vehicle}]` : '';
+      opt.innerText = `${icon} ${u.unitName}${vText} (${u.ps || u.mandal}) - ${u.officer || 'Incharge'}`;
       grpOther.appendChild(opt);
+    });
+    sel.appendChild(grpOther);
+
+    if (currentVal) sel.value = currentVal;
+  }
     });
     sel.appendChild(grpOther);
 
@@ -2687,24 +2674,24 @@ https://...
   const dirListContainer = document.getElementById('dir-list-container');
 
   function initControlRoomUI() {
-    // Populate Mandals Filter
-    const mandalsSet = new Set();
+    // Populate Police Stations Filter
+    const stationsSet = new Set();
     allUnitsData.forEach(u => {
-      if (u.mandal) mandalsSet.add(u.mandal.trim());
+      const ps = u.ps || u.mandal;
+      if (ps) stationsSet.add(ps.trim());
     });
-    const sortedMandals = Array.from(mandalsSet).sort();
+    const sortedStations = Array.from(stationsSet).sort();
 
-    dirFilterMandal.innerHTML = '<option value="ALL">అన్ని మండలాలు (All Mandals)</option>';
-    sortedMandals.forEach(m => {
+    dirFilterMandal.innerHTML = '<option value="ALL">అన్ని పోలీస్ స్టేషన్లు (All 34 PS)</option>';
+    sortedStations.forEach(ps => {
       const opt = document.createElement('option');
-      opt.value = m;
-      opt.innerText = m;
+      opt.value = ps;
+      opt.innerText = ps.endsWith('PS') ? ps : `${ps} PS`;
       dirFilterMandal.appendChild(opt);
     });
 
     populateMapMandalDropdown();
     populateMapTeamDropdown();
-    applyPslFilters();
     updateKPIs();
   }
 
@@ -2716,7 +2703,8 @@ https://...
 
     let filtered = allUnitsData.filter(item => {
       if (filterCat !== 'ALL' && item.category !== filterCat) return false;
-      if (filterMandal !== 'ALL' && item.mandal.trim() !== filterMandal) return false;
+      const ps = (item.ps || item.mandal || '').trim();
+      if (filterMandal !== 'ALL' && ps !== filterMandal) return false;
 
       const key = item.id;
       const isLive = !!activeMobiles[key];
@@ -2724,7 +2712,7 @@ https://...
       if (filterStatus === 'OFFLINE' && isLive) return false;
 
       if (query) {
-        const text = `${item.category} ${item.mandal} ${item.unitName} ${item.officer} ${item.phone} ${item.hq} ${item.supporting}`.toLowerCase();
+        const text = `${item.category} ${item.ps || ''} ${item.mandal || ''} ${item.unitName} ${item.officer} ${item.phone} ${item.vehicle || ''} ${item.supporting || ''}`.toLowerCase();
         if (!text.includes(query)) return false;
       }
 
@@ -2748,6 +2736,9 @@ https://...
       const liveData = activeMobiles[key];
       const isLive = !!liveData;
       const cleanPh = cleanPhoneNumber(item.phone);
+      const isMoving = item.categoryKey === 'MP' || item.category === 'Moving Parties';
+      const catIcon = isMoving ? '🚔' : '📍';
+      const psName = item.ps || item.mandal;
 
       const personalizedUrl = `${officerBaseUrl}?room=${encodeURIComponent(roomCode)}&id=${encodeURIComponent(item.id)}`;
       const nudgeMsg = `నమస్కారం సార్ (${item.officer}), శ్రీకాకుళం జిల్లా పోలీస్ కంట్రోల్ రూమ్ మ్యాప్‌లో మీ డ్యూటీ లొకేషన్ షేర్ చేయడానికి వెంటనే ఈ లింక్ ఓపెన్ చేసి 'లైవ్ లొకేషన్ ప్రారంభించండి' నొక్కండి:\n${personalizedUrl}`;
@@ -2757,15 +2748,16 @@ https://...
         <div class="route-card ${isLive ? 'is-live' : ''}">
           <div class="route-info">
             <div class="route-title">
-              <span class="cat-tag cat-tag-${item.categoryKey}">${item.categoryKey}</span>
-              <span><strong>${item.mandal}</strong> - ${item.unitName}</span>
+              <span class="cat-tag" style="background:${isMoving ? '#0284c7' : '#d97706'}; color:#fff;">${catIcon} ${item.categoryKey}</span>
+              <span><strong>${psName}</strong> - ${item.unitName}</span>
+              ${item.vehicle ? `<span style="font-size:11px; padding:2px 6px; background:rgba(255,255,255,0.1); border-radius:4px; color:#cbd5e1;">${item.vehicle}</span>` : ''}
               <span class="status-tag ${isLive ? 'live' : 'offline'}">
                 ${isLive ? '● లైవ్ (Live)' : 'ఆఫ్‌లైన్'}
               </span>
             </div>
             <div class="route-officer"><i class="fa-solid fa-user-shield" style="font-size: 11px; color:#94a3b8;"></i> ${item.officer}</div>
-            <div class="route-phone">📞 ఫోన్: <strong>${item.phone || 'N/A'}</strong> ${item.hq ? `• 📍 HQ: ${item.hq}` : ''} ${isLive ? `• ⚡ ${Math.round((liveData.speed || 0) * 3.6)} km/h` : ''}</div>
-            ${item.supporting ? `<div style="font-size: 10px; color: #64748b;">👥 ఫోర్స్: ${item.supporting.substring(0, 50)}...</div>` : ''}
+            <div class="route-phone">📞 ఫోన్: <strong>${item.phone || 'N/A'}</strong> ${isLive ? `• ⚡ ${Math.round((liveData.speed || 0) * 3.6)} km/h` : ''}</div>
+            ${item.supporting ? `<div style="font-size: 10px; color: #64748b;">ℹ️ డ్యూటీ: ${item.supporting.substring(0, 60)}</div>` : ''}
           </div>
           <div class="route-actions">
             ${isLive ? `
@@ -2774,13 +2766,15 @@ https://...
               </button>
             ` : ''}
             ${cleanPh ? `
-              <a href="${waLink}" target="_blank" class="btn-action-wa" title="ఈ ఆఫీసర్‌కు వాట్సాప్‌లో లింక్ పంపండి">
-                <i class="fa-brands fa-whatsapp"></i> లింక్ పంపు
+              <a href="${waLink}" target="_blank" class="btn-action-wa" title="ఈ ఆఫీసర్‌కు వాట్సాప్‌లో నడ్జ్ పంపండి">
+                <i class="fa-brands fa-whatsapp"></i> వాట్సాప్
               </a>
               <a href="tel:${cleanPh}" class="btn-action-call" title="కాల్ చేయండి">
-                <i class="fa-solid fa-phone"></i>
+                <i class="fa-solid fa-phone"></i> కాల్
               </a>
-            ` : ''}
+            ` : `
+              <span style="font-size: 10px; color: #64748b; padding: 4px 6px;">నంబర్ లేదు</span>
+            `}
           </div>
         </div>
       `;
