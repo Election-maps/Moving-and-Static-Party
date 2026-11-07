@@ -1,4 +1,4 @@
-﻿window.MOVING_STATIC_DATA = [
+window.MOVING_STATIC_DATA = [
     {
         "id":  "DUTY_Srikakulam_Rural_MP_1",
         "category":  "Moving Parties",
@@ -48,22 +48,6 @@
         "lng":  84.004533
     },
     {
-        "id":  "DUTY_Gara_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Gara",
-        "mandal":  "GARA",
-        "unitName":  "Static Point-1: Atchannapalem (Gara)",
-        "route":  "Static Point-1: Atchannapalem",
-        "vehicle":  "Fixed Point",
-        "village":  "Atchannapalem",
-        "officer":  "PC 1031-9000802044",
-        "phone":  "9000802044",
-        "supporting":  "Village: Atchannapalem | PS: Gara",
-        "lat":  18.293605,
-        "lng":  83.996533
-    },
-    {
         "id":  "DUTY_Gara_MP_2",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -78,6 +62,22 @@
         "supporting":  "Vehicle: 2W | PS: Gara",
         "lat":  18.296105,
         "lng":  84.004533
+    },
+    {
+        "id":  "DUTY_Gara_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Gara",
+        "mandal":  "GARA",
+        "unitName":  "Static Point-1: Atchannapalem (Gara)",
+        "route":  "Static Point-1: Atchannapalem",
+        "vehicle":  "Fixed Point",
+        "village":  "Atchannapalem",
+        "officer":  "PC 1031-9000802044",
+        "phone":  "9000802044",
+        "supporting":  "Village: Atchannapalem | PS: Gara",
+        "lat":  18.293605,
+        "lng":  83.996533
     },
     {
         "id":  "DUTY_Gara_SP_2",
@@ -144,22 +144,6 @@
         "lng":  83.879087
     },
     {
-        "id":  "DUTY_Amadalavalasa_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Amadalavalasa",
-        "mandal":  "AMADALAVALASA",
-        "unitName":  "Static Point-1: Vanjangi (Amadalavalasa)",
-        "route":  "Static Point-1: Vanjangi",
-        "vehicle":  "Fixed Point",
-        "village":  "Vanjangi",
-        "officer":  "HC 1989-8106530543",
-        "phone":  "8106530543",
-        "supporting":  "Village: Vanjangi | PS: Amadalavalasa",
-        "lat":  18.406102,
-        "lng":  83.871087
-    },
-    {
         "id":  "DUTY_Amadalavalasa_MP_2",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -174,22 +158,6 @@
         "supporting":  "Vehicle: 2W | PS: Amadalavalasa",
         "lat":  18.408602,
         "lng":  83.879087
-    },
-    {
-        "id":  "DUTY_Amadalavalasa_SP_2",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Amadalavalasa",
-        "mandal":  "AMADALAVALASA",
-        "unitName":  "Static Point-2: Korlakota (Amadalavalasa)",
-        "route":  "Static Point-2: Korlakota",
-        "vehicle":  "Fixed Point",
-        "village":  "Korlakota",
-        "officer":  "WASI 814-7075007799",
-        "phone":  "7075007799",
-        "supporting":  "Village: Korlakota | PS: Amadalavalasa",
-        "lat":  18.402602,
-        "lng":  83.871087
     },
     {
         "id":  "DUTY_Amadalavalasa_MP_3",
@@ -208,6 +176,38 @@
         "lng":  83.879087
     },
     {
+        "id":  "DUTY_Amadalavalasa_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Amadalavalasa",
+        "mandal":  "AMADALAVALASA",
+        "unitName":  "Static Point-1: Vanjangi (Amadalavalasa)",
+        "route":  "Static Point-1: Vanjangi",
+        "vehicle":  "Fixed Point",
+        "village":  "Vanjangi",
+        "officer":  "HC 1989-8106530543",
+        "phone":  "8106530543",
+        "supporting":  "Village: Vanjangi | PS: Amadalavalasa",
+        "lat":  18.406102,
+        "lng":  83.871087
+    },
+    {
+        "id":  "DUTY_Amadalavalasa_SP_2",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Amadalavalasa",
+        "mandal":  "AMADALAVALASA",
+        "unitName":  "Static Point-2: Korlakota (Amadalavalasa)",
+        "route":  "Static Point-2: Korlakota",
+        "vehicle":  "Fixed Point",
+        "village":  "Korlakota",
+        "officer":  "WASI 814-7075007799",
+        "phone":  "7075007799",
+        "supporting":  "Village: Korlakota | PS: Amadalavalasa",
+        "lat":  18.402602,
+        "lng":  83.871087
+    },
+    {
         "id":  "DUTY_Sarubujjili_MP_1",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -221,6 +221,22 @@
         "phone":  "6309990856",
         "supporting":  "Vehicle: 4W | PS: Sarubujjili",
         "lat":  18.516117,
+        "lng":  83.924092
+    },
+    {
+        "id":  "DUTY_Sarubujjili_MP_2",
+        "category":  "Moving Parties",
+        "categoryKey":  "MP",
+        "ps":  "Sarubujjili",
+        "mandal":  "SARUBUJJILI",
+        "unitName":  "Moving Party- 2 (Sarubujjili)",
+        "route":  "Moving Party- 2",
+        "vehicle":  "4W",
+        "village":  "",
+        "officer":  "Duty Incharge",
+        "phone":  "",
+        "supporting":  "Vehicle: 4W | PS: Sarubujjili",
+        "lat":  18.519617,
         "lng":  83.924092
     },
     {
@@ -238,22 +254,6 @@
         "supporting":  "Village: Rottavalasa | PS: Sarubujjili",
         "lat":  18.517117,
         "lng":  83.916092
-    },
-    {
-        "id":  "DUTY_Sarubujjili_MP_2",
-        "category":  "Moving Parties",
-        "categoryKey":  "MP",
-        "ps":  "Sarubujjili",
-        "mandal":  "SARUBUJJILI",
-        "unitName":  "Moving Party- 2 (Sarubujjili)",
-        "route":  "Moving Party- 2",
-        "vehicle":  "4W",
-        "village":  "",
-        "officer":  "Duty Incharge",
-        "phone":  "",
-        "supporting":  "Vehicle: 4W | PS: Sarubujjili",
-        "lat":  18.519617,
-        "lng":  83.924092
     },
     {
         "id":  "DUTY_Sarubujjili_SP_2",
@@ -416,22 +416,6 @@
         "lng":  83.797212
     },
     {
-        "id":  "DUTY_Ponduru_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Ponduru",
-        "mandal":  "PONDURU",
-        "unitName":  "Static Point-1: Gokarnapalli village (Ponduru)",
-        "route":  "Static Point-1: Gokarnapalli village",
-        "vehicle":  "Fixed Point",
-        "village":  "Gokarnapalli village",
-        "officer":  "K.RAMANA HC 458, 94407 06046",
-        "phone":  "",
-        "supporting":  "Village: Gokarnapalli village | PS: Ponduru",
-        "lat":  18.336524,
-        "lng":  83.789212
-    },
-    {
         "id":  "DUTY_Ponduru_MP_2",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -464,6 +448,22 @@
         "lng":  83.797212
     },
     {
+        "id":  "DUTY_Ponduru_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Ponduru",
+        "mandal":  "PONDURU",
+        "unitName":  "Static Point-1: Gokarnapalli village (Ponduru)",
+        "route":  "Static Point-1: Gokarnapalli village",
+        "vehicle":  "Fixed Point",
+        "village":  "Gokarnapalli village",
+        "officer":  "K.RAMANA HC 458, 94407 06046",
+        "phone":  "",
+        "supporting":  "Village: Gokarnapalli village | PS: Ponduru",
+        "lat":  18.336524,
+        "lng":  83.789212
+    },
+    {
         "id":  "DUTY_Etcherla_MP_1",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -478,22 +478,6 @@
         "supporting":  "Vehicle: 4W | PS: Etcherla",
         "lat":  18.246568,
         "lng":  83.842458
-    },
-    {
-        "id":  "DUTY_Etcherla_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Etcherla",
-        "mandal":  "ETCHERLA",
-        "unitName":  "Static Point-1 (Etcherla)",
-        "route":  "Static Point-1",
-        "vehicle":  "Fixed Point",
-        "village":  "",
-        "officer":  "ASI 966\n9440345496",
-        "phone":  "9440345496",
-        "supporting":  "Village: Fixed Point | PS: Etcherla",
-        "lat":  18.247568,
-        "lng":  83.834458
     },
     {
         "id":  "DUTY_Etcherla_MP_2",
@@ -528,6 +512,22 @@
         "lng":  83.842458
     },
     {
+        "id":  "DUTY_Etcherla_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Etcherla",
+        "mandal":  "ETCHERLA",
+        "unitName":  "Static Point-1 (Etcherla)",
+        "route":  "Static Point-1",
+        "vehicle":  "Fixed Point",
+        "village":  "",
+        "officer":  "ASI 966\n9440345496",
+        "phone":  "9440345496",
+        "supporting":  "Village: Fixed Point | PS: Etcherla",
+        "lat":  18.247568,
+        "lng":  83.834458
+    },
+    {
         "id":  "DUTY_Laveru_MP_1",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -541,6 +541,22 @@
         "phone":  "",
         "supporting":  "Vehicle: 2W | PS: Laveru",
         "lat":  18.237447,
+        "lng":  83.742618
+    },
+    {
+        "id":  "DUTY_Laveru_MP_2",
+        "category":  "Moving Parties",
+        "categoryKey":  "MP",
+        "ps":  "Laveru",
+        "mandal":  "LAVERU",
+        "unitName":  "Moving Party-2 (Laveru)",
+        "route":  "Moving Party-2",
+        "vehicle":  "4W",
+        "village":  "",
+        "officer":  "Duty Incharge",
+        "phone":  "",
+        "supporting":  "Vehicle: 4W | PS: Laveru",
+        "lat":  18.240947,
         "lng":  83.742618
     },
     {
@@ -558,22 +574,6 @@
         "supporting":  "Village: Fixed Point | PS: Laveru",
         "lat":  18.238447,
         "lng":  83.734618
-    },
-    {
-        "id":  "DUTY_Laveru_MP_2",
-        "category":  "Moving Parties",
-        "categoryKey":  "MP",
-        "ps":  "Laveru",
-        "mandal":  "LAVERU",
-        "unitName":  "Moving Party-2 (Laveru)",
-        "route":  "Moving Party-2",
-        "vehicle":  "4W",
-        "village":  "",
-        "officer":  "Duty Incharge",
-        "phone":  "",
-        "supporting":  "Vehicle: 4W | PS: Laveru",
-        "lat":  18.240947,
-        "lng":  83.742618
     },
     {
         "id":  "DUTY_G__Sigadam_MP_1",
@@ -629,8 +629,8 @@
         "categoryKey":  "SP",
         "ps":  "Tekkali PS",
         "mandal":  "TEKKALI",
-        "unitName":  "Sattic point-2: 1. toulusurupalli Hc 154, 9652876660. 2.Buragam. pc 2015, 6302893318 (Tekkali PS)",
-        "route":  "Sattic point-2: 1. toulusurupalli Hc 154, 9652876660. 2.Buragam. pc 2015, 6302893318",
+        "unitName":  "Static Point-1: 1. toulusurupalli Hc 154, 9652876660. 2.Buragam. pc 2015, 6302893318 (Tekkali PS)",
+        "route":  "Static Point-1: 1. toulusurupalli Hc 154, 9652876660. 2.Buragam. pc 2015, 6302893318",
         "vehicle":  "Fixed Point",
         "village":  "1. toulusurupalli Hc 154, 9652876660. 2.Buragam. pc 2015, 6302893318",
         "officer":  "1. toulusurupalli Hc 154, 9652876660. 2.Buragam. pc 2015, 6302893318",
@@ -656,22 +656,6 @@
         "lng":  84.277156
     },
     {
-        "id":  "DUTY_Santhabommali_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Santhabommali",
-        "mandal":  "SANTHABOMMALI",
-        "unitName":  "Sattic point-1: Dandugopalapuram (Santhabommali)",
-        "route":  "Sattic point-1: Dandugopalapuram",
-        "vehicle":  "Fixed Point",
-        "village":  "Dandugopalapuram",
-        "officer":  "P Tulasamma WHC 1901 - 7893301901",
-        "phone":  "7893301901",
-        "supporting":  "Village: Dandugopalapuram | PS: Santhabommali",
-        "lat":  18.520288999999998,
-        "lng":  84.269156
-    },
-    {
         "id":  "DUTY_Santhabommali_MP_2",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -686,22 +670,6 @@
         "supporting":  "Vehicle: 2W | PS: Santhabommali",
         "lat":  18.522789,
         "lng":  84.277156
-    },
-    {
-        "id":  "DUTY_Santhabommali_SP_2",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Santhabommali",
-        "mandal":  "SANTHABOMMALI",
-        "unitName":  "Sattic point-2: Jagannadhapuram (Santhabommali)",
-        "route":  "Sattic point-2: Jagannadhapuram",
-        "vehicle":  "Fixed Point",
-        "village":  "Jagannadhapuram",
-        "officer":  "K Dharma rao HC 1149- 9010022160",
-        "phone":  "9010022160",
-        "supporting":  "Village: Jagannadhapuram | PS: Santhabommali",
-        "lat":  18.516789,
-        "lng":  84.269156
     },
     {
         "id":  "DUTY_Santhabommali_MP_3",
@@ -720,13 +688,45 @@
         "lng":  84.277156
     },
     {
+        "id":  "DUTY_Santhabommali_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Santhabommali",
+        "mandal":  "SANTHABOMMALI",
+        "unitName":  "Static Point-1: Dandugopalapuram (Santhabommali)",
+        "route":  "Static Point-1: Dandugopalapuram",
+        "vehicle":  "Fixed Point",
+        "village":  "Dandugopalapuram",
+        "officer":  "P Tulasamma WHC 1901 - 7893301901",
+        "phone":  "7893301901",
+        "supporting":  "Village: Dandugopalapuram | PS: Santhabommali",
+        "lat":  18.520288999999998,
+        "lng":  84.269156
+    },
+    {
+        "id":  "DUTY_Santhabommali_SP_2",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Santhabommali",
+        "mandal":  "SANTHABOMMALI",
+        "unitName":  "Static Point-2: Jagannadhapuram (Santhabommali)",
+        "route":  "Static Point-2: Jagannadhapuram",
+        "vehicle":  "Fixed Point",
+        "village":  "Jagannadhapuram",
+        "officer":  "K Dharma rao HC 1149- 9010022160",
+        "phone":  "9010022160",
+        "supporting":  "Village: Jagannadhapuram | PS: Santhabommali",
+        "lat":  18.516789,
+        "lng":  84.269156
+    },
+    {
         "id":  "DUTY_Santhabommali_SP_3",
         "category":  "Static Points",
         "categoryKey":  "SP",
         "ps":  "Santhabommali",
         "mandal":  "SANTHABOMMALI",
-        "unitName":  "Sattic point-3: Lakkivalasa (Santhabommali)",
-        "route":  "Sattic point-3: Lakkivalasa",
+        "unitName":  "Static Point-3: Lakkivalasa (Santhabommali)",
+        "route":  "Static Point-3: Lakkivalasa",
         "vehicle":  "Fixed Point",
         "village":  "Lakkivalasa",
         "officer":  "J Srinivasarao ASI 451- 8919992700",
@@ -784,22 +784,6 @@
         "lng":  84.143896
     },
     {
-        "id":  "DUTY_Kotabommali_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Kotabommali",
-        "mandal":  "KOTABOMMALI",
-        "unitName":  "Sattic point-1: Pattupuram (Kotabommali)",
-        "route":  "Sattic point-1: Pattupuram",
-        "vehicle":  "Fixed Point",
-        "village":  "Pattupuram",
-        "officer":  "PC 1121, M vinod, Cell 8121028363",
-        "phone":  "8121028363",
-        "supporting":  "Village: Pattupuram | PS: Kotabommali",
-        "lat":  18.519113,
-        "lng":  84.135896
-    },
-    {
         "id":  "DUTY_Kotabommali_MP_2",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -814,22 +798,6 @@
         "supporting":  "Vehicle: 2W | PS: Kotabommali",
         "lat":  18.521613,
         "lng":  84.143896
-    },
-    {
-        "id":  "DUTY_Kotabommali_SP_2",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Kotabommali",
-        "mandal":  "KOTABOMMALI",
-        "unitName":  "Sattic point-2: Kistupuram (Kotabommali)",
-        "route":  "Sattic point-2: Kistupuram",
-        "vehicle":  "Fixed Point",
-        "village":  "Kistupuram",
-        "officer":  "HC 1391, K Ganesh, Cell 8919365829",
-        "phone":  "8919365829",
-        "supporting":  "Village: Kistupuram | PS: Kotabommali",
-        "lat":  18.515613,
-        "lng":  84.135896
     },
     {
         "id":  "DUTY_Kotabommali_MP_3",
@@ -960,6 +928,38 @@
         "lng":  84.152896
     },
     {
+        "id":  "DUTY_Kotabommali_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Kotabommali",
+        "mandal":  "KOTABOMMALI",
+        "unitName":  "Static Point-1: Pattupuram (Kotabommali)",
+        "route":  "Static Point-1: Pattupuram",
+        "vehicle":  "Fixed Point",
+        "village":  "Pattupuram",
+        "officer":  "PC 1121, M vinod, Cell 8121028363",
+        "phone":  "8121028363",
+        "supporting":  "Village: Pattupuram | PS: Kotabommali",
+        "lat":  18.519113,
+        "lng":  84.135896
+    },
+    {
+        "id":  "DUTY_Kotabommali_SP_2",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Kotabommali",
+        "mandal":  "KOTABOMMALI",
+        "unitName":  "Static Point-2: Kistupuram (Kotabommali)",
+        "route":  "Static Point-2: Kistupuram",
+        "vehicle":  "Fixed Point",
+        "village":  "Kistupuram",
+        "officer":  "HC 1391, K Ganesh, Cell 8919365829",
+        "phone":  "8919365829",
+        "supporting":  "Village: Kistupuram | PS: Kotabommali",
+        "lat":  18.515613,
+        "lng":  84.135896
+    },
+    {
         "id":  "DUTY_Nandigam_MP_1",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -974,22 +974,6 @@
         "supporting":  "Vehicle: 2w | PS: Nandigam",
         "lat":  18.686634,
         "lng":  84.299521
-    },
-    {
-        "id":  "DUTY_Nandigam_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Nandigam",
-        "mandal":  "NANDIGAM",
-        "unitName":  "Static Point-1: Kaputemburu (Nandigam)",
-        "route":  "Static Point-1: Kaputemburu",
-        "vehicle":  "Fixed Point",
-        "village":  "Kaputemburu",
-        "officer":  "Duty Incharge",
-        "phone":  "",
-        "supporting":  "Village: Kaputemburu | PS: Nandigam",
-        "lat":  18.687634,
-        "lng":  84.291521
     },
     {
         "id":  "DUTY_Nandigam_MP_2",
@@ -1038,6 +1022,22 @@
         "supporting":  "Vehicle: 2w | PS: Nandigam",
         "lat":  18.683134,
         "lng":  84.304021
+    },
+    {
+        "id":  "DUTY_Nandigam_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Nandigam",
+        "mandal":  "NANDIGAM",
+        "unitName":  "Static Point-1: Kaputemburu (Nandigam)",
+        "route":  "Static Point-1: Kaputemburu",
+        "vehicle":  "Fixed Point",
+        "village":  "Kaputemburu",
+        "officer":  "Duty Incharge",
+        "phone":  "",
+        "supporting":  "Village: Kaputemburu | PS: Nandigam",
+        "lat":  18.687634,
+        "lng":  84.291521
     },
     {
         "id":  "DUTY_Narasannapeta_MP_1",
@@ -1200,22 +1200,6 @@
         "lng":  84.060131
     },
     {
-        "id":  "DUTY_Saravakota_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Saravakota",
-        "mandal":  "SARAVAKOTA",
-        "unitName":  "Sattic point-1: Saravakota jn (Saravakota)",
-        "route":  "Sattic point-1: Saravakota jn",
-        "vehicle":  "Fixed Point",
-        "village":  "Saravakota jn",
-        "officer":  "PC 2189 G Satyanarayana - 9494373555",
-        "phone":  "9494373555",
-        "supporting":  "Village: Saravakota jn | PS: Saravakota",
-        "lat":  18.629398,
-        "lng":  84.052131
-    },
-    {
         "id":  "DUTY_Saravakota_MP_2",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -1230,6 +1214,22 @@
         "supporting":  "Vehicle: 2 Wheeler | PS: Saravakota",
         "lat":  18.631898,
         "lng":  84.060131
+    },
+    {
+        "id":  "DUTY_Saravakota_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Saravakota",
+        "mandal":  "SARAVAKOTA",
+        "unitName":  "Static Point-1: Saravakota jn (Saravakota)",
+        "route":  "Static Point-1: Saravakota jn",
+        "vehicle":  "Fixed Point",
+        "village":  "Saravakota jn",
+        "officer":  "PC 2189 G Satyanarayana - 9494373555",
+        "phone":  "9494373555",
+        "supporting":  "Village: Saravakota jn | PS: Saravakota",
+        "lat":  18.629398,
+        "lng":  84.052131
     },
     {
         "id":  "DUTY_Pathapatnam_MP_1",
@@ -1440,22 +1440,6 @@
         "lng":  83.979828
     },
     {
-        "id":  "DUTY_Hiramandalam_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Hiramandalam",
-        "mandal":  "HIRAMANDALAM",
-        "unitName":  "Static Point-1: Subalai (Hiramandalam)",
-        "route":  "Static Point-1: Subalai",
-        "vehicle":  "Fixed Point",
-        "village":  "Subalai",
-        "officer":  "ASI 1487 9440793703",
-        "phone":  "9440793703",
-        "supporting":  "Village: Subalai | PS: Hiramandalam",
-        "lat":  18.680832,
-        "lng":  83.971828
-    },
-    {
         "id":  "DUTY_Hiramandalam_MP_2",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -1470,22 +1454,6 @@
         "supporting":  "Vehicle: 2 Wheeler | PS: Hiramandalam",
         "lat":  18.683332,
         "lng":  83.979828
-    },
-    {
-        "id":  "DUTY_Hiramandalam_SP_2",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Hiramandalam",
-        "mandal":  "HIRAMANDALAM",
-        "unitName":  "Static Point-1: Dhanupuram (Hiramandalam)",
-        "route":  "Static Point-1: Dhanupuram",
-        "vehicle":  "Fixed Point",
-        "village":  "Dhanupuram",
-        "officer":  "PC 831 KVK Raju \n9618100678",
-        "phone":  "9618100678",
-        "supporting":  "Village: Dhanupuram | PS: Hiramandalam",
-        "lat":  18.677332,
-        "lng":  83.971828
     },
     {
         "id":  "DUTY_Hiramandalam_MP_3",
@@ -1504,22 +1472,6 @@
         "lng":  83.979828
     },
     {
-        "id":  "DUTY_Hiramandalam_SP_3",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "Hiramandalam",
-        "mandal":  "HIRAMANDALAM",
-        "unitName":  "Static Point-1: Bhageeradhapuram colony (Hiramandalam)",
-        "route":  "Static Point-1: Bhageeradhapuram colony",
-        "vehicle":  "Fixed Point",
-        "village":  "Bhageeradhapuram colony",
-        "officer":  "PC 1504 D Rakikumar\n8919655288",
-        "phone":  "8919655288",
-        "supporting":  "Village: Bhageeradhapuram colony | PS: Hiramandalam",
-        "lat":  18.673832,
-        "lng":  83.971828
-    },
-    {
         "id":  "DUTY_Hiramandalam_MP_4",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -1536,13 +1488,61 @@
         "lng":  83.984328
     },
     {
+        "id":  "DUTY_Hiramandalam_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Hiramandalam",
+        "mandal":  "HIRAMANDALAM",
+        "unitName":  "Static Point-1: Subalai (Hiramandalam)",
+        "route":  "Static Point-1: Subalai",
+        "vehicle":  "Fixed Point",
+        "village":  "Subalai",
+        "officer":  "ASI 1487 9440793703",
+        "phone":  "9440793703",
+        "supporting":  "Village: Subalai | PS: Hiramandalam",
+        "lat":  18.680832,
+        "lng":  83.971828
+    },
+    {
+        "id":  "DUTY_Hiramandalam_SP_2",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Hiramandalam",
+        "mandal":  "HIRAMANDALAM",
+        "unitName":  "Static Point-2: Dhanupuram (Hiramandalam)",
+        "route":  "Static Point-2: Dhanupuram",
+        "vehicle":  "Fixed Point",
+        "village":  "Dhanupuram",
+        "officer":  "PC 831 KVK Raju \n9618100678",
+        "phone":  "9618100678",
+        "supporting":  "Village: Dhanupuram | PS: Hiramandalam",
+        "lat":  18.677332,
+        "lng":  83.971828
+    },
+    {
+        "id":  "DUTY_Hiramandalam_SP_3",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "Hiramandalam",
+        "mandal":  "HIRAMANDALAM",
+        "unitName":  "Static Point-3: Bhageeradhapuram colony (Hiramandalam)",
+        "route":  "Static Point-3: Bhageeradhapuram colony",
+        "vehicle":  "Fixed Point",
+        "village":  "Bhageeradhapuram colony",
+        "officer":  "PC 1504 D Rakikumar\n8919655288",
+        "phone":  "8919655288",
+        "supporting":  "Village: Bhageeradhapuram colony | PS: Hiramandalam",
+        "lat":  18.673832,
+        "lng":  83.971828
+    },
+    {
         "id":  "DUTY_Hiramandalam_SP_4",
         "category":  "Static Points",
         "categoryKey":  "SP",
         "ps":  "Hiramandalam",
         "mandal":  "HIRAMANDALAM",
-        "unitName":  "Hiramandalam (Hiramandalam)",
-        "route":  "Hiramandalam",
+        "unitName":  "Static Point-4 (Hiramandalam)",
+        "route":  "Static Point-4",
         "vehicle":  "Fixed Point",
         "village":  "",
         "officer":  "Duty Incharge",
@@ -1558,13 +1558,45 @@
         "ps":  "Kasibugga",
         "mandal":  "PALASA",
         "unitName":  "Moving Party-1 (Kasibugga)",
-        "route":  "1",
+        "route":  "Moving Party-1",
         "vehicle":  "4W",
         "village":  "",
         "officer":  "SI 6309990857",
         "phone":  "6309990857",
         "supporting":  "Vehicle: 4W | PS: Kasibugga",
         "lat":  18.795094,
+        "lng":  84.425877
+    },
+    {
+        "id":  "DUTY_Kasibugga_MP_2",
+        "category":  "Moving Parties",
+        "categoryKey":  "MP",
+        "ps":  "Kasibugga",
+        "mandal":  "PALASA",
+        "unitName":  "Moving Party-2 (Kasibugga)",
+        "route":  "Moving Party-2",
+        "vehicle":  "2W",
+        "village":  "",
+        "officer":  "PC 543-9010102478",
+        "phone":  "9010102478",
+        "supporting":  "Vehicle: 2W | PS: Kasibugga",
+        "lat":  18.798594,
+        "lng":  84.425877
+    },
+    {
+        "id":  "DUTY_Kasibugga_MP_3",
+        "category":  "Moving Parties",
+        "categoryKey":  "MP",
+        "ps":  "Kasibugga",
+        "mandal":  "PALASA",
+        "unitName":  "Moving Party-3 (Kasibugga)",
+        "route":  "Moving Party-3",
+        "vehicle":  "2W",
+        "village":  "",
+        "officer":  "PC 2063-8247505984",
+        "phone":  "8247505984",
+        "supporting":  "Vehicle: 2W | PS: Kasibugga",
+        "lat":  18.802094,
         "lng":  84.425877
     },
     {
@@ -1584,29 +1616,13 @@
         "lng":  84.417877
     },
     {
-        "id":  "DUTY_Kasibugga_MP_2",
-        "category":  "Moving Parties",
-        "categoryKey":  "MP",
-        "ps":  "Kasibugga",
-        "mandal":  "PALASA",
-        "unitName":  "Moving Party-2 (Kasibugga)",
-        "route":  "1",
-        "vehicle":  "2W",
-        "village":  "",
-        "officer":  "PC 543-9010102478",
-        "phone":  "9010102478",
-        "supporting":  "Vehicle: 2W | PS: Kasibugga",
-        "lat":  18.798594,
-        "lng":  84.425877
-    },
-    {
         "id":  "DUTY_Kasibugga_SP_2",
         "category":  "Static Points",
         "categoryKey":  "SP",
         "ps":  "Kasibugga",
         "mandal":  "PALASA",
         "unitName":  "Static Point-2: Pedanchala (Kasibugga)",
-        "route":  "Static Point-1: Pedanchala",
+        "route":  "Static Point-2: Pedanchala",
         "vehicle":  "Fixed Point",
         "village":  "Pedanchala",
         "officer":  "HC 1989- 9515900443",
@@ -1616,29 +1632,13 @@
         "lng":  84.417877
     },
     {
-        "id":  "DUTY_Kasibugga_MP_3",
-        "category":  "Moving Parties",
-        "categoryKey":  "MP",
-        "ps":  "Kasibugga",
-        "mandal":  "PALASA",
-        "unitName":  "Moving Party-3 (Kasibugga)",
-        "route":  "1",
-        "vehicle":  "2W",
-        "village":  "",
-        "officer":  "PC 2063-8247505984",
-        "phone":  "8247505984",
-        "supporting":  "Vehicle: 2W | PS: Kasibugga",
-        "lat":  18.802094,
-        "lng":  84.425877
-    },
-    {
         "id":  "DUTY_Kasibugga_SP_3",
         "category":  "Static Points",
         "categoryKey":  "SP",
         "ps":  "Kasibugga",
         "mandal":  "PALASA",
         "unitName":  "Static Point-3: Tekkalipatnam (Kasibugga)",
-        "route":  "Static Point-1: Tekkalipatnam",
+        "route":  "Static Point-3: Tekkalipatnam",
         "vehicle":  "Fixed Point",
         "village":  "Tekkalipatnam",
         "officer":  "HC 1999- 9963136593",
@@ -1920,22 +1920,6 @@
         "lng":  83.711001
     },
     {
-        "id":  "DUTY_J_R_Puram_SP_1",
-        "category":  "Static Points",
-        "categoryKey":  "SP",
-        "ps":  "J.R.Puram",
-        "mandal":  "RANASTALAM",
-        "unitName":  "Static Point-1: CHILLAPETA RAJAM (J.R.Puram)",
-        "route":  "Static Point-1: CHILLAPETA RAJAM",
-        "vehicle":  "Fixed Point",
-        "village":  "CHILLAPETA RAJAM",
-        "officer":  "ASI 1123, PV RAMANA\n8106456769",
-        "phone":  "8106456769",
-        "supporting":  "Village: CHILLAPETA RAJAM | PS: J.R.Puram",
-        "lat":  18.174611,
-        "lng":  83.703001
-    },
-    {
         "id":  "DUTY_J_R_Puram_MP_2",
         "category":  "Moving Parties",
         "categoryKey":  "MP",
@@ -1998,5 +1982,22 @@
         "supporting":  "Vehicle: 2W | PS: J.R.Puram",
         "lat":  18.173611,
         "lng":  83.715501
+    },
+    {
+        "id":  "DUTY_J_R_Puram_SP_1",
+        "category":  "Static Points",
+        "categoryKey":  "SP",
+        "ps":  "J.R.Puram",
+        "mandal":  "RANASTALAM",
+        "unitName":  "Static Point-1: CHILLAPETA RAJAM (J.R.Puram)",
+        "route":  "Static Point-1: CHILLAPETA RAJAM",
+        "vehicle":  "Fixed Point",
+        "village":  "CHILLAPETA RAJAM",
+        "officer":  "ASI 1123, PV RAMANA\n8106456769",
+        "phone":  "8106456769",
+        "supporting":  "Village: CHILLAPETA RAJAM | PS: J.R.Puram",
+        "lat":  18.174611,
+        "lng":  83.703001
     }
 ];
+window.ROUTE_MOBILES_DATA = window.MOVING_STATIC_DATA;

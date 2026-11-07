@@ -142,6 +142,8 @@ foreach ($grp in $grouped) {
 
     $mpCounter = 0
     $spCounter = 0
+    $psMovingDuties = @()
+    $psStaticDuties = @()
 
     foreach ($r in $grp.Group) {
         # Check Moving Party
@@ -152,7 +154,14 @@ foreach ($grp in $grouped) {
         $isMpValid = ($mpName -or $mpOff) -and ($mpName -notmatch '^(nil|nill)$') -and ($mpOff -notmatch '^(nil|nill)$')
         if ($isMpValid) {
             $mpCounter++
-            $displayName = if ($mpName) { $mpName } else { "Moving Party-$mpCounter" }
+            # Clean up display name (e.g. if mpName is just a number '1', make it 'Moving Party-1')
+            $displayName = if ($mpName -and $mpName -match '^(Moving|QRT|\(QRT\))') { 
+                $mpName 
+            } elseif ($mpName -and $mpName -notmatch '^\d+$') {
+                $mpName
+            } else { 
+                "Moving Party-$mpCounter" 
+            }
             $cleanPhone = ""
             $phoneMatch = [regex]::Match($mpOff, '\b[6-9]\d{9}\b')
             if ($phoneMatch.Success) { $cleanPhone = $phoneMatch.Value }
@@ -165,7 +174,7 @@ foreach ($grp in $grouped) {
             $latOffset = (0.0035 * ($mpCounter % 4)) - 0.005
             $lngOffset = (0.0045 * [math]::Floor($mpCounter / 4)) + 0.004
 
-            $allDuties += [pscustomobject]@{
+            $psMovingDuties += [pscustomobject]@{
                 id          = "DUTY_$slug"
                 category    = "Moving Parties"
                 categoryKey = "MP"
@@ -195,13 +204,8 @@ foreach ($grp in $grouped) {
 
         if ($isSpValid) {
             $spCounter++
-            $displayName = if ($spName -and $spName -notmatch '^\d+$') { 
-                $spName 
-            } elseif ($spName) { 
-                "Static Point-$spName" 
-            } else { 
-                "Static Point-$spCounter" 
-            }
+            # Clean up display name: Static Point-1, Static Point-2, etc.
+            $displayName = "Static Point-$spCounter"
 
             if ($vill) {
                 $displayName += ": $vill"
@@ -220,7 +224,7 @@ foreach ($grp in $grouped) {
             $latOffset = -(0.0035 * ($spCounter % 4)) + 0.003
             $lngOffset = -(0.0045 * [math]::Floor($spCounter / 4)) - 0.004
 
-            $allDuties += [pscustomobject]@{
+            $psStaticDuties += [pscustomobject]@{
                 id          = "DUTY_$slug"
                 category    = "Static Points"
                 categoryKey = "SP"
@@ -243,7 +247,7 @@ foreach ($grp in $grouped) {
     # Provide 1 pending entry so that the PS appears in the dropdown & directory
     if ($mpCounter -eq 0 -and $spCounter -eq 0) {
         $slugMP = ($psName -replace '[^a-zA-Z0-9]', '_') + "_MP_1"
-        $allDuties += [pscustomobject]@{
+        $psMovingDuties += [pscustomobject]@{
             id          = "DUTY_$slugMP"
             category    = "Moving Parties"
             categoryKey = "MP"
@@ -261,7 +265,7 @@ foreach ($grp in $grouped) {
         }
 
         $slugSP = ($psName -replace '[^a-zA-Z0-9]', '_') + "_SP_1"
-        $allDuties += [pscustomobject]@{
+        $psStaticDuties += [pscustomobject]@{
             id          = "DUTY_$slugSP"
             category    = "Static Points"
             categoryKey = "SP"
@@ -278,6 +282,10 @@ foreach ($grp in $grouped) {
             lng         = [math]::Round($psBaseLng - 0.003, 6)
         }
     }
+
+    # Order within station: First all Moving Parties, then all Static Points
+    $allDuties += $psMovingDuties
+    $allDuties += $psStaticDuties
 }
 
 Write-Host "--------------------------------------------------------"
