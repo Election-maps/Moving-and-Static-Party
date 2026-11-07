@@ -1,7 +1,7 @@
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 # 1. Parse Mandal Centroids from mandal_borders.js
-$mandalBordersRaw = Get-Content mandal_borders.js -Raw
+$mandalBordersRaw = Get-Content "$PSScriptRoot\mandal_borders.js" -Raw
 $jsonStart = $mandalBordersRaw.IndexOf('{')
 $jsonEnd = $mandalBordersRaw.LastIndexOf('}')
 $mandalJson = $mandalBordersRaw.Substring($jsonStart, $jsonEnd - $jsonStart + 1) | ConvertFrom-Json
@@ -60,8 +60,8 @@ $psMandalMap = @{
     "Kaviti"              = @{ mandal = "KAVITI"; offsetLat = 0.0; offsetLng = 0.0 }
 }
 
-# 2. Open Excel file cleanly allowing FileShare.ReadWrite so locked/open file is handled safely
-$xlsxPath = "Moving Partis and Static Points.xlsx"
+# 2. Open Excel file
+$xlsxPath = "$PSScriptRoot\Moving Partis and Static Points.xlsx"
 $tempPath = [System.IO.Path]::GetTempFileName() + ".xlsx"
 
 $fsIn = New-Object System.IO.FileStream($xlsxPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
@@ -104,7 +104,12 @@ foreach ($row in $sheetXml.worksheet.sheetData.row) {
         $cDict[$colLetter] = $val
     }
     
-    if ($cDict['B']) { $currentPS = $cDict['B'] }
+    if ($cDict['B']) {
+        $currentPS = $cDict['B'].Trim()
+        if ($currentPS -replace '\s+', ' ' -eq 'G Sigadam') {
+            $currentPS = 'G. Sigadam'
+        }
+    }
 
     $rawRows += [pscustomobject]@{
         Row = $r
@@ -123,12 +128,34 @@ Write-Host "Total rows read from Excel: $($rawRows.Count)"
 # Helper function to extract clean 10-digit mobile
 function Extract-Phone($text) {
     if (-not $text) { return "" }
-    $clean = $text -replace '[^0-9]', ''
     $m = [regex]::Match($text, '\b[6-9]\d{9}\b')
     if ($m.Success) { return $m.Value }
     $m2 = [regex]::Match($text, '[6-9]\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d')
     if ($m2.Success) { return ($m2.Value -replace '\s+', '') }
     return ""
+}
+
+# Clean Party Names: convert typos like 'Moving Partyy-1', 'Moving Paerty -1', 'Moveing Party-1' to 'Moving Party-X'
+function Normalize-PartyName($text, $fallbackIndex) {
+    if (-not $text) { return "Moving Party-$fallbackIndex" }
+    $t = $text.Trim()
+    if ($t -match '(?i)(?:mov(?:e)?ing\s*pa(?:e)?rt(?:y|yy|ies)?)\s*[-:]?\s*(\d+)') {
+        return "Moving Party-" + $matches[1]
+    }
+    if ($t -match '^\d+$') {
+        return "Moving Party-$t"
+    }
+    return $t
+}
+
+function Sanitize-Text($str) {
+    if (-not $str) { return "" }
+    $s = [regex]::Replace($str, "[\u2018\u2019\u201A\u201B`]", "'")
+    $s = [regex]::Replace($s, "[\u201C\u201D]", '"')
+    $s = [regex]::Replace($s, "[\u2013\u2014]", "-")
+    $s = [regex]::Replace($s, "[^\x20-\x7E]", " ")
+    $s = [regex]::Replace($s, "PC\s*'\s*s\s*", "PC ")
+    return ($s -replace '\s+', ' ').Trim()
 }
 
 # Group by PS preserving order of appearance in Excel
@@ -169,222 +196,156 @@ foreach ($psName in $psList) {
     $psMovingDuties = @()
     $psStaticDuties = @()
 
-    # SPECIAL HANDLING FOR TEKKALI PS (Row 29 had multi-entries inside single cells)
-    if ($psName -eq 'Tekkali PS') {
-        # Tekkali Moving Parties: 3 units
-        $tkMoving = @(
-            @{ name = "Moving Party-1"; veh = "2W"; off = "K. Kantharao, HC 1106, 9398069417"; ph = "9398069417" },
-            @{ name = "Moving Party-2"; veh = "2W"; off = "Shaik K Jelani, HC 1174, 8331868924"; ph = "8331868924" },
-            @{ name = "Moving Party-3"; veh = "2W"; off = "Sankararao, HC 1318, 9989086984"; ph = "9989086984" }
-        )
-        for ($i = 0; $i -lt $tkMoving.Count; $i++) {
-            $idx = $i + 1
-            $it = $tkMoving[$i]
-            $slug = "Tekkali_PS_MP_$idx"
-            $latOffset = (0.0035 * ($idx % 4)) - 0.005
-            $lngOffset = (0.0045 * [math]::Floor($idx / 4)) + 0.004
+    $mpCount = 0
+    $spCount = 0
+
+    foreach ($r in $psRows) {
+        # 1. Process Moving Party
+        $mpNum = $r.MP_Num
+        $veh = $r.Veh
+        $mpOff = $r.MP_Off
+
+        $isMpValid = ($mpNum -or $mpOff) -and 
+                     ($mpNum -notmatch '^(?i)(nil|nill|0)$') -and 
+                     ($mpOff -notmatch '^(?i)(nil|nill|0)$')
+
+        if ($isMpValid) {
+            $mpCount++
+            $cleanVeh = if ($veh) { $veh.Trim() -replace '(?i)\s*wheeler', '' } else { "4W" }
+            if ($cleanVeh -match '(?i)4w') { $cleanVeh = "4W" }
+            elseif ($cleanVeh -match '(?i)2w') { $cleanVeh = "2W" }
+
+            $cleanPhone = Extract-Phone $mpOff
+            $cleanOfficer = if ($mpOff) { Sanitize-Text ($mpOff -replace '\r?\n', ', ') } else { "Duty Incharge ($psName)" }
+
+            $dispName = Normalize-PartyName $mpNum $mpCount
+
+            # Check if this row also contains village route for Moving Party
+            $mpVillage = ""
+            if ($r.Vill -and $r.SP_Num -match '^(?i)(nil|nill|0)$') {
+                $mpVillage = Sanitize-Text $r.Vill
+            }
+
+            $supportStr = "Vehicle: $cleanVeh | PS: $psName"
+            if ($mpVillage) {
+                $supportStr += " | Route: $mpVillage"
+            }
+
+            $slug = ($psName -replace '[^a-zA-Z0-9]', '_') + "_MP_$mpCount"
+            $latOffset = (0.0035 * ($mpCount % 4)) - 0.005
+            $lngOffset = (0.0045 * [math]::Floor($mpCount / 4)) + 0.004
+
             $psMovingDuties += [pscustomobject]@{
                 id          = "DUTY_$slug"
                 category    = "Moving Parties"
                 categoryKey = "MP"
-                ps          = "Tekkali PS"
+                ps          = $psName
                 mandal      = $mName
-                unitName    = "$($it.name) (Tekkali PS)"
-                route       = $it.name
-                vehicle     = $it.veh
-                village     = ""
-                officer     = $it.off
-                phone       = $it.ph
-                supporting  = "Vehicle: $($it.veh) | PS: Tekkali PS"
+                unitName    = "$dispName ($psName)"
+                route       = $dispName
+                vehicle     = $cleanVeh
+                village     = $mpVillage
+                officer     = $cleanOfficer
+                phone       = $cleanPhone
+                supporting  = $supportStr
                 lat         = [math]::Round($psBaseLat + $latOffset, 6)
                 lng         = [math]::Round($psBaseLng + $lngOffset, 6)
             }
         }
 
-        # Tekkali Static Points: 2 units
-        $tkStatic = @(
-            @{ name = "Static Point-1: Toulusurupalli"; vill = "Toulusurupalli"; off = "HC 154, 9652876660"; ph = "9652876660" },
-            @{ name = "Static Point-2: Buragam"; vill = "Buragam"; off = "PC 2015, 6302893318"; ph = "6302893318" }
-        )
-        for ($i = 0; $i -lt $tkStatic.Count; $i++) {
-            $idx = $i + 1
-            $it = $tkStatic[$i]
-            $slug = "Tekkali_PS_SP_$idx"
-            $latOffset = -(0.0035 * ($idx % 4)) + 0.003
-            $lngOffset = -(0.0045 * [math]::Floor($idx / 4)) - 0.004
+        # 2. Process Static Point
+        $spNum = $r.SP_Num
+        $vill = $r.Vill
+        $spOff = $r.SP_Off
+
+        $isSpValid = ($vill -or $spOff) -and 
+                     ($vill -notmatch '^(?i)(nil|nill|0)$') -and 
+                     ($spOff -notmatch '^(?i)(nil|nill|0)$')
+
+        if ($spNum -eq $psName -and -not $spOff -and -not $vill) {
+            $isSpValid = $false
+        }
+
+        if ($isSpValid) {
+            $spCount++
+            $cleanPhone = Extract-Phone $spOff
+            $cleanOfficer = if ($spOff) { Sanitize-Text ($spOff -replace '\r?\n', ', ') } else { "Duty Incharge" }
+            $cleanVill = if ($vill) { Sanitize-Text $vill } else { "" }
+
+            # Extract village from spOff if village column was empty (e.g. Tekkali)
+            if (-not $cleanVill -and $cleanOfficer -match '^(?:\d+\.\s*)?([a-zA-Z\s]+?)[,\.]?\s+(?:Hc|Pc|Asi|Si)\b') {
+                $cleanVill = Sanitize-Text $matches[1]
+            }
+
+            $dispName = "Static Point-$spCount"
+            if ($cleanVill) {
+                $dispName += ": $cleanVill"
+            }
+
+            $supportStr = if ($cleanVill) { "Village: $cleanVill | PS: $psName" } else { "Static Point | PS: $psName" }
+
+            $slug = ($psName -replace '[^a-zA-Z0-9]', '_') + "_SP_$spCount"
+            $latOffset = -(0.0035 * ($spCount % 4)) + 0.003
+            $lngOffset = -(0.0045 * [math]::Floor($spCount / 4)) - 0.004
+
             $psStaticDuties += [pscustomobject]@{
                 id          = "DUTY_$slug"
                 category    = "Static Points"
                 categoryKey = "SP"
-                ps          = "Tekkali PS"
+                ps          = $psName
                 mandal      = $mName
-                unitName    = "$($it.name) (Tekkali PS)"
-                route       = $it.name
+                unitName    = "$dispName ($psName)"
+                route       = $dispName
                 vehicle     = "Fixed Point"
-                village     = $it.vill
-                officer     = $it.off
-                phone       = $it.ph
-                supporting  = "Village: $($it.vill) | PS: Tekkali PS"
+                village     = $cleanVill
+                officer     = $cleanOfficer
+                phone       = $cleanPhone
+                supporting  = $supportStr
                 lat         = [math]::Round($psBaseLat + $latOffset, 6)
                 lng         = [math]::Round($psBaseLng + $lngOffset, 6)
-            }
-        }
-    } else {
-        # Standard PS Parsing
-        $mpCount = 0
-        $spCount = 0
-
-        foreach ($r in $psRows) {
-            # 1. Process Moving Party
-            $mpNum = $r.MP_Num
-            $veh = $r.Veh
-            $mpOff = $r.MP_Off
-
-            $isMpValid = ($mpNum -or $mpOff) -and 
-                         ($mpNum -notmatch '^(nil|nill|0)$') -and 
-                         ($mpOff -notmatch '^(nil|nill|0)$')
-
-            if ($isMpValid) {
-                $mpCount++
-                $cleanVeh = if ($veh) { $veh.Trim() } else { "4W" }
-                $cleanPhone = Extract-Phone $mpOff
-                $cleanOfficer = if ($mpOff) { $mpOff.Trim() } else { "Duty Incharge" }
-
-                # Determine display name
-                $dispName = ""
-                if ($mpNum -and $mpNum -match '^(Moving|Mobile|Over all|\(QRT\)|\(\s*QRT\))') {
-                    $dispName = $mpNum
-                } elseif ($mpNum -and $mpNum -notmatch '^\d+$') {
-                    $dispName = $mpNum
-                } else {
-                    $dispName = "Moving Party-$mpCount"
-                }
-
-                # Check if this row also contains village route for Moving Party (e.g. J.R.Puram)
-                $mpVillage = ""
-                if ($r.Vill -and $r.SP_Num -match '^(nil|nill|0)$') {
-                    $mpVillage = $r.Vill
-                }
-
-                $supportStr = "Vehicle: $cleanVeh | PS: $psName"
-                if ($mpVillage) {
-                    $supportStr += " | Route: $mpVillage"
-                }
-
-                $slug = ($psName -replace '[^a-zA-Z0-9]', '_') + "_MP_$mpCount"
-                $latOffset = (0.0035 * ($mpCount % 4)) - 0.005
-                $lngOffset = (0.0045 * [math]::Floor($mpCount / 4)) + 0.004
-
-                $psMovingDuties += [pscustomobject]@{
-                    id          = "DUTY_$slug"
-                    category    = "Moving Parties"
-                    categoryKey = "MP"
-                    ps          = $psName
-                    mandal      = $mName
-                    unitName    = "$dispName ($psName)"
-                    route       = $dispName
-                    vehicle     = $cleanVeh
-                    village     = $mpVillage
-                    officer     = $cleanOfficer
-                    phone       = $cleanPhone
-                    supporting  = $supportStr
-                    lat         = [math]::Round($psBaseLat + $latOffset, 6)
-                    lng         = [math]::Round($psBaseLng + $lngOffset, 6)
-                }
-            }
-
-            # 2. Process Static Point
-            $spNum = $r.SP_Num
-            $vill = $r.Vill
-            $spOff = $r.SP_Off
-
-            $isSpValid = ($spNum -or $vill -or $spOff) -and 
-                         ($spNum -notmatch '^(nil|nill|0)$') -and 
-                         ($vill -notmatch '^(nil|nill|0)$') -and 
-                         ($spOff -notmatch '^(nil|nill|0)$')
-
-            # Filter out rows where spNum is just repeated PS name with no officer or village
-            if ($spNum -eq $psName -and -not $spOff -and -not $vill) {
-                $isSpValid = $false
-            }
-
-            if ($isSpValid) {
-                $spCount++
-                $cleanPhone = Extract-Phone $spOff
-                $cleanOfficer = if ($spOff) { $spOff.Trim() } else { "Duty Incharge" }
-                $cleanVill = if ($vill) { $vill.Trim() } else { "" }
-
-                $dispName = "Static Point-$spCount"
-                if ($cleanVill) {
-                    $dispName += ": $cleanVill"
-                }
-
-                $supportStr = if ($cleanVill) { "Village: $cleanVill | PS: $psName" } else { "Static Point | PS: $psName" }
-
-                $slug = ($psName -replace '[^a-zA-Z0-9]', '_') + "_SP_$spCount"
-                $latOffset = -(0.0035 * ($spCount % 4)) + 0.003
-                $lngOffset = -(0.0045 * [math]::Floor($spCount / 4)) - 0.004
-
-                $psStaticDuties += [pscustomobject]@{
-                    id          = "DUTY_$slug"
-                    category    = "Static Points"
-                    categoryKey = "SP"
-                    ps          = $psName
-                    mandal      = $mName
-                    unitName    = "$dispName ($psName)"
-                    route       = $dispName
-                    vehicle     = "Fixed Point"
-                    village     = $cleanVill
-                    officer     = $cleanOfficer
-                    phone       = $cleanPhone
-                    supporting  = $supportStr
-                    lat         = [math]::Round($psBaseLat + $latOffset, 6)
-                    lng         = [math]::Round($psBaseLng + $lngOffset, 6)
-                }
-            }
-        }
-
-        # If station had no entries at all (Pending stations like Srikakulam Rural, G. Sigadam, etc.)
-        if ($mpCount -eq 0 -and $spCount -eq 0) {
-            $slugMP = ($psName -replace '[^a-zA-Z0-9]', '_') + "_MP_1"
-            $psMovingDuties += [pscustomobject]@{
-                id          = "DUTY_$slugMP"
-                category    = "Moving Parties"
-                categoryKey = "MP"
-                ps          = $psName
-                mandal      = $mName
-                unitName    = "Moving Party-1 ($psName)"
-                route       = "Moving Party-1"
-                vehicle     = "4W"
-                village     = ""
-                officer     = "Duty Incharge (Pending Assignment)"
-                phone       = ""
-                supporting  = "Vehicle: 4W | PS: $psName"
-                lat         = [math]::Round($psBaseLat + 0.003, 6)
-                lng         = [math]::Round($psBaseLng + 0.003, 6)
-            }
-
-            $slugSP = ($psName -replace '[^a-zA-Z0-9]', '_') + "_SP_1"
-            $psStaticDuties += [pscustomobject]@{
-                id          = "DUTY_$slugSP"
-                category    = "Static Points"
-                categoryKey = "SP"
-                ps          = $psName
-                mandal      = $mName
-                unitName    = "Static Point-1 ($psName)"
-                route       = "Static Point-1"
-                vehicle     = "Fixed Point"
-                village     = ""
-                officer     = "Duty Incharge (Pending Assignment)"
-                phone       = ""
-                supporting  = "Type: Static Point | PS: $psName"
-                lat         = [math]::Round($psBaseLat - 0.003, 6)
-                lng         = [math]::Round($psBaseLng - 0.003, 6)
             }
         }
     }
 
-    # Strict sequential order per station: All Moving Parties first, then all Static Points
+    # Fallback if station had no entries at all (e.g. Kothuru)
+    if ($mpCount -eq 0 -and $spCount -eq 0) {
+        $slugMP = ($psName -replace '[^a-zA-Z0-9]', '_') + "_MP_1"
+        $psMovingDuties += [pscustomobject]@{
+            id          = "DUTY_$slugMP"
+            category    = "Moving Parties"
+            categoryKey = "MP"
+            ps          = $psName
+            mandal      = $mName
+            unitName    = "Moving Party-1 ($psName)"
+            route       = "Moving Party-1"
+            vehicle     = "4W"
+            village     = ""
+            officer     = "Duty Incharge (Pending Assignment)"
+            phone       = ""
+            supporting  = "Vehicle: 4W | PS: $psName"
+            lat         = [math]::Round($psBaseLat + 0.003, 6)
+            lng         = [math]::Round($psBaseLng + 0.003, 6)
+        }
+
+        $slugSP = ($psName -replace '[^a-zA-Z0-9]', '_') + "_SP_1"
+        $psStaticDuties += [pscustomobject]@{
+            id          = "DUTY_$slugSP"
+            category    = "Static Points"
+            categoryKey = "SP"
+            ps          = $psName
+            mandal      = $mName
+            unitName    = "Static Point-1 ($psName)"
+            route       = "Static Point-1"
+            vehicle     = "Fixed Point"
+            village     = ""
+            officer     = "Duty Incharge (Pending Assignment)"
+            phone       = ""
+            supporting  = "Type: Static Point | PS: $psName"
+            lat         = [math]::Round($psBaseLat - 0.003, 6)
+            lng         = [math]::Round($psBaseLng - 0.003, 6)
+        }
+    }
+
     $allDuties += $psMovingDuties
     $allDuties += $psStaticDuties
 }
@@ -398,13 +359,41 @@ Write-Host " - Static Points: $spTotal"
 Write-Host " - Total Police Stations: $($psList.Count)"
 Write-Host "=========================================================="
 
-# Output moving_static.json (UTF-8)
+# Output moving_static.json (UTF-8 without BOM)
 $jsonStr = $allDuties | ConvertTo-Json -Depth 5
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 [System.IO.File]::WriteAllText("$PSScriptRoot\moving_static.json", $jsonStr, $utf8NoBom)
 
-# Output moving_static_data.js (UTF-8)
+# Output moving_static_data.js (UTF-8 without BOM)
 $jsContent = "window.MOVING_STATIC_DATA = $jsonStr;`nwindow.ROUTE_MOBILES_DATA = window.MOVING_STATIC_DATA;"
 [System.IO.File]::WriteAllText("$PSScriptRoot\moving_static_data.js", $jsContent, $utf8NoBom)
 
-Write-Host "Generated moving_static.json and moving_static_data.js!"
+# Update officer.html EMBEDDED_DUTIES_DATA
+$compactJson = ($allDuties | ConvertTo-Json -Compress)
+$officerPath = "$PSScriptRoot\officer.html"
+$officerContent = [System.IO.File]::ReadAllText($officerPath, [System.Text.Encoding]::UTF8)
+$officerContent = [regex]::Replace($officerContent, 'const EMBEDDED_DUTIES_DATA = \[.*?\];', "const EMBEDDED_DUTIES_DATA = $compactJson;", [System.Text.RegularExpressions.RegexOptions]::Singleline)
+[System.IO.File]::WriteAllText($officerPath, $officerContent, $utf8NoBom)
+
+# Generate Srikakulam_Police_Duties_Online_Offline_Report.csv
+$csvLines = @()
+$csvLines += 'Sl No,Duty Category,Police Station,Party or Point Name,Duty In-charge Officer,Mobile Number,Vehicle or Type,Headquarters or Village,Live Status,Latitude,Longitude'
+$sl = 1
+foreach ($d in $allDuties) {
+    $cat = $d.category
+    $ps = if ($d.ps -match '(?i)\s+PS$') { $d.ps } else { $d.ps + " PS" }
+    $unit = $d.unitName
+    $off = ($d.officer -replace '"', '""').Trim()
+    $ph = $d.phone
+    $veh = $d.vehicle
+    $vill = ($d.village -replace '"', '""').Trim()
+    $lat = $d.lat
+    $lng = $d.lng
+    $csvLines += "`"$sl`",`"$cat`",`"$ps`",`"$unit`",`"$off`",`"$ph`",`"$veh`",`"$vill`",`"OFFLINE`",`"$lat`",`"$lng`""
+    $sl++
+}
+$csvText = [string]::Join("`r`n", $csvLines)
+$utf8Bom = New-Object System.Text.UTF8Encoding($true)
+[System.IO.File]::WriteAllText("$PSScriptRoot\Srikakulam_Police_Duties_Online_Offline_Report.csv", $csvText, $utf8Bom)
+
+Write-Host "Successfully regenerated moving_static.json, moving_static_data.js, officer.html, and CSV Report!"

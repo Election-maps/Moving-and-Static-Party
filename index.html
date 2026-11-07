@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="te">
 <head>
   <meta charset="UTF-8">
@@ -874,9 +874,9 @@
       </button>
 
       <!-- Open Directory & Control Room Drawer -->
-      <button class="btn-header" id="btn-open-directory" title="All 127 Moving & Static Parties Directory">
+      <button class="btn-header" id="btn-open-directory" title="All 131 Moving & Static Parties Directory">
         <i class="fa-solid fa-list-check"></i>
-        <span id="txt-btn-routes">Duties (127)</span>
+        <span id="txt-btn-routes">Duties (131)</span>
       </button>
 
       <!-- Share Broadcast Link in WhatsApp Group -->
@@ -910,15 +910,15 @@
       </button>
 
       <button class="pill-btn cat-btn active" data-cat="ALL" onclick="filterMapCategory('ALL')" title="All Moving &amp; Static Duties">
-        <i class="fa-solid fa-shield-halved" style="color: #60a5fa;"></i> All (<span id="cat-cnt-all">127</span>)
+        <i class="fa-solid fa-shield-halved" style="color: #60a5fa;"></i> All (<span id="cat-cnt-all">131</span>)
       </button>
 
       <button class="pill-btn cat-btn" data-cat="MP" onclick="filterMapCategory('MP')" title="Moving Parties Only">
-        <i class="fa-solid fa-car-side" style="color: #38bdf8;"></i> Moving (<span id="cat-cnt-mp">87</span>)
+        <i class="fa-solid fa-car-side" style="color: #38bdf8;"></i> Moving (<span id="cat-cnt-mp">88</span>)
       </button>
 
       <button class="pill-btn cat-btn" data-cat="SP" onclick="filterMapCategory('SP')" title="Static Points Only">
-        <i class="fa-solid fa-map-pin" style="color: #f59e0b;"></i> Static (<span id="cat-cnt-sp">40</span>)
+        <i class="fa-solid fa-map-pin" style="color: #f59e0b;"></i> Static (<span id="cat-cnt-sp">43</span>)
       </button>
 
       <button class="pill-btn active" id="btn-toggle-borders" onclick="toggleMandalBordersLayer()" title="Toggle Mandal Boundaries">
@@ -942,7 +942,7 @@
       <div class="toolbar-select-box">
         <i class="fa-solid fa-building-shield"></i>
         <select id="select-map-mandal" onchange="handleMapMandalChange(this.value)" title="Select Police Station">
-          <option value="ALL">All Police Stations (32 PS)</option>
+          <option value="ALL">All Police Stations (31 PS)</option>
         </select>
       </div>
 
@@ -973,7 +973,7 @@
     <div class="modal-header">
       <h3>
         <i class="fa-solid fa-users-rays"></i>
-        <span id="txt-modal-dir-title">Srikakulam District Duties Directory (127)</span>
+        <span id="txt-modal-dir-title">Srikakulam District Duties Directory (131)</span>
       </h3>
       <div style="display: flex; align-items: center; gap: 8px;">
         <button class="pill-btn" onclick="exportDutiesToExcel()" style="background: rgba(34, 197, 94, 0.2); border-color: #22c55e; color: #86efac;" title="Download Excel Report">
@@ -992,10 +992,10 @@
           <option value="Static Points">📍 Static Points (40)</option>
         </select>
         <select class="custom-select" style="flex: 1.2; min-width: 140px;" id="dir-filter-mandal">
-          <option value="ALL">All 32 Police Stations</option>
+          <option value="ALL">All 31 Police Stations</option>
         </select>
         <select class="custom-select" style="flex: 1; min-width: 110px;" id="dir-filter-status">
-          <option value="ALL">All Status (127)</option>
+          <option value="ALL">All Status (131)</option>
           <option value="LIVE">🟢 Live Now</option>
           <option value="OFFLINE">⚪ Offline</option>
         </select>
@@ -2544,7 +2544,7 @@ https://...
     });
     const sortedStations = Array.from(stationsSet).sort();
 
-    dirFilterMandal.innerHTML = '<option value="ALL">All 32 Police Stations</option>';
+    dirFilterMandal.innerHTML = '<option value="ALL">All 31 Police Stations</option>';
     sortedStations.forEach(ps => {
       const opt = document.createElement('option');
       opt.value = ps;
