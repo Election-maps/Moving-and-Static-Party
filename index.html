@@ -1900,7 +1900,6 @@ https://...
     const currentVal = sel.value;
     sel.innerHTML = '<option value="">🔍 Select Party / Point</option>';
 
-    // Filter allUnitsData matching current police station (Always include both MP and SP)
     const filteredUnits = allUnitsData.filter(u => {
       const psName = (u.ps || u.mandal || '').trim().toLowerCase();
       const psMatch = (currentMapMandalFilter === 'ALL' || psName === currentMapMandalFilter.toLowerCase());
@@ -1922,10 +1921,13 @@ https://...
       }
     });
 
-    // 1. Live Units Optgroup (At Top with Green Indicator)
+    // 1. Live Units Section
     if (liveUnits.length > 0) {
-      const grpLive = document.createElement('optgroup');
-      grpLive.label = `🟢 Live Now (${liveUnits.length} Live Teams)`;
+      const sepLive = document.createElement('option');
+      sepLive.disabled = true;
+      sepLive.innerText = `──────── 🟢 Live Now (${liveUnits.length} Units) ────────`;
+      sel.appendChild(sepLive);
+
       liveUnits.forEach(u => {
         const key = u.id || u.unitId;
         const opt = document.createElement('option');
@@ -1933,15 +1935,17 @@ https://...
         const kmh = activeMobiles[key].speed ? Math.round(activeMobiles[key].speed * 3.6) : 0;
         const icon = (u.categoryKey === 'MP' || u.category === 'Moving Parties') ? '🚔' : '📍';
         opt.innerText = `🟢 ${icon} ${u.unitName} (${u.ps || u.mandal}) - ${u.officer || 'Duty'} [${kmh} km/h]`;
-        grpLive.appendChild(opt);
+        sel.appendChild(opt);
       });
-      sel.appendChild(grpLive);
     }
 
-    // 2. Moving Parties Optgroup
+    // 2. Moving Parties Section
     if (mpUnits.length > 0) {
-      const grpMp = document.createElement('optgroup');
-      grpMp.label = `🚔 Moving Parties (${mpUnits.length})`;
+      const sepMp = document.createElement('option');
+      sepMp.disabled = true;
+      sepMp.innerText = `──────── 🚔 Moving Parties (${mpUnits.length}) ────────`;
+      sel.appendChild(sepMp);
+
       mpUnits.forEach(u => {
         const key = u.id || u.unitId;
         const opt = document.createElement('option');
@@ -1949,15 +1953,17 @@ https://...
         const vText = u.vehicle ? ` [${u.vehicle}]` : '';
         const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
         opt.innerText = `🚔 ${u.unitName}${vText} (${u.ps || u.mandal})${officerShort}`;
-        grpMp.appendChild(opt);
+        sel.appendChild(opt);
       });
-      sel.appendChild(grpMp);
     }
 
-    // 3. Static Points Optgroup
+    // 3. Static Points Section
     if (spUnits.length > 0) {
-      const grpSp = document.createElement('optgroup');
-      grpSp.label = `📍 Static Points (${spUnits.length})`;
+      const sepSp = document.createElement('option');
+      sepSp.disabled = true;
+      sepSp.innerText = `──────── 📍 Static Points (${spUnits.length}) ────────`;
+      sel.appendChild(sepSp);
+
       spUnits.forEach(u => {
         const key = u.id || u.unitId;
         const opt = document.createElement('option');
@@ -1965,34 +1971,14 @@ https://...
         const vText = u.village ? ` [Village: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
         const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
         opt.innerText = `📍 ${u.unitName}${vText} (${u.ps || u.mandal})${officerShort}`;
-        grpSp.appendChild(opt);
+        sel.appendChild(opt);
       });
-      sel.appendChild(grpSp);
     }
 
     if (currentVal) sel.value = currentVal;
-  }
-
-  // Handle Team Selection: Zooms directly to officer or static duty on map
-  window.handleMapTeamChange = function(unitId) {
-    if (!unitId) return;
-
-    const m = activeMobiles[unitId];
-    if (m && m.marker) {
-      currentlyFollowedOfficerKey = unitId;
-      map.flyTo([m.lat, m.lng], 17, { animate: true, duration: 1.0 });
-      m.marker.openPopup();
-      showToast(`[${m.categoryKey}] ${m.unitName} (${m.mandal}) Auto-follow enabled`);
-      return;
-    }
-
-    const u = allUnitsData.find(item => (item.id === unitId || item.unitId === unitId));
-    if (u) {
-      currentlyFollowedOfficerKey = null;
-      const catText = u.categoryKey || (u.category === 'Moving Parties' ? 'MP' : 'SP');
-      showToast(`⚠️ [${catText}] ${u.unitName} (${u.ps} PS) is currently offline. Will appear on map once officer starts live location.`);
-    }
   };
+
+
 
   // Clear Single Officer (Permanently deletes and stops tracking on phone)
   window.clearSingleOfficer = function(key) {
