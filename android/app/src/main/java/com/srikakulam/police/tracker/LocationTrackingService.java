@@ -261,7 +261,7 @@ public class LocationTrackingService extends Service implements LocationListener
         float speed = location.getSpeed();
         float accuracy = location.getAccuracy();
 
-        if (accuracy > 95.0f) return; // filter only extreme outlier GPS fixes
+        if (accuracy > 250.0f) return; // filter only extreme outlier GPS fixes
 
         float bearing = location.hasBearing() ? location.getBearing() : 0.0f;
         boolean isMoving = false;

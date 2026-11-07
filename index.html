@@ -458,8 +458,9 @@
       display: none;
     }
     .map-zoom-low .custom-police-marker:hover .police-marker-label,
-    .map-zoom-low .custom-police-marker.is-live .police-marker-label {
-      display: flex;
+    .map-zoom-low .custom-police-marker.is-live .police-marker-label,
+    .custom-police-marker.is-live .police-marker-label {
+      display: flex !important;
       z-index: 9999;
     }
 
@@ -494,6 +495,12 @@
       font-size: 9.5px;
       font-weight: 800;
       border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .speed-pill-stopped {
+      background: rgba(245, 158, 11, 0.22);
+      color: #fde047;
+      border-color: rgba(245, 158, 11, 0.45);
     }
 
     .vehicle-pointer-wrapper {
@@ -1284,30 +1291,33 @@ https://...
 
   function createPoliceMarkerIcon(catKey, mandal, unitName, isLive = true, isMoving = false, bearing = 0, speedKmh = 0, rawOfficer = '') {
     const theme = getCategoryTheme(catKey);
-    const badgeText = `${catKey || 'RM'}: ${unitName || mandal}`;
+    const badgeText = `${catKey || 'MP'}: ${unitName || mandal}`;
     const opacity = isLive ? '1' : '0.85';
     const officerDisp = formatOfficerInchargeDisplay(rawOfficer, mandal);
     const officerHtml = officerDisp 
       ? `<div class="officer-incharge-badge"><i class="fa-solid fa-user-shield" style="font-size:9px;"></i><span>${officerDisp}</span></div>` 
       : '';
 
-    if (isLive && isMoving && speedKmh >= 2) {
-      // Dynamic Top-Down Police Navigation Cruiser Icon
+    // If it's a Moving Party (MP), always display the dynamic Police Cruiser vehicle with strobe lights & heading pointer
+    if (catKey === 'MP' || (isLive && isMoving)) {
+      const speedLabel = speedKmh >= 1 ? `${speedKmh} km/h (Moving)` : (isLive ? `0 km/h (Stopped)` : `Offline`);
+      const speedClass = speedKmh >= 1 ? 'speed-pill' : 'speed-pill speed-pill-stopped';
       return L.divIcon({
-        className: 'custom-police-marker',
+        className: isLive ? 'custom-police-marker is-live' : 'custom-police-marker',
         html: `
           <div class="police-marker-container" style="opacity: ${opacity};">
             <div class="police-marker-label" style="border-color: ${theme.color};">
               <div class="marker-title-row">
                 <span style="color:#10b981;">● </span>
                 <span>${badgeText}</span>
-                <span class="speed-pill">${speedKmh} km/h</span>
+                <span class="${speedClass}">${speedLabel}</span>
               </div>
               ${officerHtml}
             </div>
+            ${isLive ? '<div class="police-marker-pulse"></div>' : ''}
             <div class="vehicle-pointer-wrapper" style="transform: rotate(${Math.round(bearing)}deg);">
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="filter: drop-shadow(0 3px 8px rgba(0,0,0,0.65));">
-                <circle cx="20" cy="20" r="18" fill="rgba(15, 23, 42, 0.9)" stroke="#ffffff" stroke-width="2"/>
+                <circle cx="20" cy="20" r="18" fill="rgba(15, 23, 42, 0.92)" stroke="#ffffff" stroke-width="2"/>
                 <path d="M20 5L30 28L20 23L10 28L20 5Z" fill="${theme.color}" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round"/>
                 <rect x="15" y="17" width="4" height="3" rx="1" fill="#ef4444" class="police-strobe-l"/>
                 <rect x="21" y="17" width="4" height="3" rx="1" fill="#3b82f6" class="police-strobe-r"/>
@@ -1320,16 +1330,16 @@ https://...
       });
     }
 
-    // Stationary Police Badge Pin
+    // Static Point (SP) Police Checkpoint Pin
     return L.divIcon({
-      className: 'custom-police-marker',
+      className: isLive ? 'custom-police-marker is-live' : 'custom-police-marker',
       html: `
         <div class="police-marker-container" style="opacity: ${opacity};">
           <div class="police-marker-label" style="border-color: ${theme.color};">
             <div class="marker-title-row">
               ${isLive ? '<span style="color:#10b981;">● </span>' : ''}
               <span>${badgeText}</span>
-              ${isLive ? '<span style="color:#94a3b8; font-size:9px; font-weight:normal;">(Stopped)</span>' : ''}
+              <span style="color:#fde047; font-size:9.5px; font-weight:700;">(Static Point)</span>
             </div>
             ${officerHtml}
           </div>
@@ -1533,10 +1543,18 @@ https://...
     const theme = getCategoryTheme(catKey);
 
     let officerName = data.officer || data.name || '';
-    if (!officerName && allUnitsData && allUnitsData.length > 0) {
-      const u = allUnitsData.find(item => item.id === key || item.unitId === key || (item.mandal && item.mandal.toLowerCase() === mandal.toLowerCase() && item.unitName === unitName));
-      if (u && u.officer) officerName = u.officer;
+    let matchedUnit = null;
+    if (allUnitsData && allUnitsData.length > 0) {
+      matchedUnit = allUnitsData.find(item => item.id === key || item.unitId === key || (item.mandal && item.mandal.toLowerCase() === mandal.toLowerCase() && item.unitName === unitName));
+      if (!officerName && matchedUnit && matchedUnit.officer) {
+        officerName = matchedUnit.officer;
+      }
     }
+    const psName = (data.ps || (matchedUnit ? matchedUnit.ps : mandal) || '').trim();
+    const psVal = psName.toLowerCase();
+    const mandalVal = mandal.trim().toLowerCase();
+    const filterVal = currentMapMandalFilter.toLowerCase();
+    const mandalMatch = (currentMapMandalFilter === 'ALL' || (psVal && psVal === filterVal) || (mandalVal && mandalVal === filterVal));
 
     if (!activeMobiles[key]) {
       const marker = L.marker([data.lat, data.lng], {
@@ -1544,7 +1562,6 @@ https://...
       });
 
       const catMatch = (currentMapCategoryFilter === 'ALL' || currentMapCategoryFilter === catKey);
-      const mandalMatch = (currentMapMandalFilter === 'ALL' || (mandal && mandal.trim().toLowerCase() === currentMapMandalFilter.toLowerCase()));
       const matchesFilter = catMatch && mandalMatch;
 
       if (matchesFilter) {
@@ -1568,13 +1585,14 @@ https://...
       marker.on('click', () => {
         currentlyFollowedOfficerKey = key;
         map.flyTo([data.lat, data.lng], 18, { animate: true, duration: 1.0 });
-        showToast(`[${catKey}] ${unitName} (${mandal}) ఆటో-ఫాలో మోడ్ ఆన్ చేయబడింది.`);
+        showToast(`[${catKey}] ${unitName} (${psName || mandal}) ఆటో-ఫాలో మోడ్ ఆన్ చేయబడింది.`);
       });
 
       activeMobiles[key] = {
         ...data,
         unitId: key,
         id: key,
+        ps: psName,
         categoryKey: catKey,
         officer: officerName,
         marker: marker,
@@ -1587,11 +1605,16 @@ https://...
       };
 
       if (shouldToast) {
-        showToast(`[${catKey}] ${mandal} (${unitName}) లైవ్ లోకి వచ్చారు!`);
+        showToast(`[${catKey}] ${psName || mandal} (${unitName}) లైవ్ లోకి వచ్చారు!`);
+        // If no officer was explicitly followed, automatically zoom to this active officer
+        if (!currentlyFollowedOfficerKey) {
+          map.flyTo([data.lat, data.lng], 16, { animate: true, duration: 1.0 });
+        }
       }
     } else {
       const m = activeMobiles[key];
       m.categoryKey = catKey;
+      m.ps = psName || m.ps;
       m.mandal = mandal;
       m.unitName = unitName;
       m.officer = data.officer || data.name || m.officer || officerName;
@@ -1627,14 +1650,17 @@ https://...
         m.wasMoving = isMoving;
         m.currentIsLive = status.isLive;
         m.marker.setIcon(createPoliceMarkerIcon(catKey, mandal, unitName, status.isLive, isMoving, bearing, kmh, m.officer));
-      } else if (isMoving) {
+      } else {
         // Just smoothly update rotation and speed label without destroying marker
         const el = m.marker.getElement();
         if (el) {
           const pointer = el.querySelector('.vehicle-pointer-wrapper');
           if (pointer) pointer.style.transform = `rotate(${Math.round(bearing)}deg)`;
           const speedBadge = el.querySelector('.speed-pill');
-          if (speedBadge) speedBadge.innerText = `${kmh} km/h`;
+          if (speedBadge) {
+            speedBadge.innerText = kmh >= 1 ? `${kmh} km/h (Moving)` : (status.isLive ? '0 km/h (Stopped)' : 'Offline');
+            speedBadge.className = kmh >= 1 ? 'speed-pill' : 'speed-pill speed-pill-stopped';
+          }
         }
       }
 
@@ -1659,7 +1685,6 @@ https://...
             dashArray: '4, 6'
           });
           const catMatch = (currentMapCategoryFilter === 'ALL' || currentMapCategoryFilter === catKey);
-          const mandalMatch = (currentMapMandalFilter === 'ALL' || (mandal && mandal.trim().toLowerCase() === currentMapMandalFilter.toLowerCase()));
           if (catMatch && mandalMatch) {
             m.trail.addTo(map);
           }
@@ -1671,7 +1696,6 @@ https://...
       }
 
       const catMatch = (currentMapCategoryFilter === 'ALL' || currentMapCategoryFilter === catKey);
-      const mandalMatch = (currentMapMandalFilter === 'ALL' || (mandal && mandal.trim().toLowerCase() === currentMapMandalFilter.toLowerCase()));
       const matchesFilter = catMatch && mandalMatch;
 
       if (matchesFilter) {
@@ -1752,8 +1776,10 @@ https://...
     for (const k in activeMobiles) {
       const m = activeMobiles[k];
       const catMatch = (currentMapCategoryFilter === 'ALL' || m.categoryKey === currentMapCategoryFilter);
-      const stationName = (m.ps || m.mandal || '').trim().toLowerCase();
-      const psMatch = (currentMapMandalFilter === 'ALL' || stationName === currentMapMandalFilter.toLowerCase());
+      const stationName = (m.ps || '').trim().toLowerCase();
+      const mandalName = (m.mandal || '').trim().toLowerCase();
+      const filterVal = currentMapMandalFilter.toLowerCase();
+      const psMatch = (currentMapMandalFilter === 'ALL' || (stationName && stationName === filterVal) || (mandalName && mandalName === filterVal));
       const match = catMatch && psMatch;
 
       if (match) {

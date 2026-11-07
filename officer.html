@@ -852,6 +852,11 @@
       // Subscribe to Control Room remote commands
       const controlTopic = `srikakulam_police_tracker/${roomCode}/control_command`;
       mqttClient.subscribe(controlTopic, { qos: 1 });
+
+      // If already tracking, immediately re-publish current coordinates upon reconnect
+      if (isTracking && lastLat !== null && lastLng !== null) {
+        publishMyLocation(lastLat, lastLng, lastSpeed, lastAccuracy, totalDistanceTraveled, lastBearing);
+      }
     });
 
     mqttClient.on('message', (t, msg) => {
@@ -888,10 +893,13 @@
       unitId: unitKey,
       category: currentSelectedUnit.category,
       categoryKey: currentSelectedUnit.categoryKey,
+      ps: currentSelectedUnit.ps || currentSelectedUnit.mandal,
       mandal: currentSelectedUnit.mandal,
       route: currentSelectedUnit.route,
       unitName: currentSelectedUnit.unitName,
-      hq: currentSelectedUnit.hq,
+      vehicle: currentSelectedUnit.vehicle || '',
+      village: currentSelectedUnit.village || '',
+      hq: currentSelectedUnit.hq || currentSelectedUnit.village || '',
       officer: currentSelectedUnit.officer,
       phone: currentSelectedUnit.phone,
       supporting: currentSelectedUnit.supporting,
@@ -900,7 +908,7 @@
       speed: speed || 0,
       accuracy: accuracy || 10,
       bearing: Math.round(bearing || 0),
-      isMoving: (speed || 0) >= 0.5,
+      isMoving: (speed || 0) >= 0.25,
       distanceTraveled: Math.round(distTraveled || totalDistanceTraveled || 0),
       updatesCount: updatesCount,
       lastUpdated: Date.now(),
@@ -1074,8 +1082,8 @@
     const timeDelta = Math.max(0.5, (now - (lastStepTime || (now - 1800))) / 1000);
     lastGpsTimestamp = now;
 
-    // Filter weak / erratic GPS fixes (> 95m accuracy)
-    if (accuracy && accuracy > 95) {
+    // Filter completely broken GPS fixes (> 250m accuracy)
+    if (accuracy && accuracy > 250) {
       return;
     }
 
@@ -1215,11 +1223,18 @@
       }
     }
 
-    // 1. Immediate initial GPS fix
+    // 1. Immediate fast initial fix (even cached/cell tower) so marker appears immediately on Control Room map
     navigator.geolocation.getCurrentPosition(
-      (pos) => handleNewGpsFix(pos, 'init'),
-      (err) => console.warn('Initial GPS query warning:', err),
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 7000 }
+      (pos) => handleNewGpsFix(pos, 'init_fast'),
+      (err) => console.warn('Initial fast GPS warning:', err),
+      { enableHighAccuracy: false, maximumAge: 60000, timeout: 4000 }
+    );
+
+    // Followed by high accuracy GPS query
+    navigator.geolocation.getCurrentPosition(
+      (pos) => handleNewGpsFix(pos, 'init_precise'),
+      (err) => console.warn('Initial precise GPS query warning:', err),
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
     );
 
     // 2. Continuous watchPosition
