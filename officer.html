@@ -1408,8 +1408,9 @@
     units.forEach(u => {
       const opt = document.createElement('option');
       opt.value = u.id;
-      const vText = u.vehicle ? ` [${u.vehicle}]` : '';
-      opt.innerText = `${u.unitName}${vText} - ${u.officer.substring(0, 28)}`;
+      const extra = u.village ? ` [గ్రామం: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
+      const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
+      opt.innerText = `${u.unitName}${extra}${officerShort}`;
       selUnit.appendChild(opt);
     });
 
@@ -1434,8 +1435,10 @@
 
     document.getElementById('disp-officer-name').innerText = unit.officer || '--';
     document.getElementById('disp-officer-phone').innerText = unit.phone || 'N/A';
-    document.getElementById('disp-officer-hq').innerText = unit.hq || unit.mandal || '--';
-    document.getElementById('disp-officer-supporting').innerText = unit.supporting || 'N/A';
+    const locText = unit.village ? `గ్రామం: ${unit.village} (${unit.ps || unit.mandal})` : (unit.hq || unit.mandal || '--');
+    document.getElementById('disp-officer-hq').innerText = locText;
+    const supportText = unit.vehicle ? `వాహనం: ${unit.vehicle}` : (unit.supporting || 'N/A');
+    document.getElementById('disp-officer-supporting').innerText = supportText;
   }
 
   function showToast(msg) {
