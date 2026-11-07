@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
-<html lang="te">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0a1128">
-  <title>ఎన్నికల బందోబస్తు ట్రాకర్ | Srikakulam Police Election Duty Tracker</title>
+  <title>Srikakulam Police Election Duty Live Tracker</title>
 
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -409,8 +409,8 @@
       <i class="fa-solid fa-shield-halved"></i>
     </div>
     <div>
-      <div class="brand-title">శ్రీకాకుళం జిల్లా పోలీస్</div>
-      <div class="brand-subtitle">మూవింగ్ పార్టీ & స్టాటిక్ పాయింట్స్ లైవ్ ట్రాకర్</div>
+      <div class="brand-title">Srikakulam District Police</div>
+      <div class="brand-subtitle">Moving Parties &amp; Static Points Live GPS Tracker</div>
     </div>
   </header>
 
@@ -419,23 +419,23 @@
     <div>
       <div style="font-weight: 700; color: #93c5fd; font-size: 13px; display: flex; align-items: center; gap: 6px;">
         <i class="fa-brands fa-android" style="color: #34d399; font-size: 18px;"></i>
-        <span>పోలీస్ ఆండ్రాయిడ్ APK యాప్</span>
+        <span>Police Android APK App</span>
       </div>
-      <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">యాప్ క్లోజ్ చేసినా బ్యాక్‌గ్రౌండ్‌లో లొకేషన్ వెళ్తుంది</div>
+      <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">Transmits live location in background even when closed</div>
     </div>
     <a href="SrikakulamPoliceTracker.apk" download="SrikakulamPoliceTracker.apk" style="text-decoration: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; color: white; background: #2563eb; display: flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.5);">
-      <i class="fa-solid fa-download"></i> APK ఫైల్
+      <i class="fa-solid fa-download"></i> Download APK
     </a>
   </div>
 
   <!-- PWA Install Banner -->
   <div class="install-banner" id="pwa-install-banner">
     <div style="font-size: 12px;">
-      <strong>📲 హోమ్ స్క్రీన్‌కు చేర్చుకోండి</strong><br/>
-      <span style="color: var(--text-muted); font-size: 11px;">వెబ్ యాప్ లాగా పనిచేస్తుంది</span>
+      <strong>📲 Add to Home Screen</strong><br/>
+      <span style="color: var(--text-muted); font-size: 11px;">Works seamlessly like a native app</span>
     </div>
     <button class="btn-install" id="btn-pwa-install">
-      <i class="fa-solid fa-plus"></i> యాడ్ చేయి
+      <i class="fa-solid fa-plus"></i> Add
     </button>
   </div>
 
@@ -443,35 +443,35 @@
   <div class="cockpit-card" id="cockpit-card">
     <div class="cockpit-title">
       <span class="pulse-indicator"></span>
-      కంట్రోల్ రూమ్‌కు లొకేషన్ వెళ్తోంది
+      TRANSMITTING LIVE LOCATION TO CONTROL ROOM
     </div>
     <div class="cockpit-desc" id="cockpit-desc">
-      మీ లైవ్ లొకేషన్ నిరంతరం రియల్-టైమ్‌లో కంట్రోల్ రూమ్ మ్యాప్‌కు పంపబడుతోంది.
+      Your live location is being transmitted in real-time to the Control Room map.
     </div>
 
     <!-- 4-Stat Grid for instant feedback -->
     <div class="cockpit-stats">
       <div class="stat-pill">
         <div class="stat-val" id="disp-speed">0 km/h</div>
-        <div class="stat-lbl">⚡ ప్రస్తుత వేగం</div>
+        <div class="stat-lbl">⚡ Speed</div>
       </div>
       <div class="stat-pill">
         <div class="stat-val" id="disp-accuracy">±10 m</div>
-        <div class="stat-lbl">🎯 GPS ఖచ్చితత్వం</div>
+        <div class="stat-lbl">🎯 GPS Accuracy</div>
       </div>
       <div class="stat-pill">
         <div class="stat-val" id="disp-distance" style="color: #4ade80;">0 m</div>
-        <div class="stat-lbl">🚶 కదిలిన దూరం</div>
+        <div class="stat-lbl">🚶 Distance Traveled</div>
       </div>
       <div class="stat-pill">
         <div class="stat-val" id="disp-updates" style="color: #fde047;">0</div>
-        <div class="stat-lbl">📡 అప్‌డేట్లు (Live)</div>
+        <div class="stat-lbl">📡 Updates Sent</div>
       </div>
     </div>
 
     <!-- Live Coordinates & Last Time -->
     <div class="coords-bar">
-      <span>📍 <span id="disp-coords">GPS సిగ్నల్ కోసం వెతుకుతోంది...</span></span>
+      <span>📍 <span id="disp-coords">Searching for GPS signal...</span></span>
       <span id="disp-last-time" style="color: #f59e0b; font-weight: 700;">Stopped</span>
     </div>
 
@@ -479,91 +479,91 @@
     <div id="cockpit-bg-notice" style="background: rgba(30, 58, 138, 0.25); border: 1.5px solid #3b82f6; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 11.5px; color: #bfdbfe; text-align: left; line-height: 1.5;">
       <div style="font-weight: 700; color: #93c5fd; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
         <i class="fa-solid fa-circle-info" style="color: #60a5fa; font-size: 14px;"></i>
-        <span>లొకేషన్ షేరింగ్ స్టేటస్:</span>
+        <span>Location Sharing Status:</span>
       </div>
       <div>
-        • బ్రౌజర్‌లో స్క్రీన్ ఆన్‌లో ఉన్నంతవరకు లొకేషన్ నిరంతరం కంట్రోల్ రూమ్‌కు వెళ్తుంది.<br/>
-        • <strong>HOME బటన్ ప్రెస్ చేసినా లేదా స్క్రీన్ లాక్ చేసినా లొకేషన్ ఆగకుండా వెళ్లడానికి</strong> పైన ఉన్న <a href="SrikakulamPoliceTracker.apk" download="SrikakulamPoliceTracker.apk" style="color: #38bdf8; font-weight: bold; text-decoration: underline;">"APK యాప్"</a> డౌన్‌లోడ్ చేసి ఇన్‌స్టాల్ చేసుకోండి.
+        • Location is continuously sent to the Control Room as long as your browser is active.<br/>
+        • <strong>To continue tracking when HOME button is pressed or screen is locked</strong>, download and install the <a href="SrikakulamPoliceTracker.apk" download="SrikakulamPoliceTracker.apk" style="color: #38bdf8; font-weight: bold; text-decoration: underline;">"APK App"</a> above.
       </div>
     </div>
 
     <!-- Stop Button -->
     <button class="btn-main btn-stop" id="btn-stop-track">
-      <i class="fa-solid fa-stop"></i> లొకేషన్ షేరింగ్ ఆపండి
+      <i class="fa-solid fa-stop"></i> STOP LIVE LOCATION
     </button>
   </div>
 
   <!-- Unit Registration Form Card -->
   <div class="card" id="selection-card">
     <div class="card-title">
-      <i class="fa-solid fa-user-shield"></i> మీ డ్యూటీ వివరాలు నమోదు చేయండి
+      <i class="fa-solid fa-user-shield"></i> REGISTER YOUR DUTY DETAILS
     </div>
 
     <!-- Category Select -->
     <div class="form-group">
-      <label class="form-label">1. విభాగం ఎంచుకోండి (Select Category):</label>
+      <label class="form-label">1. Select Category:</label>
       <select class="form-select" id="select-category">
-        <option value="ALL">🛡️ అన్ని విభాగాలు (Moving & Static Parties)</option>
-        <option value="Moving Parties">🚔 మూవింగ్ పార్టీలు (Moving Parties)</option>
-        <option value="Static Points">📍 స్టాటిక్ పాయింట్లు (Static Points)</option>
+        <option value="ALL">🛡️ All Categories (Moving &amp; Static Parties)</option>
+        <option value="Moving Parties">🚔 Moving Parties</option>
+        <option value="Static Points">📍 Static Points</option>
       </select>
     </div>
 
     <!-- Police Station Select -->
     <div class="form-group">
-      <label class="form-label" id="lbl-mandal">2. పోలీస్ స్టేషన్ ఎంచుకోండి (Select Police Station):</label>
+      <label class="form-label" id="lbl-mandal">2. Select Police Station:</label>
       <select class="form-select" id="select-mandal">
-        <option value="">-- పోలీస్ స్టేషన్ ఎంచుకోండి --</option>
+        <option value="">-- Select Police Station --</option>
       </select>
     </div>
 
     <!-- Team / Point Select -->
     <div class="form-group">
-      <label class="form-label" id="lbl-unit">3. పార్టీ / పాయింట్ ఎంచుకోండి (Select Party / Point):</label>
+      <label class="form-label" id="lbl-unit">3. Select Party / Point:</label>
       <select class="form-select" id="select-unit">
-        <option value="">-- పార్టీ / పాయింట్ ఎంచుకోండి --</option>
+        <option value="">-- Select Party / Point --</option>
       </select>
     </div>
 
     <!-- Auto-populated Officer Info -->
     <div class="officer-preview-box">
       <div class="preview-row">
-        <span style="color: var(--text-muted);">ఇన్-ఛార్జ్ ఆఫీసర్:</span>
+        <span style="color: var(--text-muted);">Duty In-charge:</span>
         <strong id="disp-officer-name" style="color: #67e8f9; text-align: right;">--</strong>
       </div>
       <div class="preview-row">
-        <span style="color: var(--text-muted);">ఫోన్ నెంబర్:</span>
+        <span style="color: var(--text-muted);">Phone Number:</span>
         <strong id="disp-officer-phone" style="color: #fde047;">--</strong>
       </div>
       <div class="preview-row" id="row-hq">
-        <span style="color: var(--text-muted);">హెడ్ క్వార్టర్ / స్టేయింగ్ పాయింట్:</span>
+        <span style="color: var(--text-muted);">Headquarters / Village:</span>
         <strong id="disp-officer-hq" style="color: #cbd5e1; text-align: right;">--</strong>
       </div>
       <div class="preview-row" id="row-supporting" style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.1);">
-        <span style="color: var(--text-muted); font-size: 11px;">సహాయక సిబ్బంది:</span>
+        <span style="color: var(--text-muted); font-size: 11px;">Force / Vehicle:</span>
         <span id="disp-officer-supporting" style="color: #94a3b8; font-size: 11px; text-align: right;">--</span>
       </div>
     </div>
 
     <!-- Start Button -->
     <button class="btn-main btn-start" id="btn-start-track">
-      <i class="fa-solid fa-play"></i> లైవ్ లొకేషన్ ప్రారంభించండి
+      <i class="fa-solid fa-play"></i> START LIVE LOCATION
     </button>
   </div>
 
   <!-- Personal Mini Map (Only shows THIS officer's location, NO other officers) -->
   <div class="card" style="padding: 12px; margin-bottom: 8px;">
     <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between;">
-      <span><i class="fa-solid fa-map-location-dot" style="color: #38bdf8;"></i> మీ కదలికల లైవ్ మ్యాప్:</span>
-      <span style="font-size: 10px; color: #10b981;">● ప్రైవేట్ ట్రాక్</span>
+      <span><i class="fa-solid fa-map-location-dot" style="color: #38bdf8;"></i> Your Live Location Map:</span>
+      <span style="font-size: 10px; color: #10b981;">● Private Live Track</span>
     </div>
     <div id="officer-map"></div>
     <div class="map-controls-row">
       <button class="btn-map-control active" id="btn-toggle-follow">
-        <i class="fa-solid fa-crosshairs"></i> <span id="txt-follow-mode">నన్ను ఫాలో అవ్వు (Active)</span>
+        <i class="fa-solid fa-crosshairs"></i> <span id="txt-follow-mode">Follow Me (Active)</span>
       </button>
       <button class="btn-map-control" id="btn-recenter-map">
-        <i class="fa-solid fa-location-arrow"></i> కేంద్రీకరించు
+        <i class="fa-solid fa-location-arrow"></i> Recenter
       </button>
     </div>
   </div>
@@ -572,15 +572,15 @@
   <div class="tip-card" style="background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.35); color: #a7f3d0;">
     <i class="fa-solid fa-house-circle-check" style="font-size: 20px; color: #34d399; flex-shrink: 0; margin-top: 2px;"></i>
     <div>
-      <strong style="color: #6ee7b7; font-size: 13px;">📲 HOME బటన్ నొక్కి వాడుకోవచ్చు:</strong><br/>
-      లొకేషన్ ప్రారంభించిన తర్వాత మొబైల్ <strong>HOME బటన్</strong> నొక్కి వాట్సాప్ లేదా ఇతర పనుల కోసం ఫోన్ వాడుకోవచ్చు. బ్రౌజర్‌ను క్లోజ్ చేయకుండా బ్యాక్‌గ్రౌండ్‌లో ఉంచితే మీ కదలికలు కంట్రోల్ రూమ్‌కు నిరంతరం వెళ్తాయి.
+      <strong style="color: #6ee7b7; font-size: 13px;">📲 You can press the HOME button:</strong><br/>
+      After starting live location, press your phone's <strong>HOME button</strong> to use WhatsApp or other apps. Keep the browser open in the background so your location continues transmitting to the Control Room.
     </div>
   </div>
 </div>
 
 <!-- Notification Toast -->
 <div class="toast" id="toast">
-  <span id="toast-message">సందేశం</span>
+  <span id="toast-message">Notification</span>
 </div>
 
 <!-- Leaflet JS -->
@@ -676,13 +676,13 @@
       followUserMode = !followUserMode;
       if (followUserMode) {
         btnToggleFollow.classList.add('active');
-        if (txtFollowMode) txtFollowMode.innerText = 'నన్ను ఫాలో అవ్వు (Active)';
+        if (txtFollowMode) txtFollowMode.innerText = 'Follow Me (Active)';
         if (lastLat !== null && lastLng !== null) {
           officerMap.panTo([lastLat, lastLng]);
         }
       } else {
         btnToggleFollow.classList.remove('active');
-        if (txtFollowMode) txtFollowMode.innerText = 'ఫాలో మోడ్ ఆఫ్';
+        if (txtFollowMode) txtFollowMode.innerText = 'Follow Mode Off';
       }
     });
   }
@@ -692,7 +692,7 @@
       if (lastLat !== null && lastLng !== null) {
         officerMap.flyTo([lastLat, lastLng], 18, { duration: 0.8 });
       } else {
-        showToast("ఇంకా GPS లొకేషన్ అందలేదు...");
+        showToast("Waiting for GPS location fix...");
       }
     });
   }
@@ -754,7 +754,7 @@
             <div style="background:#0b1a2e; color:#fff; font-weight:bold; font-size:10px; padding:3px 8px; border-radius:8px; border:1px solid #10b981; white-space:nowrap; position:absolute; bottom:38px; left:50%; transform:translateX(-50%); box-shadow:0 3px 8px rgba(0,0,0,0.6); display:flex; flex-direction:column; align-items:center; gap:1px;">
               <div style="display:flex; align-items:center; gap:4px;">
                 <span style="color:#10b981;">●</span>
-                <span>${labelText || 'మీరు ఇక్కడ ఉన్నారు'}</span>
+                <span>${labelText || 'You are here'}</span>
                 ${kmh > 0 ? `<span style="background:rgba(56,189,248,0.25); color:#38bdf8; padding:1px 5px; border-radius:10px; font-size:9px;">${kmh} km/h</span>` : `<span style="color:#94a3b8; font-size:9px; font-weight:normal;">(Stopped)</span>`}
               </div>
               ${offDisp ? `<div style="font-size:9.5px; color:#fde047; font-weight:600; border-top:1px solid rgba(255,255,255,0.15); padding-top:1px;"><i class="fa-solid fa-user-shield"></i> ${offDisp}</div>` : ''}
@@ -869,7 +869,7 @@
         if (payload.action === 'clear_all' || (payload.action === 'clear_unit' && currentSelectedUnit && (payload.unitId === currentSelectedUnit.id || payload.unitId === currentSelectedUnit.unitId))) {
           console.log('Remote stop command received from Control Room:', payload);
           stopTracking();
-          alert("కంట్రోల్ రూమ్ ద్వారా మీ లైవ్ లొకేషన్ తొలగించబడింది.\n\nమీరు అవసరమైతే మరలా 'లైవ్ లొకేషన్ ప్రారంభించండి' బటన్ నొక్కి షేర్ చేసుకోవాలి.");
+          alert("Live location tracking was stopped by Control Room.\n\nPress "START LIVE LOCATION" to share again when needed.");
           return;
         }
 
@@ -963,8 +963,8 @@
       // 3. Android Foreground Media Session (Prevents OS from killing tab on HOME press)
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: 'శ్రీకాకుళం పోలీస్ లైవ్ ట్రాకింగ్',
-          artist: currentSelectedUnit ? `${currentSelectedUnit.mandal} - ${currentSelectedUnit.unitName}` : 'ఎన్నికల బందోబస్తు లైవ్',
+          title: 'Srikakulam Police Live Tracking',
+          artist: currentSelectedUnit ? `${currentSelectedUnit.mandal} - ${currentSelectedUnit.unitName}` : 'Election Duty Live',
           album: 'Srikakulam Police Control Room'
         });
         navigator.mediaSession.playbackState = 'playing';
@@ -1150,7 +1150,7 @@
         elDistance.innerText = `${Math.round(totalDistanceTraveled)} m`;
       }
     }
-    if (elUpdates) elUpdates.innerText = `${updatesCount} సార్లు`;
+    if (elUpdates) elUpdates.innerText = `${updatesCount} updates`;
     if (elCoords) elCoords.innerText = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
     if (elLastTime) {
       elLastTime.innerText = isMoving ? 'Moving' : 'Stopped';
@@ -1163,12 +1163,12 @@
 
   function startTracking() {
     if (!currentSelectedUnit) {
-      alert("దయచేసి మీ విభాగం, మండలం మరియు టీమ్ ఎంచుకోండి!");
+      alert("Please select Category, Police Station, and Duty Party/Point!");
       return;
     }
 
     if (!('geolocation' in navigator)) {
-      alert("మీ మొబైల్ బ్రౌజర్ GPS లొకేషన్ సపోర్ట్ చేయట్లేదు.");
+      alert("Your mobile browser does not support GPS location.");
       return;
     }
 
@@ -1187,7 +1187,7 @@
     // UI Updates
     document.getElementById('selection-card').style.display = 'none';
     document.getElementById('cockpit-card').style.display = 'block';
-    document.getElementById('cockpit-desc').innerText = `[${currentSelectedUnit.category}] ${currentSelectedUnit.mandal} - ${currentSelectedUnit.unitName} లైవ్ లొకేషన్ కంట్రోల్ రూమ్‌కు పంపబడుతోంది.`;
+    document.getElementById('cockpit-desc').innerText = `[${currentSelectedUnit.category}] ${currentSelectedUnit.mandal} - ${currentSelectedUnit.unitName} live location is transmitting to Control Room.`;
 
     acquireWakeLock();
     startBackgroundAudio();
@@ -1213,9 +1213,9 @@
           bgNotice.innerHTML = `
             <div style="font-weight:700; color:#34d399; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
               <i class="fa-solid fa-circle-check" style="font-size:14px;"></i>
-              <span>ఆండ్రాయిడ్ యాప్ సర్వీస్ ఆన్‌లో ఉంది!</span>
+              <span>Android App Service Active!</span>
             </div>
-            <div>✅ మీరు HOME బటన్ ప్రెస్ చేసినా, వాట్సాప్ చూస్తున్నా లేదా స్క్రీన్ ఆఫ్ చేసినా లొకేషన్ నిరంతరం కంట్రోల్ రూమ్‌కు వెళ్తూనే ఉంటుంది.</div>
+            <div>✅ Location continues transmitting to Control Room even if you press HOME, use WhatsApp, or turn off the screen.</div>
           `;
         }
       } catch (err) {
@@ -1249,7 +1249,7 @@
       (err) => {
         console.warn('GPS Watch warning:', err);
         if (err.code === err.PERMISSION_DENIED) {
-          alert("లొకేషన్ అనుమతి నిరాకరించబడింది. మొబైల్ సెట్టింగ్స్‌లో GPS లొకేషన్ ఆన్ చేసి పర్మిషన్ ఇవ్వండి.");
+          alert("Location permission denied. Please allow GPS location permission in phone settings.");
           stopTracking();
         }
       },
@@ -1285,7 +1285,7 @@
       if (isTracking) acquireWakeLock();
     }, 25000);
 
-    showToast("లైవ్ GPS ప్రారంభమైంది! మీరు కదులుతుంటే మ్యాప్ అప్‌డేట్ అవుతుంది.");
+    showToast("Live GPS Started! Map updates as you move.");
   }
 
   function stopTracking() {
@@ -1335,7 +1335,7 @@
     document.getElementById('cockpit-card').style.display = 'none';
     document.getElementById('selection-card').style.display = 'block';
 
-    showToast("లొకేషన్ షేరింగ్ ఆపివేయబడింది");
+    showToast("Location sharing stopped");
   }
 
   document.getElementById('btn-start-track').addEventListener('click', startTracking);
@@ -1387,8 +1387,8 @@
   }
 
   function populateMandals(category, preselectMandal = '') {
-    selMandal.innerHTML = '<option value="">-- పోలీస్ స్టేషన్ ఎంచుకోండి --</option>';
-    selUnit.innerHTML = '<option value="">-- పార్టీ / పాయింట్ ఎంచుకోండి --</option>';
+    selMandal.innerHTML = '<option value="">-- Select Police Station --</option>';
+    selUnit.innerHTML = '<option value="">-- Select Party / Point --</option>';
     renderUnitPreview(null);
 
     const mandalsSet = new Set();
@@ -1416,7 +1416,7 @@
   }
 
   function populateUnits(category, mandal, preselectUnitId = '') {
-    selUnit.innerHTML = '<option value="">-- పార్టీ / పాయింట్ ఎంచుకోండి --</option>';
+    selUnit.innerHTML = '<option value="">-- Select Party / Point --</option>';
     renderUnitPreview(null);
 
     if (!mandal) return;
@@ -1432,7 +1432,7 @@
 
     if (mpUnits.length > 0) {
       const grpMp = document.createElement('optgroup');
-      grpMp.label = `🚔 మూవింగ్ పార్టీలు (Moving Parties - ${mpUnits.length})`;
+      grpMp.label = `🚔 Moving Parties (${mpUnits.length})`;
       mpUnits.forEach(u => {
         const opt = document.createElement('option');
         opt.value = u.id;
@@ -1446,11 +1446,11 @@
 
     if (spUnits.length > 0) {
       const grpSp = document.createElement('optgroup');
-      grpSp.label = `📍 స్టాటిక్ పాయింట్లు (Static Points - ${spUnits.length})`;
+      grpSp.label = `📍 Static Points (${spUnits.length})`;
       spUnits.forEach(u => {
         const opt = document.createElement('option');
         opt.value = u.id;
-        const vText = u.village ? ` [గ్రామం: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
+        const vText = u.village ? ` [Village: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
         const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
         opt.innerText = `📍 ${u.unitName}${vText}${officerShort}`;
         grpSp.appendChild(opt);
@@ -1479,9 +1479,9 @@
 
     document.getElementById('disp-officer-name').innerText = unit.officer || '--';
     document.getElementById('disp-officer-phone').innerText = unit.phone || 'N/A';
-    const locText = unit.village ? `గ్రామం: ${unit.village} (${unit.ps || unit.mandal})` : (unit.hq || unit.mandal || '--');
+    const locText = unit.village ? `Village: ${unit.village} (${unit.ps || unit.mandal})` : (unit.hq || unit.mandal || '--');
     document.getElementById('disp-officer-hq').innerText = locText;
-    const supportText = unit.vehicle ? `వాహనం: ${unit.vehicle}` : (unit.supporting || 'N/A');
+    const supportText = unit.vehicle ? `Vehicle: ${unit.vehicle}` : (unit.supporting || 'N/A');
     document.getElementById('disp-officer-supporting').innerText = supportText;
   }
 
@@ -1499,7 +1499,7 @@
   window.addEventListener('popstate', () => {
     if (isTracking) {
       window.history.pushState({ page: 'officer' }, '', window.location.href);
-      const confirmExit = confirm("⚠️ లొకేషన్ షేరింగ్ నడుస్తోంది!\n\nమీరు వాట్సాప్ లేదా ఇతర యాప్స్ చూడాలంటే 'Cancel' నొక్కి మీ మొబైల్ HOME బటన్ వాడండి.\n\nపూర్తిగా ఆపివేయాలనుకుంటున్నారా?");
+      const confirmExit = confirm("⚠️ Live location sharing is active!\n\nTo use WhatsApp or other apps, press Cancel and use your phone's HOME button.\n\nDo you want to completely stop sharing?");
       if (confirmExit) stopTracking();
     }
   });

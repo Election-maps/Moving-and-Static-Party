@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>శ్రీకాకుళం జిల్లా పోలీస్ - ఎన్నికల బందోబస్తు లైవ్ మ్యాప్ | Srikakulam Police Election Live Map</title>
+  <title>Srikakulam District Police - Election Duty Live Map | Control Room</title>
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -836,51 +836,51 @@
         <i class="fa-solid fa-shield-halved"></i>
       </div>
       <div>
-        <div class="brand-title" id="txt-title">శ్రీకాకుళం జిల్లా పోలీస్ - మూవింగ్ & స్టాటిక్ పార్టీల లైవ్ ట్రాకింగ్</div>
+        <div class="brand-title" id="txt-title">Srikakulam District Police - Moving Parties & Static Points Tracker</div>
         <div class="brand-subtitle">
           <span class="dist-tag">SRIKAKULAM POLICE</span>
-          <span id="txt-subtitle">Moving Parties • Static Points Duties Incharges (32 Police Stations)</span>
+          <span id="txt-subtitle">Election Bandobust Live GPS Tracking • 32 Police Stations</span>
         </div>
       </div>
     </div>
     <div class="nav-actions">
       <!-- Officer App Direct Link -->
-      <a href="officer.html?room=SrikakulamPolice" target="_blank" class="btn-header btn-track-action" title="ఫీల్డ్ ఆఫీసర్ యాప్ ఓపెన్ చేయండి" style="text-decoration: none;">
+      <a href="officer.html?room=SrikakulamPolice" target="_blank" class="btn-header btn-track-action" title="Open Field Officer App" style="text-decoration: none;">
         <i class="fa-solid fa-mobile-screen"></i>
-        <span>ఫీల్డ్ యాప్</span>
+        <span>Field App</span>
       </a>
 
       <!-- Direct APK Download Link -->
-      <a href="SrikakulamPoliceTracker.apk" download="SrikakulamPoliceTracker.apk" class="btn-header" title="ఆండ్రాయిడ్ APK యాప్ డౌన్‌లోడ్ చేయండి (యాప్ క్లోజ్ చేసినా రన్ అవుతుంది)" style="text-decoration: none; background: rgba(37, 99, 235, 0.35); border-color: #3b82f6;">
+      <a href="SrikakulamPoliceTracker.apk" download="SrikakulamPoliceTracker.apk" class="btn-header" title="Download Android APK App (Tracks in background)" style="text-decoration: none; background: rgba(37, 99, 235, 0.35); border-color: #3b82f6;">
         <i class="fa-brands fa-android" style="color: #34d399;"></i>
-        <span>APK యాప్</span>
+        <span>APK App</span>
       </a>
 
       <!-- Clear All Live Locations Button -->
-      <button class="btn-header btn-clear-action" id="btn-clear-all" onclick="clearAllOfficerLocations()" title="మ్యాప్‌లోని పాత లొకేషన్లను క్లియర్ చేయండి">
+      <button class="btn-header btn-clear-action" id="btn-clear-all" onclick="clearAllOfficerLocations()" title="Clear old live markers from map">
         <i class="fa-solid fa-trash-can"></i>
-        <span>క్లియర్</span>
+        <span>Clear</span>
       </button>
 
       <!-- Open Directory & Control Room Drawer -->
-      <button class="btn-header" id="btn-open-directory" title="అన్ని మూవింగ్ & స్టాటిక్ పార్టీల వివరాలు & స్టేటస్">
+      <button class="btn-header" id="btn-open-directory" title="All 127 Moving & Static Parties Directory">
         <i class="fa-solid fa-list-check"></i>
-        <span id="txt-btn-routes">డ్యూటీలు (127)</span>
+        <span id="txt-btn-routes">Duties (127)</span>
       </button>
 
       <!-- Share Broadcast Link in WhatsApp Group -->
-      <button class="btn-header btn-wa-action" id="btn-share-modal" title="వాట్సాప్ గ్రూప్‌లో లింక్ పంపండి">
+      <button class="btn-header btn-wa-action" id="btn-share-modal" title="Share link to WhatsApp Group">
         <i class="fa-brands fa-whatsapp"></i>
-        <span>గ్రూప్ షేర్</span>
+        <span>Share</span>
       </button>
 
       <!-- Toggle Map Layer (Street / Satellite) -->
-      <button class="btn-header" id="btn-toggle-layer" title="శాటిలైట్ / సాధారణ మ్యాప్ మార్చండి">
+      <button class="btn-header" id="btn-toggle-layer" title="Toggle Map View (Satellite / Street)">
         <i class="fa-solid fa-layer-group"></i>
       </button>
 
       <!-- Language Toggle -->
-      <button class="btn-header" id="btn-lang" title="భాషను మార్చండి (Telugu / English)">
+      <!-- Language / Region -->
         <span>EN</span>
       </button>
     </div>
@@ -893,25 +893,25 @@
   <div class="unified-police-toolbar">
     <!-- Live & Category Filter Pills Segment -->
     <div class="toolbar-segment toolbar-pills">
-      <button class="pill-btn pill-live" id="pill-live-filter" onclick="filterMapLiveOnly()" title="à°²à±ˆà°µà± à°²à±‹ à°‰à°¨à±à°¨ à°µà°¾à°°à°¿à°¨à°¿ à°®à°¾à°¤à±à°°à°®à±‡ à°šà±‚à°¡à°‚à°¡à°¿">
+      <button class="pill-btn pill-live" id="pill-live-filter" onclick="filterMapLiveOnly()" title="Show Live Units Only">
         <span class="dot-live"></span>
-        <span>à°²à±ˆà°µà±: <strong id="kpi-live">0</strong></span>
+        <span>Live: <strong id="kpi-live">0</strong></span>
       </button>
 
-      <button class="pill-btn cat-btn active" data-cat="ALL" onclick="filterMapCategory('ALL')" title="à°…à°¨à±à°¨à°¿ à°®à±‚à°µà°¿à°‚à°—à± & à°¸à±à°Ÿà°¾à°Ÿà°¿à°•à± à°¡à±à°¯à±‚à°Ÿà±€à°²à±">
-        ðŸ›¡ï¸ à°…à°¨à±à°¨à±€ (<span id="cat-cnt-all">127</span>)
+      <button class="pill-btn cat-btn active" data-cat="ALL" onclick="filterMapCategory('ALL')" title="All Moving &amp; Static Duties">
+        <i class="fa-solid fa-shield-halved" style="color: #60a5fa;"></i> All (<span id="cat-cnt-all">127</span>)
       </button>
 
-      <button class="pill-btn cat-btn" data-cat="MP" onclick="filterMapCategory('MP')" title="à°®à±‚à°µà°¿à°‚à°—à± à°ªà°¾à°°à±à°Ÿà±€à°²à± à°®à°¾à°¤à±à°°à°®à±‡">
-        ðŸš” à°®à±‚à°µà°¿à°‚à°—à± (<span id="cat-cnt-mp">87</span>)
+      <button class="pill-btn cat-btn" data-cat="MP" onclick="filterMapCategory('MP')" title="Moving Parties Only">
+        <i class="fa-solid fa-car-side" style="color: #38bdf8;"></i> Moving (<span id="cat-cnt-mp">87</span>)
       </button>
 
-      <button class="pill-btn cat-btn" data-cat="SP" onclick="filterMapCategory('SP')" title="à°¸à±à°Ÿà°¾à°Ÿà°¿à°•à± à°ªà°¾à°¯à°¿à°‚à°Ÿà±à°²à± à°®à°¾à°¤à±à°°à°®à±‡">
-        ðŸ“ à°¸à±à°Ÿà°¾à°Ÿà°¿à°•à± (<span id="cat-cnt-sp">40</span>)
+      <button class="pill-btn cat-btn" data-cat="SP" onclick="filterMapCategory('SP')" title="Static Points Only">
+        <i class="fa-solid fa-map-pin" style="color: #f59e0b;"></i> Static (<span id="cat-cnt-sp">40</span>)
       </button>
 
-      <button class="pill-btn active" id="btn-toggle-borders" onclick="toggleMandalBordersLayer()" title="à°®à°‚à°¡à°² à°¸à°°à°¿à°¹à°¦à±à°¦à±à°²à± à°†à°¨à±/à°†à°«à±">
-        <i class="fa-solid fa-draw-polygon" style="color: #93c5fd;"></i> <span>à°¸à°°à°¿à°¹à°¦à±à°¦à±à°²à±</span>
+      <button class="pill-btn active" id="btn-toggle-borders" onclick="toggleMandalBordersLayer()" title="Toggle Mandal Boundaries">
+        <i class="fa-solid fa-draw-polygon" style="color: #93c5fd;"></i> <span>Borders</span>
       </button>
     </div>
 
@@ -919,32 +919,31 @@
     <div class="toolbar-segment toolbar-dropdowns">
       <div class="toolbar-select-box">
         <i class="fa-solid fa-building-shield"></i>
-        <select id="select-map-mandal" onchange="handleMapMandalChange(this.value)" title="à°ªà±‹à°²à±€à°¸à± à°¸à±à°Ÿà±‡à°·à°¨à± à°Žà°‚à°šà±à°•à±‹à°‚à°¡à°¿ (Select Police Station)">
-          <option value="ALL">ðŸ›ï¸ à°…à°¨à±à°¨à°¿ à°ªà±‹à°²à±€à°¸à± à°¸à±à°Ÿà±‡à°·à°¨à±à°²à± (32 PS)</option>
+        <select id="select-map-mandal" onchange="handleMapMandalChange(this.value)" title="Select Police Station">
+          <option value="ALL">All Police Stations (32 PS)</option>
         </select>
       </div>
 
       <div class="toolbar-select-box">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <select id="select-map-team" class="select-team" onchange="handleMapTeamChange(this.value)" title="à°ªà°¾à°°à±à°Ÿà±€ / à°ªà°¾à°¯à°¿à°‚à°Ÿà± à°Žà°‚à°šà±à°•à±‹à°‚à°¡à°¿ (Select Party / Point)">
-          <option value="">ðŸ” à°ªà°¾à°°à±à°Ÿà±€ / à°ªà°¾à°¯à°¿à°‚à°Ÿà± à°Žà°‚à°šà±à°•à±‹à°‚à°¡à°¿</option>
+        <select id="select-map-team" class="select-team" onchange="handleMapTeamChange(this.value)" title="Select Party / Point">
+          <option value="">Select Party / Point</option>
         </select>
       </div>
     </div>
   </div>
-
   <!-- Quick Floating Action Buttons on Map -->
   <div class="map-fab-stack">
     <!-- WhatsApp Share FAB -->
-    <button class="fab fab-whatsapp" id="fab-wa-quick" title="వాట్సాప్ గ్రూప్‌లో షేర్ చేయండి">
+    <button class="fab fab-whatsapp" id="fab-wa-quick" title="Share link in WhatsApp Group">
       <i class="fa-brands fa-whatsapp"></i>
     </button>
     <!-- Fit All Active Officers bounds -->
-    <button class="fab" id="fab-fit-all" title="అందరినీ మ్యాప్‌లో చూపించు (Fit View)">
+    <button class="fab" id="fab-fit-all" title="Fit all on map">
       <i class="fa-solid fa-users-viewfinder"></i>
     </button>
     <!-- Center on Srikakulam District -->
-    <button class="fab" id="fab-dist-center" title="శ్రీకాకుళం జిల్లా మధ్యలోకి వెళ్లు">
+    <button class="fab" id="fab-dist-center" title="Recenter on Srikakulam District">
       <i class="fa-solid fa-crosshairs"></i>
     </button>
   </div>
@@ -956,26 +955,26 @@
     <div class="modal-header">
       <h3>
         <i class="fa-solid fa-users-rays"></i>
-        <span id="txt-modal-dir-title">శ్రీకాకుళం జిల్లా మూవింగ్ & స్టాటిక్ పార్టీ డ్యూటీల జాబితా (127)</span>
+        <span id="txt-modal-dir-title">Srikakulam District Duties Directory (127)</span>
       </h3>
       <button class="btn-close" id="btn-close-dir">✕</button>
     </div>
     <div class="modal-body">
       <!-- Search & Filters -->
       <div class="search-filter-box">
-        <input type="text" class="custom-input" style="flex: 2; min-width: 180px;" id="dir-search" placeholder="పోలీస్ స్టేషన్, ఇన్-ఛార్జ్ పేరు, పార్టీ లేదా ఫోన్ నెంబర్ శోధించండి..."/>
+        <input type="text" class="custom-input" style="flex: 2; min-width: 180px;" id="dir-search" placeholder="Search by Police Station, Officer Name, Duty, or Phone..."/>
         <select class="custom-select" style="flex: 1.2; min-width: 140px;" id="dir-filter-cat">
-          <option value="ALL">అన్ని విభాగాలు (All Duties)</option>
+          <option value="ALL">All Duties</option>
           <option value="Moving Parties">🚔 Moving Parties (87)</option>
           <option value="Static Points">📍 Static Points (40)</option>
         </select>
         <select class="custom-select" style="flex: 1.2; min-width: 140px;" id="dir-filter-mandal">
-          <option value="ALL">అన్ని పోలీస్ స్టేషన్లు (All 32 PS)</option>
+          <option value="ALL">All 32 Police Stations</option>
         </select>
         <select class="custom-select" style="flex: 1; min-width: 110px;" id="dir-filter-status">
-          <option value="ALL">అన్నీ (127)</option>
-          <option value="LIVE">🟢 లైవ్ లో ఉన్నవి</option>
-          <option value="OFFLINE">⚪ ఆఫ్‌లైన్</option>
+          <option value="ALL">All Status (127)</option>
+          <option value="LIVE">🟢 Live Now</option>
+          <option value="OFFLINE">⚪ Offline</option>
         </select>
       </div>
 
@@ -985,7 +984,7 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-close" id="btn-close-dir-footer">మూసివేయి (Close)</button>
+      <button class="btn-close" id="btn-close-dir-footer">Close</button>
     </div>
   </div>
 </div>
@@ -996,32 +995,32 @@
     <div class="modal-header">
       <h3>
         <i class="fa-brands fa-whatsapp" style="color: var(--wa-green);"></i>
-        <span>వాట్సాప్ గ్రూప్‌లో షేర్ చేయండి</span>
+        <span>Share in WhatsApp Group</span>
       </h3>
       <button class="btn-close" id="btn-close-share">✕</button>
     </div>
     <div class="modal-body">
       <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
-        శ్రీకాకుళం జిల్లా మూవింగ్ పార్టీలు & స్టాటిక్ పాయింట్ల వాట్సాప్ గ్రూప్‌లో క్రింది మెసేజ్‌ను షేర్ చేయండి:
+        Share the following message in Srikakulam District Police WhatsApp groups:
       </p>
 
       <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px; font-size: 12px; color: #cbd5e1; white-space: pre-line; margin-bottom: 14px;" id="broadcast-message-preview">
-శ్రీకాకుళం జిల్లా పోలీస్ కంట్రోల్ రూమ్ - మూవింగ్ & స్టాటిక్ పార్టీల లైవ్ ట్రాకర్
+Srikakulam District Police Control Room - Live GPS Tracker
 
-మూవింగ్ పార్టీలు & స్టాటిక్ పాయింట్ల సిబ్బంది అందరికీ ముఖ్య గమనిక:
-దయచేసి వెంటనే క్రింది లింక్ ఓపెన్ చేసి, మీ పోలీస్ స్టేషన్ & డ్యూటీ ఎంచుకుని "లైవ్ లొకేషన్ ప్రారంభించండి" బటన్ నొక్కండి:
+Important notice for all Moving Parties & Static Points in-charge officers:
+Please open the link below, select your Police Station & Duty, and click "START LIVE LOCATION":
 
 https://...
       </div>
 
       <button class="btn-header" style="width: 100%; margin-bottom: 8px; background: var(--wa-green); color: #0a1128; justify-content: center; font-weight: 700; padding: 11px;" id="btn-send-wa-broadcast">
         <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i>
-        <span>వాట్సాప్ గ్రూప్‌లో పంపండి</span>
+        <span>Send in WhatsApp Group</span>
       </button>
 
       <button class="btn-header" style="width: 100%; justify-content: center; padding: 10px;" id="btn-copy-wa-broadcast">
         <i class="fa-regular fa-copy"></i>
-        <span>లింక్ కాపీ చేయండి</span>
+        <span>Copy Link</span>
       </button>
     </div>
   </div>
@@ -1030,7 +1029,7 @@ https://...
 <!-- Notification Toast -->
 <div class="toast" id="toast">
   <i class="fa-solid fa-circle-check" style="color: #34d399;"></i>
-  <span id="toast-message">సందేశం</span>
+  <span id="toast-message">Notification</span>
 </div>
 
 <!-- Leaflet JS -->
@@ -1139,7 +1138,7 @@ https://...
       },
       onEachFeature: function(feature, layer) {
         const name = (feature.properties && feature.properties.name) ? feature.properties.name : 'Mandal';
-        layer.bindTooltip(`<b>📍 ${name} మండలం</b>`, { sticky: true, className: 'psl-tooltip' });
+        layer.bindTooltip(`<b>📍 ${name} Mandal</b>`, { sticky: true, className: 'psl-tooltip' });
         layer.on('click', function(e) {
           if (e && e.originalEvent) L.DomEvent.stopPropagation(e);
           const sel = document.getElementById('select-map-mandal');
@@ -1190,11 +1189,11 @@ https://...
       if (btn) btn.classList.add('active');
       if (!map.hasLayer(mandalBordersLayerGroup)) map.addLayer(mandalBordersLayerGroup);
       drawMandalBorders();
-      showToast('🗺️ మండల సరిహద్దులు (Mandal Borders) ఆన్ చేయబడ్డాయి');
+      showToast('🗺️ Mandal Borders Enabled');
     } else {
       if (btn) btn.classList.remove('active');
       if (map.hasLayer(mandalBordersLayerGroup)) map.removeLayer(mandalBordersLayerGroup);
-      showToast('🗺️ మండల సరిహద్దులు ఆఫ్ చేయబడ్డాయి');
+      showToast('🗺️ Mandal Borders Disabled');
     }
   };
 
@@ -1203,11 +1202,11 @@ https://...
     if (isSatellite) {
       map.removeLayer(satelliteLayer);
       streetLayer.addTo(map);
-      showToast('సాధారణ మ్యాప్ (Street View) ఎంచుకోబడింది');
+      showToast('Street Map View Selected');
     } else {
       map.removeLayer(streetLayer);
       satelliteLayer.addTo(map);
-      showToast('గూగుల్ శాటిలైట్ మ్యాప్ (Satellite View) ఎంచుకోబడింది');
+      showToast('Google Satellite View Selected');
     }
     isSatellite = !isSatellite;
   });
@@ -1231,20 +1230,20 @@ https://...
 
   function timeAgo(timestamp) {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
-    if (seconds < 15) return 'ఇప్పుడే';
-    if (seconds < 60) return `${seconds} సెక. క్రితం`;
+    if (seconds < 15) return 'Just now';
+    if (seconds < 60) return `${seconds}s ago`;
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes} నిమి. క్రితం`;
+    if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
-    return `${hours} గంటల క్రితం`;
+    return `${hours}h ago`;
   }
 
   function getMemberStatus(lastUpdated) {
     const diff = Date.now() - lastUpdated;
     if (diff <= 35000) {
-      return { label: '● లైవ్', color: '#10b981', isLive: true };
+      return { label: '● LIVE', color: '#10b981', isLive: true };
     } else if (diff <= 180000) {
-      return { label: 'నిశ్చలంగా', color: '#f59e0b', isLive: false };
+      return { label: 'Stationary', color: '#f59e0b', isLive: false };
     } else {
       return { label: timeAgo(lastUpdated), color: '#94a3b8', isLive: false };
     }
@@ -1496,9 +1495,9 @@ https://...
 
   function buildPopupHtml(key, data, catKey, mandal, unitName, theme) {
     const cleanPh = cleanPhoneNumber(data.phone);
-    const callBtn = cleanPh ? `<a href="tel:${cleanPh}" style="display:inline-block; padding:4px 8px; background:#2563eb; color:white; border-radius:4px; text-decoration:none; font-size:11px; margin-top:6px; margin-right:4px;">📞 కాల్</a>` : '';
+    const callBtn = cleanPh ? `<a href="tel:${cleanPh}" style="display:inline-block; padding:4px 8px; background:#2563eb; color:white; border-radius:4px; text-decoration:none; font-size:11px; margin-top:6px; margin-right:4px;">📞 Call</a>` : '';
     const waBtn = cleanPh ? `<a href="https://wa.me/91${cleanPh}" target="_blank" style="display:inline-block; padding:4px 8px; background:#16a34a; color:white; border-radius:4px; text-decoration:none; font-size:11px; margin-top:6px;">💬 WhatsApp</a>` : '';
-    const removeBtn = `<button onclick="clearSingleOfficer('${key}')" style="display:inline-block; padding:4px 8px; background:#e11d48; color:white; border-radius:4px; font-size:11px; margin-top:6px; border:none; cursor:pointer;" title="ఈ లొకేషన్ తొలగించు"><i class="fa-solid fa-trash-can"></i> తీసివేయి</button>`;
+    const removeBtn = `<button onclick="clearSingleOfficer('${key}')" style="display:inline-block; padding:4px 8px; background:#e11d48; color:white; border-radius:4px; font-size:11px; margin-top:6px; border:none; cursor:pointer;" title="Remove Location"><i class="fa-solid fa-trash-can"></i> Remove</button>`;
     const kmh = data.speed ? Math.round(data.speed * 3.6) : 0;
     const distText = data.distanceTraveled ? (data.distanceTraveled >= 1000 ? `${(data.distanceTraveled/1000).toFixed(2)} km` : `${data.distanceTraveled} m`) : '';
 
@@ -1508,14 +1507,14 @@ https://...
           [${catKey}] ${mandal} - ${unitName}
         </div>
         <strong style="color: #0f172a; font-size: 13px;">${data.officer || data.name || 'Officer'}</strong><br/>
-        <span style="font-size: 11px; color: #475569;">🏛️ పోలీస్ స్టేషన్: <strong>${mandal.endsWith('PS') ? mandal : mandal + ' PS'}</strong></span><br/>
-        <span style="font-size: 11px; color: #475569;">📞 ఫోన్: <strong>${data.phone || 'N/A'}</strong></span><br/>
+        <span style="font-size: 11px; color: #475569;">🏛️ Police Station: <strong>${mandal.endsWith('PS') ? mandal : mandal + ' PS'}</strong></span><br/>
+        <span style="font-size: 11px; color: #475569;">📞 Phone: <strong>${data.phone || 'N/A'}</strong></span><br/>
         ${data.hq ? `<span style="font-size: 11px; color: #475569;">📍 HQ: ${data.hq}</span><br/>` : ''}
         <span style="font-size: 11px; color: #475569;">⚡ Speed: <strong>${kmh} km/h ${kmh > 0 || data.isMoving ? '<span style="color:#16a34a; font-weight:bold;">(Moving)</span>' : '<span style="color:#d97706; font-weight:bold;">(Stopped)</span>'}</strong></span><br/>
         <span style="font-size: 11px; color: #475569;">🎯 GPS Accuracy: ±${Math.round(data.accuracy || 0)} m</span><br/>
         ${distText ? `<span style="font-size: 11px; color: #16a34a;">🚶 Distance: <strong>${distText}</strong></span><br/>` : ''}
         <span style="font-size: 10px; color: #94a3b8;">🕒 Last Update: ${timeAgo(data.lastUpdated || Date.now())}</span>
-        ${data.supporting ? `<div style="font-size: 10px; color: #64748b; margin-top: 4px; border-top: 1px dashed #cbd5e1; padding-top: 4px;">👥 ఫోర్స్: ${data.supporting.substring(0, 60)}</div>` : ''}
+        ${data.supporting ? `<div style="font-size: 10px; color: #64748b; margin-top: 4px; border-top: 1px dashed #cbd5e1; padding-top: 4px;">👥 Supporting Force: ${data.supporting.substring(0, 60)}</div>` : ''}
         <div style="margin-top: 6px;">
           ${callBtn}
           ${waBtn}
@@ -1587,7 +1586,7 @@ https://...
       marker.on('click', () => {
         currentlyFollowedOfficerKey = key;
         map.flyTo([data.lat, data.lng], 18, { animate: true, duration: 1.0 });
-        showToast(`[${catKey}] ${unitName} (${psName || mandal}) ఆటో-ఫాలో మోడ్ ఆన్ చేయబడింది.`);
+        showToast(`[${catKey}] ${unitName} (${psName || mandal}) Auto-follow enabled.`);
       });
 
       activeMobiles[key] = {
@@ -1607,7 +1606,7 @@ https://...
       };
 
       if (shouldToast) {
-        showToast(`[${catKey}] ${psName || mandal} (${unitName}) లైవ్ లోకి వచ్చారు!`);
+        showToast(`[${catKey}] ${psName || mandal} (${unitName}) is now Live!`);
         // If no officer was explicitly followed, automatically zoom to this active officer
         if (!currentlyFollowedOfficerKey) {
           map.flyTo([data.lat, data.lng], 16, { animate: true, duration: 1.0 });
@@ -1765,9 +1764,9 @@ https://...
     if (catSp) catSp.innerText = spCount;
 
     const elBtnRoutes = document.getElementById('txt-btn-routes');
-    if (elBtnRoutes) elBtnRoutes.innerText = `డ్యూటీలు (${totalCount})`;
+    if (elBtnRoutes) elBtnRoutes.innerText = `Duties (${totalCount})`;
     const elModalTitle = document.getElementById('txt-modal-dir-title');
-    if (elModalTitle) elModalTitle.innerText = `శ్రీకాకుళం జిల్లా మూవింగ్ & స్టాటిక్ పార్టీ డ్యూటీల జాబితా (${totalCount})`;
+    if (elModalTitle) elModalTitle.innerText = `Srikakulam District Duties Directory (${totalCount})`;
   }
 
   let liveOnlyFilter = false;
@@ -1777,10 +1776,10 @@ https://...
     if (btn) {
       if (liveOnlyFilter) {
         btn.classList.add('active');
-        showToast('à°²à±ˆà°µà± à°²à±‹ à°‰à°¨à±à°¨ à°¡à±à°¯à±‚à°Ÿà±€à°²à°¨à± à°®à°¾à°¤à±à°°à°®à±‡ à°šà±‚à°ªà°¿à°¸à±à°¤à±à°¨à±à°¨à°¾à°®à±');
+        showToast('Showing Live Duties Only');
       } else {
         btn.classList.remove('active');
-        showToast('à°…à°¨à±à°¨à°¿ à°¡à±à°¯à±‚à°Ÿà±€à°²à°¨à± à°šà±‚à°ªà°¿à°¸à±à°¤à±à°¨à±à°¨à°¾à°®à±');
+        showToast('Showing All Duties');
       }
     }
     applyMapFilters();
@@ -1839,11 +1838,11 @@ https://...
     const mpTotal = allUnitsData.filter(u => u.categoryKey === 'MP' || u.category === 'Moving Parties').length;
     const spTotal = allUnitsData.filter(u => u.categoryKey === 'SP' || u.category === 'Static Points').length;
     const catLabels = {
-      'ALL': `అన్ని డ్యూటీలు (All ${allUnitsData.length} Duties)`,
-      'MP': `🚔 Moving Parties - మూవింగ్ పార్టీలు (${mpTotal})`,
-      'SP': `📍 Static Points - స్టాటిక్ పాయింట్లు (${spTotal})`
+      'ALL': `All Duties (${allUnitsData.length})`,
+      'MP': `🚔 Moving Parties - Moving Parties (${mpTotal})`,
+      'SP': `📍 Static Points - Static Points (${spTotal})`
     };
-    showToast(catLabels[catKey] || `${catKey} విభాగం ఎంచుకోబడింది`);
+    showToast(catLabels[catKey] || `${catKey} Category Selected`);
   };
 
   window.handleMapCategoryChange = function(catKey) {
@@ -1856,7 +1855,7 @@ https://...
     applyMapFilters();
     drawMandalBorders();
     if (mandalName !== 'ALL') {
-      showToast(`${mandalName} పోలీస్ స్టేషన్ ఫిల్టర్ చేయబడింది`);
+      showToast(`${mandalName} Police Station Selected`);
       fitToMandal(mandalName);
     }
   };
@@ -1867,7 +1866,7 @@ https://...
     if (!sel) return;
     const currentVal = sel.value;
     const psCount = new Set(allUnitsData.map(u => (u.ps || u.mandal || '').trim()).filter(Boolean)).size;
-    sel.innerHTML = `<option value="ALL">🏛️ అన్ని పోలీస్ స్టేషన్లు (All ${psCount} Police Stations)</option>`;
+    sel.innerHTML = `<option value="ALL">🏛️ All Police Stations (${psCount} PS)</option>`;
 
     const stationsSet = new Set();
     allUnitsData.forEach(u => {
@@ -1899,7 +1898,7 @@ https://...
     const sel = document.getElementById('select-map-team');
     if (!sel) return;
     const currentVal = sel.value;
-    sel.innerHTML = '<option value="">🔍 పార్టీ / పాయింట్ ఎంచుకోండి (Select Party / Point)</option>';
+    sel.innerHTML = '<option value="">🔍 Select Party / Point</option>';
 
     // Filter allUnitsData matching current police station (Always include both MP and SP)
     const filteredUnits = allUnitsData.filter(u => {
@@ -1926,7 +1925,7 @@ https://...
     // 1. Live Units Optgroup (At Top with Green Indicator)
     if (liveUnits.length > 0) {
       const grpLive = document.createElement('optgroup');
-      grpLive.label = `🟢 లైవ్ లో ఉన్నవి (${liveUnits.length} Live Teams)`;
+      grpLive.label = `🟢 Live Now (${liveUnits.length} Live Teams)`;
       liveUnits.forEach(u => {
         const key = u.id || u.unitId;
         const opt = document.createElement('option');
@@ -1942,7 +1941,7 @@ https://...
     // 2. Moving Parties Optgroup
     if (mpUnits.length > 0) {
       const grpMp = document.createElement('optgroup');
-      grpMp.label = `🚔 మూవింగ్ పార్టీలు (${mpUnits.length} Moving Parties)`;
+      grpMp.label = `🚔 Moving Parties (${mpUnits.length})`;
       mpUnits.forEach(u => {
         const key = u.id || u.unitId;
         const opt = document.createElement('option');
@@ -1958,12 +1957,12 @@ https://...
     // 3. Static Points Optgroup
     if (spUnits.length > 0) {
       const grpSp = document.createElement('optgroup');
-      grpSp.label = `📍 స్టాటిక్ పాయింట్లు (${spUnits.length} Static Points)`;
+      grpSp.label = `📍 Static Points (${spUnits.length})`;
       spUnits.forEach(u => {
         const key = u.id || u.unitId;
         const opt = document.createElement('option');
         opt.value = key;
-        const vText = u.village ? ` [గ్రామం: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
+        const vText = u.village ? ` [Village: ${u.village}]` : (u.vehicle ? ` [${u.vehicle}]` : '');
         const officerShort = u.officer ? ` - ${u.officer.substring(0, 30)}` : '';
         opt.innerText = `📍 ${u.unitName}${vText} (${u.ps || u.mandal})${officerShort}`;
         grpSp.appendChild(opt);
@@ -1983,7 +1982,7 @@ https://...
       currentlyFollowedOfficerKey = unitId;
       map.flyTo([m.lat, m.lng], 17, { animate: true, duration: 1.0 });
       m.marker.openPopup();
-      showToast(`[${m.categoryKey}] ${m.unitName} (${m.mandal}) లైవ్ ఆటో-ఫాలో మోడ్ ఆన్ చేయబడింది`);
+      showToast(`[${m.categoryKey}] ${m.unitName} (${m.mandal}) Auto-follow enabled`);
       return;
     }
 
@@ -1991,13 +1990,13 @@ https://...
     if (u) {
       currentlyFollowedOfficerKey = null;
       const catText = u.categoryKey || (u.category === 'Moving Parties' ? 'MP' : 'SP');
-      showToast(`⚠️ [${catText}] ${u.unitName} (${u.ps} PS) ఇంకా ఆఫ్‌లైన్‌లో ఉన్నారు. సిబ్బంది లైవ్ లొకేషన్ ప్రారంభించినప్పుడు మ్యాప్‌లో కనిపిస్తారు.`);
+      showToast(`⚠️ [${catText}] ${u.unitName} (${u.ps} PS) is currently offline. Will appear on map once officer starts live location.`);
     }
   };
 
   // Clear Single Officer (Permanently deletes and stops tracking on phone)
   window.clearSingleOfficer = function(key) {
-    if (!confirm('ఈ లొకేషన్ మార్కర్‌ను మ్యాప్ నుండి పూర్తిగా తొలగించాలా?\nఆఫీసర్ మొబైల్‌లో కూడా లైవ్ ట్రాకింగ్ ఆగిపోతుంది. బ్రౌజర్ రీఫ్రెష్ చేసినా ఈ లొకేషన్ రాదు.\nసిబ్బంది మళ్లీ లొకేషన్ షేర్ చేసుకుంటేనే మ్యాప్‌లో కనిపిస్తుంది.\n(Permanently delete this officer? Remote tracking will stop.)')) return;
+    if (!confirm('Permanently delete this officer marker from the map?\nRemote live tracking will also stop on the officer phone.')) return;
 
     if (activeMobiles[key]) {
       if (activeMobiles[key].marker) map.removeLayer(activeMobiles[key].marker);
@@ -2039,12 +2038,12 @@ https://...
     updateKPIs();
     populateMapTeamDropdown();
     renderDirectory();
-    showToast('లొకేషన్ పూర్తిగా తొలగించబడింది. ఆఫీసర్ ఫోన్‌లో ట్రాకింగ్ ఆపబడింది.');
+    showToast('Location removed. Tracking stopped on officer phone.');
   };
 
   // Clear All Officers (Permanently deletes all and stops all phones)
   window.clearAllOfficerLocations = function() {
-    if (!confirm('మ్యాప్‌లో ఉన్న అన్ని లైవ్ లొకేషన్లను పూర్తిగా తొలగించాలా?\nఅన్ని మొబైల్స్‌లో ట్రాకింగ్ ఆగిపోతుంది. బ్రౌజర్ రీఫ్రెష్ చేసినా ఏ లొకేషన్ రాదు.\nసిబ్బంది అందరూ మళ్లీ లొకేషన్ షేర్ చేయాల్సి ఉంటుంది.\n(Permanently clear ALL officers? Tracking will stop on all phones.)')) return;
+    if (!confirm('Permanently clear ALL live officer locations?\nTracking will stop on all officers phones.')) return;
 
     const allKeys = new Set(Object.keys(activeMobiles));
     try {
@@ -2094,7 +2093,7 @@ https://...
     updateKPIs();
     populateMapTeamDropdown();
     renderDirectory();
-    showToast('అన్నీ పూర్తిగా తొలగించబడ్డాయి. రిఫ్రెష్ చేసినా రావు. వారు మళ్లీ షేర్ చేయాలి.');
+    showToast('All live locations cleared. Officers must start live tracking again.');
   };
 
   // Periodic check for offline status transition without destroying active markers
@@ -2231,7 +2230,7 @@ https://...
     });
     if (allBounds.length > 0) {
       map.fitBounds(allBounds, { padding: [40, 40], maxZoom: 13 });
-      showToast('అన్ని డ్యూటీ పాయింట్లు మ్యాప్‌పై అమర్చబడ్డాయి');
+      showToast('All duty locations fitted on map');
     }
   });
 
@@ -2254,7 +2253,7 @@ https://...
     });
     const sortedStations = Array.from(stationsSet).sort();
 
-    dirFilterMandal.innerHTML = '<option value="ALL">అన్ని పోలీస్ స్టేషన్లు (All 34 PS)</option>';
+    dirFilterMandal.innerHTML = '<option value="ALL">All 32 Police Stations</option>';
     sortedStations.forEach(ps => {
       const opt = document.createElement('option');
       opt.value = ps;
@@ -2298,7 +2297,7 @@ https://...
     if (filtered.length === 0) {
       dirListContainer.innerHTML = `
         <div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 24px;">
-          వివరాలు లభించలేదు (No matching records found).
+          No matching records found.
         </div>
       `;
       return;
@@ -2317,7 +2316,7 @@ https://...
       const psName = item.ps || item.mandal;
 
       const personalizedUrl = `${officerBaseUrl}?room=${encodeURIComponent(roomCode)}&id=${encodeURIComponent(item.id)}`;
-      const nudgeMsg = `నమస్కారం సార్ (${item.officer}), శ్రీకాకుళం జిల్లా పోలీస్ కంట్రోల్ రూమ్ మ్యాప్‌లో మీ డ్యూటీ లొకేషన్ షేర్ చేయడానికి వెంటనే ఈ లింక్ ఓపెన్ చేసి 'లైవ్ లొకేషన్ ప్రారంభించండి' నొక్కండి:\n${personalizedUrl}`;
+      const nudgeMsg = `Officer Sir (${item.officer}), please open the link below to transmit your duty live location to Srikakulam District Police Control Room:\n${personalizedUrl}`;
       const waLink = cleanPh ? `https://wa.me/91${cleanPh}?text=${encodeURIComponent(nudgeMsg)}` : '#';
 
       html += `
@@ -2330,26 +2329,26 @@ https://...
               ${item.village ? `<span style="font-size:11px; padding:2px 6px; background:rgba(245,158,11,0.25); border:1px solid #f59e0b; border-radius:4px; color:#fde047;">🏘️ ${item.village}</span>` : ''}
               ${item.vehicle ? `<span style="font-size:11px; padding:2px 6px; background:rgba(255,255,255,0.1); border-radius:4px; color:#cbd5e1;">${item.vehicle}</span>` : ''}
               <span class="status-tag ${isLive ? 'live' : 'offline'}">
-                ${isLive ? '● లైవ్ (Live)' : 'ఆఫ్‌లైన్'}
+                ${isLive ? '● LIVE' : 'Offline'}
               </span>
             </div>
             <div class="route-officer"><i class="fa-solid fa-user-shield" style="font-size: 11px; color:#94a3b8;"></i> ${item.officer}</div>
-            <div class="route-phone">📞 ఫోన్: <strong>${item.phone || 'N/A'}</strong> ${isLive ? `• ⚡ ${Math.round((liveData.speed || 0) * 3.6)} km/h` : ''}</div>
-            ${item.supporting ? `<div style="font-size: 10px; color: #64748b;">ℹ️ డ్యూటీ: ${item.supporting.substring(0, 60)}</div>` : ''}
+            <div class="route-phone">📞 Phone: <strong>${item.phone || 'N/A'}</strong> ${isLive ? `• ⚡ ${Math.round((liveData.speed || 0) * 3.6)} km/h` : ''}</div>
+            ${item.supporting ? `<div style="font-size: 10px; color: #64748b;">ℹ️ Duty: ${item.supporting.substring(0, 60)}</div>` : ''}
           </div>
           <div class="route-actions">
-            <button class="btn-action-map" onclick="zoomToForce('${key}')" title="ఈ పాయింట్‌ను మ్యాప్‌పై చూడండి">
-              <i class="fa-solid fa-location-crosshairs"></i> మ్యాప్
+            <button class="btn-action-map" onclick="zoomToForce('${key}')" title="Locate on Map">
+              <i class="fa-solid fa-location-crosshairs"></i> Map
             </button>
             ${cleanPh ? `
-              <a href="${waLink}" target="_blank" class="btn-action-wa" title="ఈ ఆఫీసర్‌కు వాట్సాప్‌లో నడ్జ్ పంపండి">
-                <i class="fa-brands fa-whatsapp"></i> వాట్సాప్
+              <a href="${waLink}" target="_blank" class="btn-action-wa" title="Send WhatsApp Nudge">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
               </a>
-              <a href="tel:${cleanPh}" class="btn-action-call" title="కాల్ చేయండి">
-                <i class="fa-solid fa-phone"></i> కాల్
+              <a href="tel:${cleanPh}" class="btn-action-call" title="Call Officer">
+                <i class="fa-solid fa-phone"></i> Call
               </a>
             ` : `
-              <span style="font-size: 10px; color: #64748b; padding: 4px 6px;">నంబర్ లేదు</span>
+              <span style="font-size: 10px; color: #64748b; padding: 4px 6px;">No Phone</span>
             `}
           </div>
         </div>
@@ -2365,11 +2364,11 @@ https://...
       currentlyFollowedOfficerKey = key;
       map.flyTo([activeMobiles[key].lat, activeMobiles[key].lng], 16, { duration: 1.0 });
       activeMobiles[key].marker.openPopup();
-      showToast(`🟢 ${activeMobiles[key].unitName} లైవ్ లొకేషన్‌కి జూమ్ చేయబడింది`);
+      showToast(`🟢 ${activeMobiles[key].unitName} Zoomed to live location`);
     } else {
       const u = allUnitsData.find(item => item.id === key);
       const name = u ? `${u.unitName} (${u.ps} PS)` : key;
-      showToast(`⚠️ ${name} ఇంకా ఆఫ్‌లైన్‌లో ఉన్నారు. సిబ్బంది లైవ్ లొకేషన్ ప్రారంభించినప్పుడు మ్యాప్‌పై కనిపిస్తారు.`);
+      showToast(`⚠️ ${name} is currently offline. Will appear on map once live location starts.`);
     }
   };
 
@@ -2398,7 +2397,7 @@ https://...
   const officerAppUrl = (window.location.origin + window.location.pathname).replace(/\/[^\/]*$/, '/officer.html') + `?room=${encodeURIComponent(roomCode)}`;
 
   function getBroadcastMessage() {
-    return `శ్రీకాకుళం జిల్లా పోలీస్ కంట్రోల్ రూమ్ - మూవింగ్ & స్టాటిక్ పార్టీల లైవ్ ట్రాకింగ్\n\nమూవింగ్ పార్టీలు (Moving Parties) & స్టాటిక్ పాయింట్లు (Static Points) డ్యూటీ ఇన్‌ఛార్జ్ సిబ్బంది అందరికీ ముఖ్య గమనిక:\nదయచేసి వెంటనే క్రింది లింక్ ఓపెన్ చేసి, మీ పోలీస్ స్టేషన్ & డ్యూటీ ఎంచుకుని "లైవ్ లొకేషన్ ప్రారంభించండి" బటన్ నొక్కండి:\n\n${officerAppUrl}\n\n(గమనిక: బ్రౌజర్‌లో GPS Allow చేయండి. హోమ్ బటన్ నొక్కి మినిమైజ్ చేసినా బ్యాక్‌గ్రౌండ్‌లో మీ లొకేషన్ కంట్రోల్ రూమ్‌కు నిరంతరం వెళ్తుంది.)`;
+    return `Srikakulam District Police Control Room - Live GPS Tracker\n\nImportant notice for all Moving Parties & Static Points in-charge officers:\nPlease open the link below, select your Police Station & Duty, and click "START LIVE LOCATION":\n\n${officerAppUrl}\n\n(Note: Allow GPS permission in your browser. Even if you press the HOME button and minimize, your location continues transmitting in the background to the Control Room.)`;
   }
 
   document.getElementById('broadcast-message-preview').innerText = getBroadcastMessage();
@@ -2423,9 +2422,9 @@ https://...
 
   document.getElementById('btn-copy-wa-broadcast').addEventListener('click', () => {
     navigator.clipboard.writeText(officerAppUrl).then(() => {
-      showToast('లింక్ కాపీ చేయబడింది!');
+      showToast('Link copied to clipboard!');
     }).catch(() => {
-      prompt("లింక్ కాపీ చేయండి:", officerAppUrl);
+      prompt("Copy link:", officerAppUrl);
     });
   });
 
