@@ -924,10 +924,21 @@
       <button class="pill-btn active" id="btn-toggle-borders" onclick="toggleMandalBordersLayer()" title="Toggle Mandal Boundaries">
         <i class="fa-solid fa-draw-polygon" style="color: #93c5fd;"></i> <span>Borders</span>
       </button>
+
+      <button class="pill-btn" id="btn-fullscreen" onclick="toggleFullScreen()" title="Toggle Fullscreen Map">
+        <i class="fa-solid fa-expand" style="color: #38bdf8;"></i> <span>Full Screen</span>
+      </button>
+
+      <button class="pill-btn" id="btn-top-excel" onclick="exportDutiesToExcel()" title="Download Excel Sheet of Online & Offline Officers">
+        <i class="fa-solid fa-file-excel" style="color: #22c55e;"></i> <span>Excel Sheet</span>
+      </button>
     </div>
 
-    <!-- Police Station & Party Selectors Segment -->
-    <div class="toolbar-segment toolbar-dropdowns">
+    <!-- Police Station & Party Selectors Segment (Movable Tab) -->
+    <div class="toolbar-segment toolbar-dropdowns" id="draggable-dropdown-tab">
+      <div class="drag-handle-pill" id="drag-handle-tab" title="Drag to move this tab anywhere on map" style="cursor: grab; padding: 2px 6px; color: #94a3b8; display: flex; align-items: center; border-right: 1px solid rgba(255,255,255,0.15); margin-right: 2px;">
+        <i class="fa-solid fa-grip-vertical"></i>
+      </div>
       <div class="toolbar-select-box">
         <i class="fa-solid fa-building-shield"></i>
         <select id="select-map-mandal" onchange="handleMapMandalChange(this.value)" title="Select Police Station">
@@ -945,6 +956,14 @@
   </div>
   <!-- Quick Floating Action Buttons on Map -->
   <div class="map-fab-stack">
+    <!-- Fullscreen FAB -->
+    <button class="fab" id="fab-fullscreen" onclick="toggleFullScreen()" title="Full Screen Map">
+      <i class="fa-solid fa-expand"></i>
+    </button>
+    <!-- Excel Report FAB -->
+    <button class="fab" id="fab-excel" onclick="exportDutiesToExcel()" title="Download Excel Status Report">
+      <i class="fa-solid fa-file-excel" style="color: #22c55e;"></i>
+    </button>
     <!-- WhatsApp Share FAB -->
     <button class="fab fab-whatsapp" id="fab-wa-quick" title="Share link in WhatsApp Group">
       <i class="fa-brands fa-whatsapp"></i>
@@ -968,7 +987,12 @@
         <i class="fa-solid fa-users-rays"></i>
         <span id="txt-modal-dir-title">Srikakulam District Duties Directory (127)</span>
       </h3>
-      <button class="btn-close" id="btn-close-dir">✕</button>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="pill-btn" onclick="exportDutiesToExcel()" style="background: rgba(34, 197, 94, 0.2); border-color: #22c55e; color: #86efac;" title="Download Excel Report">
+          <i class="fa-solid fa-file-excel"></i> Export Excel
+        </button>
+        <button class="btn-close" id="btn-close-dir">✕</button>
+      </div>
     </div>
     <div class="modal-body">
       <!-- Search & Filters -->
@@ -1170,7 +1194,10 @@ https://...
   }
 
   function fitToMandal(mandalName) {
-    if (!mandalName || mandalName === 'ALL') return;
+    if (!mandalName || mandalName === 'ALL') {
+      map.flyTo(SRIKAKULAM_CENTER, 10, { duration: 1.2 });
+      return;
+    }
 
     // Find matching unit by PS or mandal
     const matchedUnit = allUnitsData.find(u => (u.ps && u.ps.toLowerCase() === mandalName.toLowerCase()) || (u.mandal && u.mandal.toLowerCase() === mandalName.toLowerCase()));
@@ -1182,12 +1209,12 @@ https://...
       );
       if (feat) {
         const tempLayer = L.geoJSON(feat);
-        map.fitBounds(tempLayer.getBounds(), { padding: [30, 30], maxZoom: 14 });
+        map.flyToBounds(tempLayer.getBounds(), { padding: [40, 40], maxZoom: 14, duration: 1.2 });
         return;
       }
     }
     if (matchedUnit && matchedUnit.lat && matchedUnit.lng) {
-      map.setView([matchedUnit.lat, matchedUnit.lng], 13);
+      map.flyTo([matchedUnit.lat, matchedUnit.lng], 14, { duration: 1.2 });
     }
   }
 
@@ -1877,6 +1904,7 @@ https://...
   };
 
   let selectedMarkerKey = null;
+  let selectedOfflineMarker = null;
 
   function clearSelectedMarkerHighlight() {
     if (selectedMarkerKey && activeMobiles[selectedMarkerKey] && activeMobiles[selectedMarkerKey].marker) {
@@ -1884,6 +1912,10 @@ https://...
       if (el) el.classList.remove('is-selected');
     }
     selectedMarkerKey = null;
+    if (selectedOfflineMarker) {
+      map.removeLayer(selectedOfflineMarker);
+      selectedOfflineMarker = null;
+    }
   }
 
   map.on('click', () => {
@@ -1898,26 +1930,252 @@ https://...
 
     clearSelectedMarkerHighlight();
 
+    // 1. If unit is currently Live on Map
     if (activeMobiles[unitId] && activeMobiles[unitId].marker) {
       selectedMarkerKey = unitId;
       currentlyFollowedOfficerKey = unitId;
       const m = activeMobiles[unitId];
-      map.flyTo([m.lat, m.lng], 16, { animate: true, duration: 1.0 });
+      map.flyTo([m.lat, m.lng], 16, { animate: true, duration: 1.2 });
       const el = m.marker.getElement();
       if (el) el.classList.add('is-selected');
       m.marker.openPopup();
-      showToast(`📍 [${m.categoryKey || 'Unit'}] ${m.unitName || unitId} Selected`);
+      showToast(`🟢 [${m.categoryKey || 'Unit'}] ${m.unitName || unitId} Map Moved`);
       return;
     }
 
+    // 2. If unit is Offline: Every unit has designated coordinates!
     const unit = allUnitsData.find(u => (u.id === unitId || u.unitId === unitId));
     if (unit && unit.lat && unit.lng) {
-      map.flyTo([unit.lat, unit.lng], 16, { animate: true, duration: 1.0 });
-      showToast(`📍 ${unit.unitName} (${unit.ps || unit.mandal}) Location`);
+      map.flyTo([unit.lat, unit.lng], 16, { animate: true, duration: 1.2 });
+      
+      const catKey = unit.categoryKey || (unit.category === 'Static Points' ? 'SP' : 'MP');
+      const theme = getCategoryTheme(catKey);
+      
+      // Plot a prominent illuminated pin so the user clearly sees where it moved!
+      const offIcon = L.divIcon({
+        className: 'custom-police-marker is-selected',
+        html: `
+          <div class="police-marker-container">
+            <div class="police-marker-label" style="display:flex !important; opacity:1 !important; border-color: ${theme.color};">
+              <div class="marker-title-row">
+                <span style="color:#f59e0b;">⚪ </span>
+                <span>${catKey}: ${unit.unitName}</span>
+                <span style="background:rgba(239,68,68,0.25); color:#fca5a5; padding:1px 5px; border-radius:6px; font-size:9px; font-weight:bold;">Offline</span>
+              </div>
+              <div class="officer-incharge-badge">
+                <i class="fa-solid fa-user-shield" style="font-size:9px;"></i>
+                <span>${unit.officer || 'Duty Incharge'} (${unit.ps || unit.mandal} PS)</span>
+              </div>
+            </div>
+            <div class="police-marker-pin" style="background: ${theme.color}; box-shadow: 0 0 16px ${theme.color};">
+              <i class="fa-solid ${theme.icon}"></i>
+            </div>
+          </div>
+        `,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
+      });
+
+      selectedOfflineMarker = L.marker([unit.lat, unit.lng], { icon: offIcon }).addTo(map);
+      
+      const offPopupHtml = `
+        <div style="font-family: sans-serif; font-size: 12px; min-width: 220px; color: #0f172a; padding: 4px;">
+          <div style="font-weight: 700; color: #1e3a8a; font-size: 13.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid ${theme.icon}"></i> ${unit.unitName}
+          </div>
+          <div style="margin-bottom: 3px;"><strong>Police Station:</strong> ${unit.ps || unit.mandal} PS</div>
+          <div style="margin-bottom: 3px;"><strong>Duty Officer:</strong> ${unit.officer || 'Duty Incharge'}</div>
+          <div style="margin-bottom: 3px;"><strong>Phone:</strong> ${unit.phone ? `<a href="tel:${unit.phone}" style="color: #2563eb; font-weight: bold;">${unit.phone}</a>` : 'N/A'}</div>
+          <div style="margin-bottom: 5px;"><strong>Force / Vehicle:</strong> ${unit.vehicle || 'Fixed Point'}</div>
+          <div style="display: inline-block; background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">⚪ Offline (Scheduled Base Point)</div>
+        </div>
+      `;
+      selectedOfflineMarker.bindPopup(offPopupHtml).openPopup();
+      showToast(`📍 ${unit.unitName} (${unit.ps || unit.mandal}) Map Moved to Location`);
     } else {
-      showToast('⚠️ Unit is currently offline. Will appear on map once live location starts.');
+      showToast('⚠️ Unit coordinates not available.');
     }
   };
+
+  // -------------------------------------------------------------
+  // Full Screen Feature ("full screen option kavali")
+  // -------------------------------------------------------------
+  window.toggleFullScreen = function() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      const el = document.documentElement;
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(err => console.warn(err));
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else if (el.msRequestFullscreen) {
+        el.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(err => console.warn(err));
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+  };
+
+  document.addEventListener('fullscreenchange', handleFullScreenChange);
+  document.addEventListener('webkitfullscreenchange', handleFullScreenChange);
+
+  function handleFullScreenChange() {
+    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    const btn = document.getElementById('btn-fullscreen');
+    const fab = document.getElementById('fab-fullscreen');
+    if (btn) {
+      btn.innerHTML = isFs 
+        ? '<i class="fa-solid fa-compress" style="color: #38bdf8;"></i> <span>Exit Full</span>' 
+        : '<i class="fa-solid fa-expand" style="color: #38bdf8;"></i> <span>Full Screen</span>';
+      if (isFs) btn.classList.add('active'); else btn.classList.remove('active');
+    }
+    if (fab) {
+      fab.innerHTML = isFs ? '<i class="fa-solid fa-compress"></i>' : '<i class="fa-solid fa-expand"></i>';
+      if (isFs) fab.classList.add('active'); else fab.classList.remove('active');
+    }
+    if (map) {
+      setTimeout(() => map.invalidateSize(), 300);
+    }
+    showToast(isFs ? '🖥️ Full Screen Enabled' : 'Exited Full Screen Mode');
+  }
+
+  // -------------------------------------------------------------
+  // Excel Sheet Export ("offline or online unnavallu excel sheet kavali")
+  // -------------------------------------------------------------
+  window.exportDutiesToExcel = function() {
+    if (!allUnitsData || allUnitsData.length === 0) {
+      showToast('No duty data available to export.');
+      return;
+    }
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    let csvContent = '\uFEFF'; // UTF-8 BOM so Excel opens it with zero character corruption
+    csvContent += `"Srikakulam District Police - Moving Parties & Static Points Status Report"\r\n`;
+    csvContent += `"Report Generated: ${dateStr} ${timeStr}"\r\n\r\n`;
+    csvContent += `"Sl No","Duty Category","Police Station","Party / Point Name","Duty In-charge Officer","Contact Phone","Vehicle / Force","Village / Base","Status (Online / Offline)","Speed (km/h)","Last Updated Time","Latitude","Longitude"\r\n`;
+
+    let sl = 1;
+    let liveCount = 0;
+    let offlineCount = 0;
+
+    allUnitsData.forEach(u => {
+      const key = u.id || u.unitId;
+      const isLive = !!activeMobiles[key];
+      if (isLive) liveCount++; else offlineCount++;
+
+      const cat = u.category || (u.categoryKey === 'MP' ? 'Moving Parties' : 'Static Points');
+      const ps = (u.ps || u.mandal || '').trim() + (u.ps && !u.ps.endsWith('PS') ? ' PS' : '');
+      const unitName = (u.unitName || u.route || '').replace(/"/g, '""');
+      const officer = (u.officer || 'Duty Incharge').replace(/"/g, '""').replace(/\n/g, ' ');
+      const phone = u.phone || (activeMobiles[key] && activeMobiles[key].phone) || '';
+      const vehicle = (u.vehicle || (activeMobiles[key] && activeMobiles[key].vehicle) || 'Fixed Point').replace(/"/g, '""');
+      const village = (u.village || (activeMobiles[key] && activeMobiles[key].village) || '').replace(/"/g, '""');
+      const statusText = isLive ? 'ONLINE / LIVE' : 'OFFLINE';
+      const speed = isLive && activeMobiles[key].speed ? Math.round(activeMobiles[key].speed * 3.6) : 0;
+      
+      let lastUpTime = 'Offline';
+      if (isLive && activeMobiles[key].lastUpdated) {
+        lastUpTime = new Date(activeMobiles[key].lastUpdated).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+
+      const lat = isLive && activeMobiles[key].lat ? activeMobiles[key].lat : (u.lat || '');
+      const lng = isLive && activeMobiles[key].lng ? activeMobiles[key].lng : (u.lng || '');
+
+      csvContent += `"${sl}","${cat}","${ps}","${unitName}","${officer}","${phone}","${vehicle}","${village}","${statusText}","${speed}","${lastUpTime}","${lat}","${lng}"\r\n`;
+      sl++;
+    });
+
+    csvContent += `\r\n"Total Duties: ${allUnitsData.length}","Online / Live Duties: ${liveCount}","Offline Duties: ${offlineCount}"\r\n`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const filename = `Srikakulam_Police_Duties_Status_${now.toISOString().slice(0, 10)}.csv`;
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast(`📥 Excel Report Downloaded (${liveCount} Online, ${offlineCount} Offline)`);
+  };
+
+  // -------------------------------------------------------------
+  // Draggable Dropdown Tab ("pai image unna tab movie avvali")
+  // -------------------------------------------------------------
+  function initDraggableDropdownTab() {
+    const tab = document.getElementById('draggable-dropdown-tab');
+    const handle = document.getElementById('drag-handle-tab');
+    if (!tab || !handle) return;
+
+    let isDragging = false;
+    let startX, startY, initialLeft, initialTop;
+
+    function onStart(e) {
+      if (e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION') return;
+      isDragging = true;
+      const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+      const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+      startX = clientX;
+      startY = clientY;
+      const rect = tab.getBoundingClientRect();
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      tab.style.position = 'fixed';
+      tab.style.left = `${initialLeft}px`;
+      tab.style.top = `${initialTop}px`;
+      tab.style.right = 'auto';
+      tab.style.zIndex = '10001';
+      tab.style.boxShadow = '0 8px 30px rgba(0,0,0,0.7)';
+      handle.style.cursor = 'grabbing';
+      if (e.type.startsWith('mouse')) e.preventDefault();
+    }
+
+    function onMove(e) {
+      if (!isDragging) return;
+      const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+      const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+      let newLeft = initialLeft + dx;
+      let newTop = initialTop + dy;
+      newLeft = Math.max(10, Math.min(window.innerWidth - tab.offsetWidth - 10, newLeft));
+      newTop = Math.max(50, Math.min(window.innerHeight - tab.offsetHeight - 10, newTop));
+      tab.style.left = `${newLeft}px`;
+      tab.style.top = `${newTop}px`;
+    }
+
+    function onEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      handle.style.cursor = 'grab';
+    }
+
+    handle.addEventListener('mousedown', onStart);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+
+    handle.addEventListener('touchstart', onStart, { passive: true });
+    window.addEventListener('touchmove', onMove, { passive: true });
+    window.addEventListener('touchend', onEnd);
+
+    // Double-click handle to reset position
+    handle.addEventListener('dblclick', () => {
+      tab.style.position = 'relative';
+      tab.style.left = 'auto';
+      tab.style.top = 'auto';
+      tab.style.right = 'auto';
+      tab.style.boxShadow = 'none';
+      showToast('Tab position reset');
+    });
+  }
 
   // Populate Police Station Dropdown
   function populateMapMandalDropdown() {
@@ -2492,6 +2750,7 @@ https://...
 
   if (allUnitsData && allUnitsData.length > 0) {
     initControlRoomUI();
+    initDraggableDropdownTab();
   }
 </script>
 
