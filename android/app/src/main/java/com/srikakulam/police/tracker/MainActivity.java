@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         checkAndRequestPermissions();
         requestBatteryOptimizationExemption();
 
-        String appUrl = "https://election-maps.github.io/LiveMap/officer.html?app=native";
+        String appUrl = "https://election-maps.github.io/Moving-and-Static-Party/officer.html?app=native";
         webView.loadUrl(appUrl);
     }
 
